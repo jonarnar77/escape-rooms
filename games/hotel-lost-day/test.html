@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Automated playthrough of what is built so far (Room 1: Reception).
+  Automated playthrough of what is built so far (Room 1: Reception, Room 2: Room 204).
     http://localhost:8000/games/hotel-lost-day/test.html?d=medium   (easy | medium | hard)
   It plays through the real hotspots, checks each one is clickable at that moment,
   and actually operates the puzzle widgets (drawer lock, torn receipt).
@@ -62,8 +62,42 @@ try {
   await wait(1400);
   expect(A.flag('receiptDone') && A.has('receipt') && !A.has('receiptHalf'), 'receipt reassembled');
   expect(g.state.scene === 'r1-calendar', 'calendar flip shown');
-  click('r1-reception', 'corridor-open');       expect(g.state.scene === 'r2-room', 'through the corridor door');
+  click('r1-reception', 'corridor-open');       expect(g.state.scene === 'r2-corridor', 'through the corridor door');
   log.push('reception ✓  (notebook entries: ' + g.state.notes.length + ')');
+
+  // ROOM 2
+  click('r2-corridor', 'door203', 'key204');    expect(g.state.scene === 'r2-corridor', 'wrong door stays shut');
+  click('r2-corridor', 'door204', 'key204');    expect(g.state.scene === 'r2-room', 'into room 204');
+  expect(g.pastBtn.hidden, 'no Yesterday button before the camera');
+  click('r2-room', 'camera');                   expect(A.has('camera'), 'camera taken');
+  g.render();                                   expect(!g.pastBtn.hidden, 'Yesterday button appears');
+  g.togglePast();                               expect(A.past, 'viewing yesterday');
+  for (const id of ['painting', 'chair', 'mirror', 'flowers']) { g.state.selected = null; g.clickHotspot(hs('r2-room', 'past-' + id)); }
+  expect(['painting', 'chair', 'mirror', 'flowers'].every(id => A.hasNote('diff-' + id)), 'all four differences noted');
+  expect(!g.visible(hs('r2-room', 'camera')) && g.visible(hs('r2-room', 'past-painting')), 'past-only hotspots while in the photo');
+  g.togglePast();                               expect(!A.past, 'back to today');
+  // suitcase lock: a wrong set first, then exactly what changed
+  click('r2-room', 'suitcase');                 click('r2-suitcase', 'lock'); expect(!g.modal.hidden, 'lock opens');
+  const opt = id => q(`.sel-opt[data-id="${id}"]`);
+  ['painting', 'mirror', 'lamp'].forEach(id => opt(id).click()); q('.sel-go').click(); await wait(200);
+  expect(!A.flag('lockOpen'), 'wrong pictures keep it locked');
+  opt('lamp').click(); ['flowers', 'chair'].forEach(id => opt(id).click()); q('.sel-go').click(); await wait(1100);
+  expect(A.flag('lockOpen'), 'suitcase opens');
+  // message: wrong order first, then right
+  click('r2-suitcase', 'envelope');             expect(!g.modal.hidden, 'message puzzle opens');
+  const n = data.puzzles['r2-message'].config(A).items.length;
+  const frag = id => q(`.ord-pile .ord-frag[data-id="${id}"]`);
+  for (let i = n - 1; i >= 0; i--) frag('m' + i).click();
+  expect(q('.ord.err'), 'reversed order is rejected');
+  for (let i = n - 1; i >= 0; i--) q(`.ord-line .ord-frag[data-id="m${i}"]`).click();   // send all back
+  for (let i = 0; i < n; i++) frag('m' + i).click();
+  await wait(1300);                             expect(A.flag('messageDone') && g.state.scene === 'r2-message', 'message assembled');
+  click('r2-room', 'mirror');                   expect(A.flag('sheetLifted'), 'sheet lifted');
+  click('r2-room', 'swallow');                  expect(A.flag('serviceOpen'), 'service door released');
+  expect(!g.visible(hs('r2-room', 'service')), 'armchair blocks the door');
+  click('r2-room', 'chair');                    expect(A.flag('chairMoved'), 'armchair moved back');
+  click('r2-room', 'service');                  expect(g.state.scene === 'r3-breakfast', 'down the service stairs');
+  log.push('room 204 ✓  (notebook entries: ' + g.state.notes.length + ')');
 } catch (e) { fail.push('ERROR ' + e.message); }
 g.clearSave();
 document.getElementById('out').textContent =

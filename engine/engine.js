@@ -14,6 +14,8 @@ import sliders from './puzzles/sliders.js';
 import clock from './puzzles/clock.js';
 import sequence from './puzzles/sequence.js';
 import assemble from './puzzles/assemble.js';
+import select from './puzzles/select.js';
+import order from './puzzles/order.js';
 
 export const W = 800;      // logical stage width  (all art + hotspot coords use this space)
 export const H = 600;      // logical stage height
@@ -21,7 +23,7 @@ export const INV_H = 100;  // inventory bar height
 const SLOTS = 8;
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-const puzzleTypes = { keypad, dials, password, mixer, 'rotate-grid': rotateGrid, sliders, clock, sequence, assemble };
+const puzzleTypes = { keypad, dials, password, mixer, 'rotate-grid': rotateGrid, sliders, clock, sequence, assemble, select, order };
 
 const DIFFICULTIES = {
   easy: 'Hints available and important objects sparkle.',
@@ -111,6 +113,8 @@ export class Game {
       hasNote: id => (game.state.notes ?? []).some(n => n.id === id),
       get scene() { return game.state.scene; },
       get difficulty() { return game.state.difficulty ?? 'medium'; },
+      /** True while the player is looking at the current scene's "past" version. */
+      get past() { return !!game.state.pastView; },
       /** Pick a value by difficulty: g.diff({ easy, medium, hard }); missing keys fall back to medium. */
       diff: map => map[game.state.difficulty ?? 'medium'] ?? map.medium,
       say: (text, ms) => game.say(text, ms),
@@ -153,7 +157,11 @@ export class Game {
     this.hintBtn = h('button', { class: 'hint-btn', title: 'Hint', hidden: '' }, '?');
     this.hintBtn.addEventListener('click', e => { e.stopPropagation(); this.hint(); });
 
-    this.stage.append(this.art, this.hot, ...Object.values(this.nav), this.hintBtn, this.hud, this.label, this.msg, this.modal);
+    // Past/present toggle: shown on scenes that define `past` art, once `data.canSeePast(g)` allows it.
+    this.pastBtn = h('button', { class: 'past-btn', hidden: '' });
+    this.pastBtn.addEventListener('click', e => { e.stopPropagation(); this.togglePast(); });
+
+    this.stage.append(this.art, this.hot, ...Object.values(this.nav), this.hintBtn, this.pastBtn, this.hud, this.label, this.msg, this.modal);
 
     this.inv = h('div', { class: 'inventory' });
     this.slots = [];
@@ -212,7 +220,14 @@ export class Game {
     const scene = this.data.scenes[this.state.scene];
     if (!scene) { console.error('Unknown scene', this.state.scene); return; }
 
-    let art = val(scene.art, g) || '';
+    const canPast = !!scene.past && (this.data.canSeePast?.(g) ?? true);
+    if (!canPast) this.state.pastView = false;
+    this.viewingPast = canPast && !!this.state.pastView;
+    this.stage.classList.toggle('past', this.viewingPast);
+    this.pastBtn.hidden = !canPast;
+    const labels = this.data.pastLabels ?? { past: 'Yesterday', present: 'Today' };
+    this.pastBtn.textContent = this.viewingPast ? `◀ ${labels.present}` : `${labels.past} ▶`;
+    let art = val(this.viewingPast ? scene.past : scene.art, g) || '';
     if (scene.image) art = `<image href="${scene.image}" width="${W}" height="${H}" preserveAspectRatio="none"/>` + art;
     this.art.innerHTML = art;
     if (this.lastScene !== this.state.scene) {
@@ -253,6 +268,9 @@ export class Game {
 
   visible(hs) {
     const g = this.api;
+    // hotspot.era: 'present' (default), 'past' or 'both'
+    const era = hs.era ?? 'present';
+    if (era !== 'both' && (era === 'past') !== !!this.viewingPast) return false;
     if (hs.when && !hs.when(g)) return false;
     if (hs.take && g.flag('took:' + hs.take)) return false;
     return true;
@@ -360,7 +378,18 @@ export class Game {
     if (target) { this.go(target); this.commit(); }
   }
 
+  togglePast() {
+    this.state.pastView = !this.state.pastView;
+    this.effect('shutter');
+    const scene = this.data.scenes[this.state.scene];
+    this.render();
+    if (this.state.pastView) scene.onPast?.(this.api);
+    this.data.onPastToggle?.(this.api, this.state.pastView);
+    this.commit();
+  }
+
   go(id) {
+    if (id !== this.state.scene) this.state.pastView = false;
     const scene = this.data.scenes[id];
     if (!scene) { console.error('Unknown scene', id); return; }
     this.state.scene = id;

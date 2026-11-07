@@ -31,7 +31,8 @@ engine/                 reusable engine, shared by every game (knows nothing abo
   engine.js             scenes, hotspots, inventory, saving, hints, difficulty, effects
   engine.css
   puzzles/              puzzle widgets: keypad, dials, password, mixer, rotate-grid,
-                        sliders, clock, sequence, assemble (torn documents)
+                        sliders, clock, sequence, assemble (torn documents),
+                        select (choose a set), order (arrange fragments)
 games/helix-sublevel-5/
   index.html            the game's own page (a direct, shareable link)
   game.js               game definition (title, rooms, start scene, items, puzzles)
@@ -42,7 +43,7 @@ games/helix-sublevel-5/
   DESIGN.md             puzzle design notes
 ```
 
-Per-game extras: a game can add a `theme.css` after the engine's stylesheet to restyle menus and the inventory (the hotel does), and can set `notebook: true` to get an automatic clue notebook (`g.note(id, text)`).
+Per-game extras: a game can add a `theme.css` after the engine's stylesheet to restyle menus and the inventory (the hotel does), can set `notebook: true` to get an automatic clue notebook (`g.note(id, text)`), and can give scenes a `past` version with a Yesterday/Today toggle (`canSeePast`, hotspot `era`).
 
 ## Adding a new game
 

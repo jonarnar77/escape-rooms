@@ -483,7 +483,7 @@ export default {
           say: 'Locked. ROOMS 201–206. Beyond it, very faintly, a piano is playing.',
           use: { key204: g => g.say("Your room key doesn't fit this door. It's for room 204.") } },
         { id: 'corridor-open', label: 'To the rooms', rect: [700, 120, 94, 350],
-          when: g => g.flag('corridorOpen'), sparkle: true, go: 'r2-room' },
+          when: g => g.flag('corridorOpen'), sparkle: true, go: 'r2-corridor' },
       ],
     },
 

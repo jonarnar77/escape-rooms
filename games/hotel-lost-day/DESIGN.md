@@ -6,7 +6,8 @@
 
 The hotel lets guests surrender a day they wish to forget. Yesterday you discovered that it also takes memories they never agreed to lose. You tried to stop it, and deliberately left yourself clues before the hotel reset. **Goal:** reconstruct yesterday, recover your missing memory, and check out.
 
-**Central mechanic: yesterday and today.** Early on you find a camera with photographs taken yesterday. At set viewpoints you can switch between the photo and the present scene, and the differences are clues: a missing painting, a moved chair, writing that has been painted over. Later you learn to temporarily restore parts of a room to their past state. The past is one authored state per room, not a freely explorable timeline. *(Engine work for this starts in room 2.)*
+**Central mechanic: yesterday and today.** Early on you find a camera with photographs taken yesterday. At set viewpoints you can switch between the photo and the present scene, and the differences are clues: a missing painting, a moved chair, writing that has been painted over. Later you learn to temporarily restore parts of a room to their past state. The past is one authored state per room, not a freely explorable timeline.
+*Engine:* a scene can define `past` art. Once `canSeePast(g)` allows it (you have the camera), a **Yesterday / Today** button toggles the view: sepia, a photo border, and an orange date stamp. Hotspots have `era: 'present' | 'past' | 'both'`.
 
 **Structure:** six rooms, three puzzles each. Each room has one fixed main scene plus close-ups.
 
@@ -46,9 +47,14 @@ The hotel lets guests surrender a day they wish to forget. Yesterday you discove
 Atmosphere: the front doors lead back into the hotel, the service bell rings a little too long, and 204's cubby in the key rack is empty.
 Hard mode: randomised departure times (including afternoon ones) and clasp shapes, plus a second decoy scrap.
 
-### 2. Your Room
-*Purpose:* discover that yesterday's clues were left by you.
-Compare a photograph with the present room; use the differences to open your suitcase; arrange fragments of your own message to locate a hidden service-door release. *(The camera is found here.)*
+### 2. Room 204 ✅ built
+*Purpose:* discover that yesterday's clues were left by you. *Fact:* you expected this, and prepared.
+- **Corridor:** six doors with emblem plates (odd numbers on the left). The 204 key opens yours; the other doors have small sounds behind them.
+- **The camera** lies on the bed, tagged in your own handwriting: *"LOOK AT THE PHOTOS."* Taking it unlocks the Yesterday view.
+1. **Compare the photo with the room.** Four things changed: the **painting** of swallows above the bed is gone (only a pale patch is left), the **armchair** moved from the window to the wall, the **mirror** is now covered with a sheet (in the photo it shows *you*, holding the camera), and the **roses** have died. Clicking each one in the photo writes it in the notebook.
+2. **The suitcase** has a picture lock and a tag: *"Only someone who saw yesterday can open this."* Press exactly the four things that changed (painting, mirror, flowers, chair); the lamp, bed, telephone and curtains are decoys. Inside is an envelope, *"For me. In order."*
+3. **Your torn message.** Fragments end mid-sentence, so each piece leads into the next (5 fragments on easy, 6 on medium, 8 on hard): *"If you're reading this, it worked. The hotel took the day, but not me. Don't believe the register. The way out is behind the mirror. Lift the sheet and press the swallow."*
+- **The mirror**, uncovered, shows the room **but not you**. Pressing the brass swallow on its frame releases a hidden service door in the wallpaper, but it jams against the armchair. Dragging the chair back to where it stood yesterday is the first taste of "restoring the past", and the service stairs lead down to the breakfast room.
 
 ### 3. Breakfast Room
 *Purpose:* reconstruct a meeting you have forgotten. *Fact:* other guests are trapped too, and one helped you.

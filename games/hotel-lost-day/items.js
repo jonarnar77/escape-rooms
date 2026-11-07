@@ -48,4 +48,16 @@ export default {
       g.go('r1-receipt');
     },
   },
+
+  camera: {
+    name: 'camera',
+    description: 'A small camera, tagged in your handwriting: "LOOK AT THE PHOTOS." The photos are dated 6 November. Where you took one, the Yesterday button shows it.',
+    icon: `
+      <g transform="rotate(-8 50 50)">
+        <rect x="14" y="32" width="72" height="44" rx="6" fill="#1e1e22"/><rect x="22" y="24" width="18" height="10" fill="#1e1e22"/>
+        <circle cx="54" cy="54" r="15" fill="#3a3a44" stroke="#8a8a90" stroke-width="3"/><circle cx="54" cy="54" r="7" fill="#0a0a10"/>
+        <rect x="72" y="38" width="8" height="5" fill="#c9a33b"/>
+      </g>
+      <rect x="66" y="70" width="26" height="18" fill="#f4efe2" transform="rotate(14 79 79)"/>`,
+  },
 };
