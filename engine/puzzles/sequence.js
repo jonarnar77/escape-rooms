@@ -1,7 +1,7 @@
 // Press buttons in the right order (symbols, colours, notes...). Checks
 // automatically once enough buttons are pressed; a wrong sequence resets.
 // Config: { buttons: [{ id, label, name? }], solution: [ids], columns?: 4, errText?, okText? }
-//   name: caption under the button's picture
+//   name: caption under the button's picture; width?: panel width in px; picSize?: [w, h] of named pictures
 export default function sequence(root, cfg, ctx) {
   const n = cfg.solution.length;
   const byId = Object.fromEntries(cfg.buttons.map(b => [b.id, b]));
@@ -9,11 +9,11 @@ export default function sequence(root, cfg, ctx) {
   let locked = false;
 
   root.innerHTML = `
-    <div class="seq">
+    <div class="seq" style="${cfg.width ? `width:${cfg.width}px` : ''}">
       <div class="seq-display">${Array.from({ length: n }, () => '<div class="seq-slot"></div>').join('')}</div>
       <div class="seq-status"></div>
       <div class="seq-buttons" style="grid-template-columns: repeat(${cfg.columns ?? 4}, 1fr)">
-        ${cfg.buttons.map(b => `<button class="seq-btn ${b.name ? 'named' : ''}" data-id="${b.id}" title="${b.title ?? b.name ?? ''}"><span class="seq-pic">${b.label}</span>${b.name ? `<span class="seq-name">${b.name}</span>` : ''}</button>`).join('')}
+        ${cfg.buttons.map(b => `<button class="seq-btn ${b.name ? 'named' : ''}" data-id="${b.id}" title="${b.title ?? b.name ?? ''}"><span class="seq-pic" style="${cfg.picSize ? `width:${cfg.picSize[0]}px;height:${cfg.picSize[1]}px` : ''}">${b.label}</span>${b.name ? `<span class="seq-name">${b.name}</span>` : ''}</button>`).join('')}
       </div>
     </div>`;
   const slots = [...root.querySelectorAll('.seq-slot')];

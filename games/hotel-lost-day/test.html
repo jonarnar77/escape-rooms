@@ -200,33 +200,28 @@ try {
   log.push("manager's office ✓  (notebook entries: " + g.state.notes.length + ')');
 
   // ROOM 6
-  click('r6-lostday', 'machine');               expect(g.modal.hidden && !A.flag('reversed'), 'machine cold before the day is known');
-  // photographs: wrong order, then right
-  click('r6-lostday', 'photos');                expect(!g.modal.hidden, 'photographs open');
-  const ph = id => q(`.ord-pile .ord-frag[data-id="${id}"]`);
-  ['arrive', 'breakfast', 'sign', 'waltz', 'photos', 'six'].forEach(id => ph(id).click());
-  expect(q('.ord.err') && !A.flag('photosDone'), 'wrong order of yesterday rejected');
-  ['six', 'photos', 'waltz', 'sign', 'breakfast'].forEach(id => q(`.ord-line .ord-frag[data-id="${id}"]`).click());
-  ['sign', 'breakfast', 'waltz', 'photos', 'six'].forEach(id => ph(id).click());
-  await wait(1300);                             expect(A.flag('photosDone'), 'yesterday in order');
-  click('r6-lostday', 'machine');               expect(g.modal.hidden && !A.flag('reversed'), 'machine still needs the memories');
-  // memories: include a planted one first, then exactly the real four
-  click('r6-lostday', 'cabinet');               expect(!g.modal.hidden, 'memory cabinet opens');
-  const mem = id => q(`.sel-opt[data-id="${id}"]`);
-  ['station', 'bicycle', 'teacup', 'firststay'].forEach(id => mem(id).click()); q('.sel-go').click(); await wait(200);
-  expect(!A.flag('memoriesDone'), 'a planted memory is refused');
-  mem('firststay').click(); mem('letter').click(); q('.sel-go').click(); await wait(1100);
-  expect(A.flag('memoriesDone'), 'only my memories kept');
-  // the machine: forwards is wrong, backwards is right
-  click('r6-lostday', 'machine');               expect(!g.modal.hidden, 'machine accepts input now');
+  // the machine: forwards is wrong, a day with today's photo in it is wrong, backwards is right
+  click('r6-lostday', 'machine');               expect(!g.modal.hidden, 'machine opens');
   const btn = id => q(`.seq-btn[data-id="${id}"]`);
+  expect(diff === 'easy' ? !btn('wake') : !!btn('wake'), "today's photo is a decoy on medium/hard only");
   ['arrive', 'sign', 'breakfast', 'waltz', 'photos', 'six'].forEach(id => btn(id).click()); await wait(1200);
   expect(!A.flag('reversed'), 'the day forwards does not reverse it');
+  if (btn('wake')) { ['six', 'photos', 'waltz', 'breakfast', 'sign', 'wake'].forEach(id => btn(id).click()); await wait(1200);
+    expect(!A.flag('reversed'), "today's photo does not belong"); }
   ['six', 'photos', 'waltz', 'breakfast', 'sign', 'arrive'].forEach(id => btn(id).click()); await wait(1100);
   expect(A.flag('reversed'), 'the day backwards reverses the checkout');
+  // the torn memory: a decoy first (medium/hard), then the real pieces
+  click('r6-lostday', 'jar');                   expect(!g.modal.hidden && g.state.scene === 'r6-lostday', 'the torn memory opens');
+  const fixedTop = diff === 'easy';
+  expect(pieces().length === (diff === 'easy' ? 4 : diff === 'medium' ? 6 : 7), 'memory pieces: ' + pieces().length);
+  if (!fixedTop) place('p0', 0);
+  if (diff !== 'easy') { place('d0', 2); place('p1', 1); place('p3', 3); place('p4', 4);
+    expect(!A.solved('r6-pieces'), "the hotel's piece does not complete it");
+    slot(2).dispatchEvent(new MouseEvent('click')); place('p2', 2); }
+  else { place('p1', 1); place('p2', 2); place('p3', 3); place('p4', 4); }
+  await wait(1400);                             expect(A.solved('r6-pieces') && g.state.scene === 'r6-memory', 'the memory returns');
   for (const j of ['vale', 'orme', 'ito', 'brandt', 'okonkwo']) click('r6-lostday', 'guest-' + j);
   expect((A.get('released') ?? []).length === 5, 'all guests released (optional)');
-  click('r6-lostday', 'jar');                   expect(g.state.scene === 'r6-memory', 'the memory returns');
   click('r6-memory', 'keep');                   expect(A.flag('memoryKept'), 'memory kept');
   click('r6-lostday', 'exit');                  expect(g.state.scene === 'r6-morning', 'reception, morning');
   click('r6-morning', 'billpaper');             expect(A.flag('billRead'), 'final bill read');
