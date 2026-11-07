@@ -72,9 +72,12 @@ Chandeliers, an empty dance floor, and a waltz looping its first eight bars. The
 3. **The stage** (levers locked until the floor is solved). Levers for curtain (closed / half / open), backdrop (garden / sea / city / night) and lights (warm / blue+stars / red+stripes / off) change the stage live; the lights differ by pattern as well as colour, so the sepia photo stays readable. Match **yesterday's photo** (curtain open, sea in rain, blue starry lights) and the under-stage TRAP hatch opens.
 - **The archive:** shelves of glass jars, each with a glowing light and a date/room label. One reads **6 NOV · 204** and is sealed: "Release on the Manager's authority only." A door marked **MANAGER** leads on.
 
-### 5. Manager's Office
+### 5. Manager's Office ✅ built
 *Purpose:* discover the hotel's deception and your previous attempt. *Fact:* your thirty annual visits are fabricated; you arrived yesterday, and the hotel has been trying to convince you that you belong here.
-Reconcile guest bills with surrendered-day records; decode the filing system to retrieve your original agreement; restore a mechanical calendar to yesterday, which opens the final room.
+Reached through the archive's MANAGER door. A portrait with its face painted over, a wet umbrella, and a chair that's still warm. Each step needs the one before.
+1. **Balance the books.** The **ledger** claims 36 days held (30 of them yours, "annual, since 1995"; a scribble: *"Room 204: renew annually. The guest must believe it."*). The six **guest folios** show what was actually billed; yours says **FIRST STAY**. Enter the verified total on the **adding machine** (keypad): 7 on easy and medium (easy folios state their totals; on medium you count lines), 8 on hard (a VOID line and an extra line). It prints *UNSUPPORTED 29: ROOM 204*, and the cash drawer gives up the **filing key**.
+2. **The filing system.** A card catalogue of 72 drawers: rows are guest emblems, columns are month symbols, with a legend card. The key unlocks it (used automatically). **Swallow × November** holds your original agreement (6 Nov 2025, *first visit*, the surrendered thing inked out), your own **revocation** from 11.40 pm last night (*"I want my day back… I took the 6. Put it back, set yesterday."*) and the brass **6**. Your other drawers hold a fat bundle of forged annual renewals.
+3. **The calendar that lost a day.** The brass perpetual calendar reads FRI 7 NOV, and its day wheel jumps from 5 to 7. Fit the 6 (automatic when clicked), then turn the wheels (dials widget, with word faces and start positions). The **newspaper** says *Friday, 7 November*, so yesterday is **THU 6 NOV**; FRI 6 NOV is rejected. The panelled wall behind the calendar opens: **6 NOVEMBER**.
 
 ### 6. The Lost Day
 *Purpose:* replay yesterday's decisive moments and escape. *Fact:* you originally came to forget something painful, but chose to keep your memories after discovering the cost.

@@ -86,4 +86,24 @@ export default {
       </g>
       <rect x="56" y="62" width="34" height="22" rx="3" fill="#efe6cf" stroke="#8a7a5a" transform="rotate(10 73 73)"/>`,
   },
+
+  filekey: {
+    name: 'filing key',
+    description: 'A small key from the adding machine\'s cash drawer, tagged FILES.',
+    icon: `
+      <g transform="rotate(-30 50 50)">
+        <circle cx="28" cy="50" r="12" fill="none" stroke="#b8b8c0" stroke-width="6"/>
+        <rect x="38" y="46" width="40" height="7" fill="#b8b8c0"/><path d="M64 53 v8 h5 v-8 M72 53 v11 h5 v-11" fill="#b8b8c0"/>
+      </g>
+      <rect x="56" y="62" width="34" height="20" rx="3" fill="#efe6cf" stroke="#8a7a5a" transform="rotate(10 73 72)"/>
+      <text x="73" y="76" font-size="9" text-anchor="middle" font-family="Georgia, serif" fill="#2a1c10" transform="rotate(10 73 72)">FILES</text>`,
+  },
+
+  tile6: {
+    name: 'brass "6"',
+    description: 'A brass number tile: 6. It belongs on the calendar\'s day wheel. You took it, last night.',
+    icon: `
+      <rect x="24" y="16" width="52" height="68" rx="6" fill="#d8b860" stroke="#5a4214" stroke-width="3"/>
+      <text x="50" y="72" font-size="54" text-anchor="middle" font-family="Georgia, serif" font-weight="bold" fill="#2a1c10">6</text>`,
+  },
 };

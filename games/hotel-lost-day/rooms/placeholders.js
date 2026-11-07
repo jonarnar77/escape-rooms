@@ -8,10 +8,10 @@ const comingSoon = (title, line) => () => closeup('#120c08') + `
 
 export default {
   scenes: {
-    'r5-office': {
-      room: 'r5',
-      art: comingSoon("THE MANAGER'S OFFICE", 'A narrow passage from the archive ends at a door with a frosted-glass pane: MANAGER.'),
-      nav: { back: 'r4-archive' },
+    'r6-lostday': {
+      room: 'r6',
+      art: comingSoon('6 NOVEMBER', 'A corridor that smells of rain and roses. At the end of it: yesterday.'),
+      nav: { back: 'r5-office' },
       hotspots: [],
     },
   },

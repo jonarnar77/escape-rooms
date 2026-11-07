@@ -1,4 +1,5 @@
-// Numeric keypad. Config: { solution: '2749', length?, okText?, errText? }
+// Numeric keypad. Config: { solution: '2749', length?, okText?, errText?,
+//                          numeric?: true compares as numbers, so "7" matches 7 even if length is 2 }
 export default function keypad(root, cfg, ctx) {
   const solution = String(cfg.solution);
   const len = cfg.length ?? solution.length;
@@ -26,7 +27,7 @@ export default function keypad(root, cfg, ctx) {
 
   function check() {
     locked = true;
-    if (entry === solution) {
+    if (cfg.numeric ? entry !== '' && Number(entry) === Number(solution) : entry === solution) {
       screen.textContent = cfg.okText ?? 'OPEN';
       screen.classList.add('ok');
       setTimeout(ctx.solve, 700);

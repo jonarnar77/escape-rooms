@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Automated playthrough of what is built so far (rooms 1-4).
+  Automated playthrough of what is built so far (rooms 1-5).
     http://localhost:8000/games/hotel-lost-day/test.html?d=medium   (easy | medium | hard)
   It plays through the real hotspots, checks each one is clickable at that moment,
   and actually operates the puzzle widgets (drawer lock, torn receipt).
@@ -169,6 +169,35 @@ try {
   click('r4-ballroom', 'trap-open');            expect(g.state.scene === 'r4-archive' && A.hasNote('archive'), 'into the archive');
   click('r4-archive', 'manager');               expect(g.state.scene === 'r5-office', "to the manager's office");
   log.push('ballroom ✓  (notebook entries: ' + g.state.notes.length + ')');
+
+  // ROOM 5
+  // shortcuts first: catalogue without the key, calendar without the 6
+  click('r5-office', 'catalogue');              click('r5-files', 'drawer-swallow-NOV');
+  expect(!A.flag('filesUnlocked') && g.state.scene === 'r5-files', 'catalogue locked without the key');
+  click('r5-office', 'calendar');               expect(g.modal.hidden && !A.flag('tileIn'), 'calendar refuses without the 6');
+  click('r5-office', 'tray');                   click('r5-office', 'ledger');   click('r5-office', 'newspaper');
+  expect(A.hasNote('folios') && A.hasNote('ledger') && A.hasNote('newspaper'), 'folios, ledger and newspaper read');
+  // adding machine: the ledger's claim is wrong, the verified total is right
+  click('r5-office', 'adder');                  expect(!g.modal.hidden, 'adding machine opens');
+  const key = k => q(`.kp-keys button[data-k="${k}"]`);
+  const enter = n => { String(n).split('').forEach(d => key(d).click()); key('OK').click(); };
+  enter(data.puzzles['r5-adder'].solution(A) + 29); await wait(1000);
+  expect(!A.flag('booksDone'), "the ledger's claimed total is rejected");
+  enter(data.puzzles['r5-adder'].solution(A)); await wait(900);
+  expect(A.flag('booksDone') && A.has('filekey'), 'books balanced, filing key found');
+  // filing: a wrong drawer, then swallow / November
+  click('r5-office', 'catalogue');              click('r5-files', 'drawer-moon-NOV');
+  expect(A.flag('filesUnlocked') && !A.flag('filesDone'), 'key used; wrong drawer is not yours');
+  click('r5-files', 'drawer-swallow-NOV');      expect(A.flag('filesDone') && A.has('tile6') && g.state.scene === 'r5-agreement', 'agreement and the 6 found');
+  // calendar: fit the 6, try the wrong day, then yesterday
+  click('r5-office', 'calendar');               expect(A.flag('tileIn') && !g.modal.hidden, 'the 6 fitted, calendar opens');
+  const dialBtn = (i, d) => q(`.dial button[data-i="${i}"][data-d="${d}"]`);
+  dialBtn(1, -1).click();                       // 7 -> 6, weekday still FRI
+  expect(!A.flag('calendarDone'), 'FRI 6 NOV is not yesterday');
+  dialBtn(0, -1).click(); await wait(900);      // FRI -> THU
+  expect(A.flag('calendarDone'), 'THU 6 NOV opens the wall');
+  click('r5-office', 'wall-open');              expect(g.state.scene === 'r6-lostday', 'into the lost day');
+  log.push("manager's office ✓  (notebook entries: " + g.state.notes.length + ')');
 } catch (e) { fail.push('ERROR ' + e.message); }
 g.clearSave();
 document.getElementById('out').textContent =
