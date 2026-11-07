@@ -7,7 +7,7 @@ Old-school, Flash-style point-and-click escape rooms. Plain HTML/CSS/JS with no 
 | Game | Folder |
 |---|---|
 | Helix: Sublevel 5 | [`games/helix-sublevel-5/`](games/helix-sublevel-5/) (design notes in its `DESIGN.md`) |
-| The Hotel That Lost a Day *(in progress)* | [`games/hotel-lost-day/`](games/hotel-lost-day/) |
+| The Hotel That Lost a Day | [`games/hotel-lost-day/`](games/hotel-lost-day/) |
 
 ## Run locally
 

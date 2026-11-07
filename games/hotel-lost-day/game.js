@@ -5,10 +5,10 @@ import room2 from './rooms/room2.js';
 import room3 from './rooms/room3.js';
 import room4 from './rooms/room4.js';
 import room5 from './rooms/room5.js';
-import placeholders from './rooms/placeholders.js';
+import room6 from './rooms/room6.js';
 
 // Each room module exports { id, name, hints, setup?, scenes, puzzles }.
-const rooms = [room1, room2, room3, room4, room5];
+const rooms = [room1, room2, room3, room4, room5, room6];
 
 export default {
   id: 'hotel-lost-day',          // also the save-game key: keep it unique per game
@@ -37,12 +37,9 @@ export default {
     }
   },
 
-  rooms: {
-    ...Object.fromEntries(rooms.map(r => [r.id, { name: r.name, hints: r.hints }])),
-    r6: { name: 'The Lost Day' },
-  },
+  rooms: Object.fromEntries(rooms.map(r => [r.id, { name: r.name, hints: r.hints }])),
   items,
-  scenes: Object.assign({}, ...[...rooms, placeholders].map(r => r.scenes)),
+  scenes: Object.assign({}, ...rooms.map(r => r.scenes)),
   puzzles: Object.assign({}, ...rooms.map(r => r.puzzles ?? {})),
 
   winTitle: 'CHECKED OUT',

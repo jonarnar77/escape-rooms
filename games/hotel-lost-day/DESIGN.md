@@ -79,12 +79,17 @@ Reached through the archive's MANAGER door. A portrait with its face painted ove
 2. **The filing system.** A card catalogue of 72 drawers: rows are guest emblems, columns are month symbols, with a legend card. The key unlocks it (used automatically). **Swallow × November** holds your original agreement (6 Nov 2025, *first visit*, the surrendered thing inked out), your own **revocation** from 11.40 pm last night (*"I want my day back… I took the 6. Put it back, set yesterday."*) and the brass **6**. Your other drawers hold a fat bundle of forged annual renewals.
 3. **The calendar that lost a day.** The brass perpetual calendar reads FRI 7 NOV, and its day wheel jumps from 5 to 7. Fit the 6 (automatic when clicked), then turn the wheels (dials widget, with word faces and start positions). The **newspaper** says *Friday, 7 November*, so yesterday is **THU 6 NOV**; FRI 6 NOV is rejected. The panelled wall behind the calendar opens: **6 NOVEMBER**.
 
-### 6. The Lost Day
+### 6. The Lost Day ("The Checkout") ✅ built
 *Purpose:* replay yesterday's decisive moments and escape. *Fact:* you originally came to forget something painful, but chose to keep your memories after discovering the cost.
-Put recovered memories in sequence; distinguish your memories from those the hotel assigned you; use the true sequence to reverse the checkout mechanism and release the exit.
+A vaulted room beneath everything: the great brass CHECKOUT machine, jars creeping along a conveyor into it. The machine stays cold until 1 and 2 are both done, and says which is missing.
+1. **Yesterday, in order** (order widget). Six captioned photographs: arriving in the rain, signing the agreement (8.15 am), breakfast at table 3, the waltz, photos in room 204, taking the 6 (11.40 pm). On easy and medium each has a clock with a sun or moon; hard has none.
+2. **Yours, or the hotel's?** (select widget, with captions). Eight memories: four yours (the station, a bicycle, a swallow-patterned teacup, a letter never sent) and four planted, **all dated 6 November** (first stay 1995, dancing 2004, twentieth visit 2015, table 3 2023).
+3. **Reverse the checkout** (sequence widget). The plate reads *"Enter the day backwards, last moment first."* Enter the six moments in reverse (two decoy buttons). Your jar **6 NOV · 204** rolls out of the chute; the memory returns; you **keep it**. A door of morning light opens.
+- **Optional:** five more jars come back with yours (201, 202, 203, 205, 206). Release them all and the ending adds the other guests walking out into the morning.
+- **Morning:** reception in daylight; the clock's minute hand moves; a young clerk asks "Checking out?" The **final bill** reads *Balance settled. Nothing forgotten.* The front doors lead out into the street: **the end**.
 
 ## Ending
 The final mechanism restores the missing date to the hotel calendar. Morning arrives properly for the first time. Beyond reception's front door is a wet street with traffic and people. The final bill reads: *"Balance settled. Nothing forgotten."*
 Optional: recover the other guests' days too, for a more hopeful completionist ending.
 
-**Open question:** the final recovered memory (a farewell, an argument, a missed chance to say something). We'll decide once the tone is settled.
+**The memory** (chosen by Claude; easy to change in `rooms/room6.js`, constant `THE_MEMORY`): *A seaside station in the rain. Your mother at the train window, waving. You had argued that morning, about nothing, and you didn't wave back. Swallows on the telegraph wire. She didn't come home.* It ties together the swallow emblem and the missing painting of swallows over the sea.

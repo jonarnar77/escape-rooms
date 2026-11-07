@@ -250,7 +250,7 @@ const agreement = () => deskTop() + `
       <text x="84" y="246">to be held by the hotel, and forgotten</text>
       <text x="84" y="270">by me, in exchange for one night's</text>
       <text x="84" y="294">peace.</text>
-      <text x="84" y="340">Signed, 6 November 2025.</text>
+      <text x="84" y="340">Signed, 8.15 am, 6 November 2025.</text>
       <text x="84" y="364" font-weight="bold">First visit.</text>
     </g>
     <path d="M90 410 q20 -16 34 -4 t30 -8 q12 14 28 -6 q14 10 34 -6" stroke="#1f2a5a" stroke-width="2" fill="none"/>
@@ -290,7 +290,7 @@ function openDrawer(g, e, m) {
     if (!g.flag('filesDone')) {
       g.set('filesDone');
       g.give('tile6');
-      g.note('agreement', 'My original agreement: signed 6 November 2025, <b>first visit</b>. What I surrendered is inked out.');
+      g.note('agreement', 'My original agreement: signed <b>8.15 am, 6 November 2025</b>, <b>first visit</b>. What I surrendered is inked out.');
       g.note('revoked', 'In my own hand, 11.40 pm on 6 Nov: <i>"REVOKED. I want my day back. The calendar is how they turn the day. I took the 6. Put it back, set yesterday."</i>');
     }
     return g.go('r5-agreement');

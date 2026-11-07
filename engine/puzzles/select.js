@@ -1,14 +1,15 @@
 // Choose exactly the right set of options (order doesn't matter), then confirm.
 // E.g. "press every picture that has changed since yesterday".
-// Config: { options: [{ id, label, title? }], solution: [ids], columns?: 4,
-//           confirmText?: 'Open', failText? }
+// Config: { options: [{ id, label, title?, name? }], solution: [ids], columns?: 4,
+//           confirmText?: 'Open', failText?, optionSize?: 96 }   // name: caption under the picture
 export default function select(root, cfg, ctx) {
   const chosen = new Set();
   let done = false;
   root.innerHTML = `
     <div class="sel">
       <div class="sel-grid" style="grid-template-columns: repeat(${cfg.columns ?? 4}, 1fr)">
-        ${cfg.options.map(o => `<button class="sel-opt" data-id="${o.id}" title="${o.title ?? ''}" aria-pressed="false">${o.label}</button>`).join('')}
+        ${cfg.options.map(o => `<button class="sel-opt ${o.name ? 'named' : ''}" data-id="${o.id}" title="${o.title ?? o.name ?? ''}" aria-pressed="false"
+          style="${cfg.optionSize ? `width:${cfg.optionSize}px;height:auto;` : ''}"><span class="sel-pic">${o.label}</span>${o.name ? `<span class="sel-name">${o.name}</span>` : ''}</button>`).join('')}
       </div>
       <button class="btn big sel-go">${cfg.confirmText ?? 'Confirm'}</button>
     </div>`;
