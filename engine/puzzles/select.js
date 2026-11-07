@@ -2,6 +2,7 @@
 // E.g. "press every picture that has changed since yesterday".
 // Config: { options: [{ id, label, title?, name? }], solution: [ids], columns?: 4,
 //           confirmText?: 'Open', failText?, optionSize?: 96 }   // name: caption under the picture
+//   failText may be a function (chosenIds, solutionIds) => string, for graded feedback
 export default function select(root, cfg, ctx) {
   const chosen = new Set();
   let done = false;
@@ -29,7 +30,7 @@ export default function select(root, cfg, ctx) {
       wrap.classList.add('ok');
       setTimeout(ctx.solve, 900);
     } else {
-      ctx.say(cfg.failText ?? 'Nothing happens.');
+      ctx.say((typeof cfg.failText === 'function' ? cfg.failText([...chosen], cfg.solution) : cfg.failText) ?? 'Nothing happens.');
       wrap.classList.remove('err'); void wrap.offsetWidth; wrap.classList.add('err');
     }
   });

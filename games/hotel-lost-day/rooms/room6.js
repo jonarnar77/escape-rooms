@@ -53,7 +53,7 @@ const MEMORIES = [
   { id: 'firststay', caption: 'Your first stay at the Halcyon', date: '6 Nov 1995', mine: false },
   { id: 'dancing', caption: 'Dancing in the Halcyon ballroom', date: '6 Nov 2004', mine: false },
   { id: 'toast', caption: 'Toasting your twentieth visit', date: '6 Nov 2015', mine: false },
-  { id: 'tablethree', caption: 'Breakfast at table 3, as always', date: '6 Nov 2023', mine: false },
+  { id: 'tablethree', caption: 'Your usual window table, as always', date: '6 Nov 2023', mine: false },
 ];
 const GUEST_JARS = [
   { id: 'vale', room: '201', emblem: 'fern', who: 'the Vales' },
@@ -403,13 +403,25 @@ export default {
 
     'r6-memories': {
       type: 'select',
-      prompt: 'Eight memories, all with your face in them. Choose the ones that are really yours.',
+      prompt: g => g.difficulty === 'hard'
+        ? 'Eight memories, all with your face in them. Choose the ones that are really yours.'
+        : 'Eight memories, all with your face in them. The register claims you came here every 6 November for thirty years, but your own folio says <b>FIRST STAY</b>. Keep only what is really yours.',
       options: MEMORIES.map(m => ({ id: m.id, label: pic(MEMORY_PICS[m.id], 120, 90), name: `${m.caption} · ${m.date}` })),
       solution: MEMORIES.filter(m => m.mine).map(m => m.id),
       columns: 4,
       optionSize: 132,
       confirmText: 'Keep these',
-      failText: 'The cabinet rattles and refuses. Some of those were never yours, or something of yours is missing.',
+      config: g => ({
+        failText: g.difficulty === 'hard'
+          ? 'The cabinet rattles and refuses. Some of those were never yours, or something of yours is missing.'
+          : (chosen, sol) => {
+            const wrong = chosen.filter(id => !sol.includes(id)).length;
+            const missing = sol.filter(id => !chosen.includes(id)).length;
+            const bits = [wrong && `${wrong} of those ${wrong === 1 ? 'was' : 'were'} never yours`,
+              missing && `${missing} of yours ${missing === 1 ? 'is' : 'are'} still left behind`].filter(Boolean);
+            return `The cabinet rattles and refuses: ${bits.join(', and ')}.`;
+          },
+      }),
       solve: g => {
         g.set('memoriesDone');
         g.note('mine', 'My memories, not the hotel\'s: the station, the bicycle, the swallow teacup, the letter. Every one the hotel gave me was dated 6 November.');
