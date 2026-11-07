@@ -313,7 +313,9 @@ const roomHotspots = [
     rect: [50, 104, 112, 220], when: g => !g.flag('sheetLifted'),
     sparkle: g => g.flag('messageDone'),
     click: g => {
-      if (!g.flag('messageDone')) return g.say('A tall mirror under a sheet. You take hold of the cloth... and stop, your skin prickling. Not yet. Not until you know why it was covered.', 6000);
+      if (!g.flag('messageDone')) return g.say(g.flag('lockOpen')
+        ? 'You take hold of the sheet... and stop, your skin prickling. Not until you have read the note in your suitcase.'
+        : 'A tall mirror under a sheet. You take hold of the cloth... and stop, your skin prickling. Not yet. Not until you know why it was covered.', 6000);
       g.set('sheetLifted');
       g.note('mirror-now', 'Under the sheet, the mirror shows the room behind me. It does not show me.');
       g.say('You lift the sheet. The mirror shows the bed, the window, the rain. It does not show you. A small brass swallow sits at the top of the frame.', 7000);
@@ -435,7 +437,7 @@ export default {
           sparkle: true, click: g => g.puzzle('r2-lock') },
         { id: 'tag', label: 'Tag', rect: [536, 150, 172, 132], when: g => !g.flag('lockOpen'),
           say: '"Only someone who saw yesterday can open this." Your handwriting again.' },
-        { id: 'envelope', label: 'Envelope', rect: [296, 330, 210, 140], when: g => g.flag('lockOpen') && !g.flag('messageDone'),
+        { id: 'envelope', label: 'Open the envelope', rect: [296, 330, 210, 140], when: g => g.flag('lockOpen') && !g.flag('messageDone'),
           sparkle: true, click: g => g.puzzle('r2-message') },
         { id: 'clothes', label: 'Clothes', rect: [96, 316, 608, 190], when: g => g.flag('lockOpen'),
           say: 'Your clothes, folded the way you always fold them. One shirt still smells of rain.' },
@@ -462,14 +464,14 @@ export default {
 
     'r2-message': {
       type: 'order',
-      prompt: 'Your own handwriting, torn into pieces. Put it back together.',
+      prompt: 'Your own note, torn into pieces. Click them in reading order; click a piece in the note to take it back out.',
       config: g => ({
         items: messageOf(g).map((text, i) => ({ id: `m${i}`, label: text })),
         solution: messageOf(g).map((_, i) => `m${i}`),
       }),
       solution: g => messageOf(g).map((_, i) => `m${i}`),
       okText: 'It reads cleanly now.',
-      errText: "That doesn't read right.",
+      errText: "That doesn't read right yet. Click a piece in the note to take it back out.",
       seed: 7,
       solve: g => {
         g.set('messageDone');
