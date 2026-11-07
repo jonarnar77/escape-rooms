@@ -242,6 +242,7 @@ export class Game {
       const geo = { rect: val(hs.rect, g), poly: val(hs.poly, g), circle: val(hs.circle, g) };
       const shape = this.shapeFor(geo, hs);
       shape.classList.add('hotspot');
+      if (hs.id) shape.dataset.id = hs.id;
       shape.addEventListener('click', e => { e.stopPropagation(); this.clickHotspot(hs); });
       shape.addEventListener('mouseenter', () => { this.hoverLabel = val(hs.label, g) || ''; this.updateLabel(); });
       shape.addEventListener('mouseleave', () => { this.hoverLabel = ''; this.updateLabel(); });

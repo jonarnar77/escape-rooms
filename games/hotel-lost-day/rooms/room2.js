@@ -437,10 +437,11 @@ export default {
           sparkle: true, click: g => g.puzzle('r2-lock') },
         { id: 'tag', label: 'Tag', rect: [536, 150, 172, 132], when: g => !g.flag('lockOpen'),
           say: '"Only someone who saw yesterday can open this." Your handwriting again.' },
-        { id: 'envelope', label: 'Open the envelope', rect: [296, 330, 210, 140], when: g => g.flag('lockOpen') && !g.flag('messageDone'),
-          sparkle: true, click: g => g.puzzle('r2-message') },
+        // (hotspots listed later sit on top: the clothes must come before the envelope)
         { id: 'clothes', label: 'Clothes', rect: [96, 316, 608, 190], when: g => g.flag('lockOpen'),
           say: 'Your clothes, folded the way you always fold them. One shirt still smells of rain.' },
+        { id: 'envelope', label: 'Open the envelope', rect: [296, 330, 210, 140], when: g => g.flag('lockOpen') && !g.flag('messageDone'),
+          sparkle: true, click: g => g.puzzle('r2-message') },
       ],
     },
 

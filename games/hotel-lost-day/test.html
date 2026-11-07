@@ -23,13 +23,19 @@ const hs = (scene, id) => data.scenes[scene].hotspots.find(h => h.id === id);
 function click(scene, id, item = null) {
   g.go(scene); g.render();
   const h = hs(scene, id);
-  if (!h) return fail.push(`missing hotspot ${scene}/${id}`);
-  if (!g.visible(h)) return fail.push(`not clickable now: ${scene}/${id}`);
-  if (item && !A.has(item)) return fail.push(`don't have ${item} for ${scene}/${id}`);
+  if (!h) return bad(`missing hotspot ${scene}/${id}`);
+  if (!g.visible(h)) return bad(`not clickable now: ${scene}/${id}`);
+  if (item && !A.has(item)) return bad(`don't have ${item} for ${scene}/${id}`);
   g.state.selected = item;
-  g.clickHotspot(h);
+  // click where a player would: the middle of the hotspot, and make sure nothing else covers it
+  const el = g.hot.querySelector(`[data-id="${id}"]`);
+  const r = el.getBoundingClientRect();
+  const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+  if (top !== el) return bad(`${scene}/${id} is covered by "${top?.dataset?.id ?? top?.tagName}"`);
+  top.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 }
 const expect = (cond, msg) => { if (!cond) fail.push('expected: ' + msg); };
+function bad(msg) { fail.push(msg); }
 const q = s => document.querySelector(s);
 try {
   expect(A.has('booking'), 'start with booking card');
