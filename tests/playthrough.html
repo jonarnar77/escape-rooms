@@ -61,7 +61,7 @@ try {
   log.push('room 3 ✓');
   click('r4-west', 'console');                    solve('r4-sliders');
   click('r4-north', 'pod-B');                     click('r4-podB', 'ice'); click('r4-podB', 'photo4');
-  click('r3-north', 'drawer-A1', 'ice');          expect(A.has('dircard'), 'thawed keycard');
+  click('r3-north', 'servers-B', 'ice');            expect(A.has('dircard'), 'thawed keycard');
   click('r4-east', 'reader', 'dircard');          click('r4-east', 'exit'); expect(g.state.scene === 'r5-north', 'reached room 5');
   log.push('room 4 ✓  (photo pieces: ' + A.get('photoPieces') + '/4)');
   click('r5-west', 'drawer');                     click('r5-west', 'tape');
