@@ -1,0 +1,51 @@
+// Inventory items for The Hotel That Lost a Day. Icons are drawn in a 100x100 box.
+import { EMBLEMS, symAt } from './art/symbols.js';
+
+const card = (inner, fill = '#efe6cf') => `
+  <g transform="rotate(-8 50 50)">
+    <rect x="14" y="20" width="72" height="60" rx="3" fill="${fill}" stroke="#8a7a5a" stroke-width="2"/>${inner}
+  </g>`;
+
+export default {
+  booking: {
+    name: 'booking confirmation',
+    description: 'Your booking card from The Halcyon.',
+    icon: card(symAt(EMBLEMS, 'swallow', 34, 30, 32, '#2a3a5a') + '<path d="M24 70 h52" stroke="#8a7a5a" stroke-width="3"/>'),
+    // examining it zooms into the card itself
+    examine: g => {
+      g.set('bookingReturn', g.scene);
+      g.go('r1-booking');
+    },
+  },
+
+  key204: {
+    name: 'key to room 204',
+    description: 'A heavy brass key on a wooden fob. The fob is stamped "204" with a little swallow.',
+    icon: `
+      <g transform="rotate(-25 50 50)">
+        <circle cx="26" cy="50" r="13" fill="none" stroke="#c9a33b" stroke-width="7"/>
+        <rect x="38" y="46" width="44" height="8" fill="#c9a33b"/>
+        <path d="M66 54 v9 h6 v-9 M76 54 v12 h6 v-12" fill="#c9a33b"/>
+      </g>
+      <rect x="54" y="62" width="34" height="26" rx="5" fill="#7a4a2a" transform="rotate(12 71 75)"/>
+      <text x="71" y="80" font-size="11" text-anchor="middle" font-family="Georgia, serif" fill="#f0d890" transform="rotate(12 71 75)">204</text>`,
+  },
+
+  receiptHalf: {
+    name: 'half a receipt',
+    description: 'The top half of a hotel receipt, for room 204. The rest has been torn away.',
+    icon: card(`<path d="M24 32 h52 M24 42 h40 M24 52 h46" stroke="#8a7a5a" stroke-width="3"/>`, '#f4efe2')
+      .replace('height="60"', 'height="44"'),
+  },
+
+  receipt: {
+    name: 'taped receipt',
+    description: 'Your receipt, taped back together. "6 November: One day surrendered. Consent: see original agreement."',
+    icon: card(`<path d="M24 30 h52 M24 40 h40 M24 50 h46 M24 60 h30" stroke="#8a7a5a" stroke-width="3"/>
+      <path d="M24 70 h52" stroke="#a3221c" stroke-width="4"/>`, '#f4efe2'),
+    examine: g => {
+      g.set('receiptReturn', g.scene);
+      g.go('r1-receipt');
+    },
+  },
+};

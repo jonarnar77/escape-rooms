@@ -1,0 +1,19 @@
+/* The Halcyon: warm hotel theme layered over the engine's default (green terminal) look. */
+body { font-family: Georgia, "Times New Roman", serif; color: #efe6cf; }
+.frame { background: #120c08; }
+.screen { background: radial-gradient(#2a1a10, #0a0604); }
+.screen-panel h1 { color: #f0d890; font-family: Georgia, serif; font-size: 40px; letter-spacing: 3px;
+  text-shadow: 0 0 18px rgba(240, 200, 120, .35); }
+.screen-panel h2 { color: #f0d890; font-family: Georgia, serif; }
+.screen-panel .sub, .screen-panel .hint, .diff-desc { color: #b8a888; font-style: italic; }
+.btn { font-family: Georgia, serif; background: #3a2414; color: #f4ead0; border-color: #8a6a3a; }
+.btn:hover { background: #4e3220; }
+.hud { color: #e0c890; text-transform: none; letter-spacing: .5px; font-family: Georgia, serif; font-style: italic; }
+.label { color: #f4e2b0; text-transform: none; font-family: Georgia, serif; }
+.msg { background: rgba(20, 12, 6, .9); border-color: #8a6a3a; color: #f4ead0; font-family: Georgia, serif; font-size: 17px; }
+.inventory { background: linear-gradient(#3a2414, #1e120a); border-top-color: #8a6a3a; }
+.slot { background: #1a100a; border-color: #5a3e24; }
+.slot.selected { border-color: #f0d890; }
+.panel { background: #24160c; border-color: #8a6a3a; }
+.puzzle-prompt { color: #d8c8a0; font-family: Georgia, serif; font-style: italic; }
+.seq-status { font-family: Georgia, serif; }

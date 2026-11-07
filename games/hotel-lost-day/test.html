@@ -1,0 +1,71 @@
+<!doctype html>
+<!--
+  Automated playthrough of what is built so far (Room 1: Reception).
+    http://localhost:8000/games/hotel-lost-day/test.html?d=medium   (easy | medium | hard)
+  It plays through the real hotspots, checks each one is clickable at that moment,
+  and actually operates the puzzle widgets (drawer lock, torn receipt).
+-->
+<html><head><meta charset="utf-8"><title>Playthrough test</title>
+<link rel="stylesheet" href="../../engine/engine.css"><link rel="stylesheet" href="theme.css">
+<style>#out{position:fixed;top:8px;left:8px;z-index:99;background:#000c;color:#cfc;padding:10px;font:13px monospace;white-space:pre}</style></head>
+<body><div id="game"></div><pre id="out">running…</pre>
+<script type="module">
+import { Game } from '../../engine/engine.js';
+import data from './game.js';
+const diff = new URLSearchParams(location.search).get('d') || 'medium';
+data.id = 'playthrough-test-hotel';
+history.replaceState(null, '', location.pathname);
+const g = new Game(document.getElementById('game'), data);
+g.newGame(diff);
+const A = g.api, log = [], fail = [];
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const hs = (scene, id) => data.scenes[scene].hotspots.find(h => h.id === id);
+function click(scene, id, item = null) {
+  g.go(scene); g.render();
+  const h = hs(scene, id);
+  if (!h) return fail.push(`missing hotspot ${scene}/${id}`);
+  if (!g.visible(h)) return fail.push(`not clickable now: ${scene}/${id}`);
+  if (item && !A.has(item)) return fail.push(`don't have ${item} for ${scene}/${id}`);
+  g.state.selected = item;
+  g.clickHotspot(h);
+}
+const expect = (cond, msg) => { if (!cond) fail.push('expected: ' + msg); };
+const q = s => document.querySelector(s);
+try {
+  expect(A.has('booking'), 'start with booking card');
+  g.examine('booking');                         expect(g.state.scene === 'r1-booking', 'booking close-up');
+  click('r1-reception', 'chart');               click('r1-chart', 'chart-204'); expect(A.flag('knowsRoom'), 'knows room 204');
+  click('r1-reception', 'note');                expect(A.hasNote('clerk'), 'clerk note in notebook');
+  click('r1-reception', 'luggage');
+  // drawer: wrong order first, then the right one, through the real buttons
+  click('r1-reception', 'lock');                expect(!g.modal.hidden, 'drawer lock opens');
+  const press = id => q(`.seq-btn[data-id="${id}"]`).click();
+  ['star', 'star', 'star', 'star'].forEach(press); await wait(1200);
+  expect(!A.flag('drawerOpen'), 'wrong order keeps drawer shut');
+  const order = data.puzzles['r1-drawer'].solution(A);
+  order.forEach(press); await wait(1100);
+  expect(A.flag('drawerOpen'), 'drawer opens with ' + order.join(','));
+  click('r1-reception', 'key204');              click('r1-reception', 'receiptHalf');
+  // receipt: place the decoy first (must not solve), then the real strips
+  click('r1-reception', 'basket');              expect(!g.modal.hidden, 'receipt puzzle opens');
+  const pieces = () => [...document.querySelectorAll('.asm-piece')];
+  const slot = n => document.querySelector(`.asm-slot[data-slot="${n}"]`);
+  // pieces: p<N> = strip N of the real receipt, d<N> = decoy scraps
+  const pick = id => q(`.asm-piece[data-piece="${id}"]`);
+  const place = (id, n) => { pick(id).click(); slot(n).dispatchEvent(new MouseEvent('click')); };
+  expect(pieces().length === (diff === 'hard' ? 5 : 4), 'scraps in the basket: ' + pieces().length);
+  place('d0', 3);                                          // decoy in the right-looking spot
+  place('p2', 2); place('p4', 4);
+  expect(!A.flag('receiptDone'), 'decoy does not complete it');
+  slot(3).dispatchEvent(new MouseEvent('click'));          // take the decoy back out
+  place('p3', 3);
+  await wait(1400);
+  expect(A.flag('receiptDone') && A.has('receipt') && !A.has('receiptHalf'), 'receipt reassembled');
+  expect(g.state.scene === 'r1-calendar', 'calendar flip shown');
+  click('r1-reception', 'corridor-open');       expect(g.state.scene === 'r2-room', 'through the corridor door');
+  log.push('reception ✓  (notebook entries: ' + g.state.notes.length + ')');
+} catch (e) { fail.push('ERROR ' + e.message); }
+g.clearSave();
+document.getElementById('out').textContent =
+  `PLAYTHROUGH (${diff})\n` + log.join('\n') + '\n' + (fail.length ? 'FAIL\n' + fail.join('\n') : 'PASS');
+</script></body></html>

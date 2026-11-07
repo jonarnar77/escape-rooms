@@ -7,6 +7,7 @@ Old-school, Flash-style point-and-click escape rooms. Plain HTML/CSS/JS with no 
 | Game | Folder |
 |---|---|
 | Helix: Sublevel 5 | [`games/helix-sublevel-5/`](games/helix-sublevel-5/) (design notes in its `DESIGN.md`) |
+| The Hotel That Lost a Day *(in progress)* | [`games/hotel-lost-day/`](games/hotel-lost-day/) |
 
 ## Run locally
 
@@ -30,7 +31,7 @@ engine/                 reusable engine, shared by every game (knows nothing abo
   engine.js             scenes, hotspots, inventory, saving, hints, difficulty, effects
   engine.css
   puzzles/              puzzle widgets: keypad, dials, password, mixer, rotate-grid,
-                        sliders, clock, sequence
+                        sliders, clock, sequence, assemble (torn documents)
 games/helix-sublevel-5/
   index.html            the game's own page (a direct, shareable link)
   game.js               game definition (title, rooms, start scene, items, puzzles)
@@ -40,6 +41,8 @@ games/helix-sublevel-5/
   test.html             automated full-game playthrough
   DESIGN.md             puzzle design notes
 ```
+
+Per-game extras: a game can add a `theme.css` after the engine's stylesheet to restyle menus and the inventory (the hotel does), and can set `notebook: true` to get an automatic clue notebook (`g.note(id, text)`).
 
 ## Adding a new game
 

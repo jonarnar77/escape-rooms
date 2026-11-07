@@ -11,4 +11,11 @@ export default [
     // the scene (and flags) drawn as the card's picture
     thumbnail: { scene: 'r4-north', flags: {} },
   },
+  {
+    folder: 'hotel-lost-day',
+    title: 'The Hotel That Lost a Day',
+    tagline: 'You come down to check out. Your bill includes a day you cannot remember, and the front door only leads back inside.',
+    tags: ['Eerie mystery', '6 rooms', 'In progress: room 1'],
+    thumbnail: { scene: 'r1-reception', flags: {} },
+  },
 ];

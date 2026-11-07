@@ -13,6 +13,7 @@ import rotateGrid from './puzzles/rotate-grid.js';
 import sliders from './puzzles/sliders.js';
 import clock from './puzzles/clock.js';
 import sequence from './puzzles/sequence.js';
+import assemble from './puzzles/assemble.js';
 
 export const W = 800;      // logical stage width  (all art + hotspot coords use this space)
 export const H = 600;      // logical stage height
@@ -20,7 +21,7 @@ export const INV_H = 100;  // inventory bar height
 const SLOTS = 8;
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-const puzzleTypes = { keypad, dials, password, mixer, 'rotate-grid': rotateGrid, sliders, clock, sequence };
+const puzzleTypes = { keypad, dials, password, mixer, 'rotate-grid': rotateGrid, sliders, clock, sequence, assemble };
 
 const DIFFICULTIES = {
   easy: 'Hints available and important objects sparkle.',
@@ -78,7 +79,7 @@ export class Game {
 
   // ---------- state ----------
   freshState(difficulty = 'medium') {
-    return { scene: this.data.start, inventory: [], flags: {}, selected: null, difficulty };
+    return { scene: this.data.start, inventory: [], flags: {}, selected: null, difficulty, notes: [] };
   }
   load() {
     try {
@@ -105,6 +106,9 @@ export class Game {
         if (game.state.selected === id) game.state.selected = null;
       },
       get selected() { return game.state.selected; },
+      /** Save a clue to the notebook (once per id). Only shown if the game sets `notebook: true`. */
+      note: (id, text) => game.addNote(id, text),
+      hasNote: id => (game.state.notes ?? []).some(n => n.id === id),
       get scene() { return game.state.scene; },
       get difficulty() { return game.state.difficulty ?? 'medium'; },
       /** Pick a value by difficulty: g.diff({ easy, medium, hard }); missing keys fall back to medium. */
@@ -171,7 +175,13 @@ export class Game {
     });
     const menuBtn = h('button', { class: 'btn' }, 'Menu');
     menuBtn.addEventListener('click', () => this.showMenu());
-    side.append(exBtn, menuBtn);
+    side.append(exBtn);
+    if (this.data.notebook) {
+      this.nbBtn = h('button', { class: 'btn' }, 'Notebook');
+      this.nbBtn.addEventListener('click', () => this.showNotebook());
+      side.append(this.nbBtn);
+    }
+    side.append(menuBtn);
     this.inv.append(side);
 
     this.screen = h('div', { class: 'overlay screen', hidden: '' });
@@ -430,6 +440,28 @@ export class Game {
       sound: s => this.sound(s),
       onClose: f => this.modalCleanup.push(f),
     });
+  }
+
+  addNote(id, text) {
+    const notes = this.state.notes ??= [];
+    if (notes.some(n => n.id === id)) return;
+    const room = this.data.rooms?.[this.data.scenes[this.state.scene]?.room]?.name ?? '';
+    notes.push({ id, text, room });
+    if (this.nbBtn) {
+      this.nbBtn.classList.remove('nb-new'); void this.nbBtn.offsetWidth; this.nbBtn.classList.add('nb-new');
+    }
+  }
+
+  showNotebook() {
+    this.nbBtn?.classList.remove('nb-new');
+    const notes = this.state.notes ?? [];
+    const body = this.openModal('notebook');
+    let lastRoom = null;
+    body.innerHTML = `<h3>Notebook</h3>` + (notes.length ? notes.map(n => {
+      const head = n.room !== lastRoom ? `<h4>${n.room}</h4>` : '';
+      lastRoom = n.room;
+      return `${head}<p>${n.text}</p>`;
+    }).join('') : '<p class="nb-empty">Nothing yet. Clues you find will be written down here.</p>');
   }
 
   examine(id) {

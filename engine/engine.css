@@ -237,3 +237,36 @@ body {
   background: radial-gradient(#d8c58a, #8a7a4a); border: 3px solid #4a3f22; box-shadow: 0 3px 0 #222;
 }
 .seq-btn:active { transform: translateY(2px); box-shadow: none; }
+
+/* notebook */
+.inv-side { gap: 5px; }
+.inv-side .btn { padding: 4px 12px; font-size: 13px; }
+.btn.nb-new { animation: nb-pulse 1.2s ease-in-out 3; border-color: #e6c84a; color: #fff3b0; }
+@keyframes nb-pulse { 50% { box-shadow: 0 0 12px rgba(230, 200, 74, .8); } }
+.panel.notebook {
+  width: 520px; max-height: 480px; overflow-y: auto; background: #efe6cf; color: #2a2318; border-color: #8a7a5a;
+  font-family: "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+  background-image: repeating-linear-gradient(transparent 0 27px, #c9d4e4 27px 28px);
+}
+.notebook .close { color: #6a5a3a; }
+.notebook h3 { margin: 0 0 6px; font-size: 22px; }
+.notebook h4 { margin: 14px 0 2px; font: bold 12px "Courier New", monospace; letter-spacing: 1px; color: #8a6a3a; text-transform: uppercase; }
+.notebook p { margin: 0 0 6px; line-height: 1.45; font-size: 16px; }
+.notebook .nb-empty { color: #8a7a5a; }
+
+/* assemble (torn document) */
+.asm { display: flex; gap: 24px; align-items: center; }
+.asm-board { width: 250px; height: 400px; flex: none; }
+.asm-slot { fill: transparent; cursor: pointer; }
+.asm-slot:not(.fixed):hover { fill: rgba(230, 200, 74, .12); }
+.asm-slot.fixed { cursor: default; }
+.asm.ok .asm-board { filter: drop-shadow(0 0 10px rgba(120, 255, 120, .5)); }
+.asm-tray { width: 360px; display: flex; flex-wrap: wrap; gap: 12px; align-content: center; min-height: 200px; }
+.asm-piece {
+  width: 170px; padding: 0; background: none; border: 2px solid transparent; cursor: pointer;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .6));
+}
+.asm-piece svg { width: 100%; display: block; }
+.asm-piece:hover { border-color: #6b7a70; }
+.asm-piece.sel { border-color: #e6c84a; box-shadow: 0 0 12px rgba(230, 200, 74, .5); }
+.asm-empty { color: #8fa38a; }
