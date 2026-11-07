@@ -334,20 +334,24 @@ export class Game {
     const sel = this.state.selected;
     if (sel) {
       const fn = hs.use?.[sel] ?? hs.use?.['*'];
-      if (fn) fn(g, sel);
-      else if (val(hs.go, g)) this.go(val(hs.go, g));
-      else this.say(this.data.messages?.noUse ?? "That doesn't work.");
-    } else {
-      if (hs.take) {
-        g.give(hs.take);
-        g.set('took:' + hs.take);
-        if (!hs.say) this.say(`You pick up the ${this.itemName(hs.take)}.`);
-      }
-      if (hs.say) this.say(val(hs.say, g));
-      if (hs.click) hs.click(g);
-      const target = val(hs.go, g);   // `go` may be a function returning null = don't move
-      if (target) this.go(target);
+      if (fn) { fn(g, sel); return this.commit(); }
+      // zooming into a close-up keeps the item selected, ready to use in there
+      if (val(hs.go, g)) { this.go(val(hs.go, g)); return this.commit(); }
+      // the object accepts some items, just not this one
+      if (hs.use) { this.say(this.data.messages?.noUse ?? "That doesn't work."); return this.commit(); }
+      // the object never takes items: drop the selection and interact with it normally,
+      // so a forgotten selected item can't make an object seem dead
+      this.state.selected = null;
     }
+    if (hs.take) {
+      g.give(hs.take);
+      g.set('took:' + hs.take);
+      if (!hs.say) this.say(`You pick up the ${this.itemName(hs.take)}.`);
+    }
+    if (hs.say) this.say(val(hs.say, g));
+    if (hs.click) hs.click(g);
+    const target = val(hs.go, g);   // `go` may be a function returning null = don't move
+    if (target) this.go(target);
     this.commit();
   }
 

@@ -309,10 +309,11 @@ const roomHotspots = [
   // --- present
   { id: 'painting-gap', label: 'Pale patch', rect: [322, 98, 156, 120],
     say: 'A pale rectangle on the wallpaper and an empty nail. Something hung here until recently.' },
-  { id: 'mirror', label: 'Mirror', rect: [50, 104, 112, 220], when: g => !g.flag('sheetLifted'),
+  { id: 'mirror', label: g => g.flag('messageDone') ? 'Lift the sheet' : 'Covered mirror',
+    rect: [50, 104, 112, 220], when: g => !g.flag('sheetLifted'),
     sparkle: g => g.flag('messageDone'),
     click: g => {
-      if (!g.flag('messageDone')) return g.say('A tall mirror, covered with a sheet. You feel oddly reluctant to lift it.');
+      if (!g.flag('messageDone')) return g.say('A tall mirror under a sheet. You take hold of the cloth... and stop, your skin prickling. Not yet. Not until you know why it was covered.', 6000);
       g.set('sheetLifted');
       g.note('mirror-now', 'Under the sheet, the mirror shows the room behind me. It does not show me.');
       g.say('You lift the sheet. The mirror shows the bed, the window, the rain. It does not show you. A small brass swallow sits at the top of the frame.', 7000);
@@ -408,6 +409,10 @@ export default {
       past: g => roomArt(g, true),
       nav: { back: 'r2-corridor' },
       enter: g => {
+        if (g.flag('messageDone') && !g.flag('sheetLifted') && !g.flag('sheetPrompt')) {
+          g.set('sheetPrompt');
+          return g.say('Your eyes go to the covered mirror. "Lift the sheet," your note said. Now you know why.', 6000);
+        }
         if (g.flag('r2Seen')) return;
         g.set('r2Seen');
         g.say('Room 204. Tidy, warm, and somehow too still. It smells faintly of roses that are not there.', 5000);
