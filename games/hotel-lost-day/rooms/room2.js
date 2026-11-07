@@ -200,7 +200,7 @@ function roomArt(g, past) {
     <rect x="440" y="452" width="40" height="26" fill="#f4efe2" transform="rotate(8 460 465)"/>`}
 
   ${past ? `<text x="772" y="584" font-size="22" text-anchor="end" font-family="Courier New, monospace" font-weight="bold"
-    fill="#ff9a3a" opacity=".85" filter="url(#hGlow)">'6 11</text>` : ''}
+    fill="#ff9a3a" opacity=".85" filter="url(#hGlow)">6 NOV  10.30 PM</text>` : ''}
   ` + finish();
 }
 
@@ -463,7 +463,7 @@ export default {
         g.set('r2Seen');
         g.say('Room 204. Tidy, warm, and somehow too still. It smells faintly of roses that are not there.', 5000);
       },
-      onPast: g => g.note('camera-first', 'The camera holds photos from yesterday. In my room, I can compare the photo with how things are now.'),
+      onPast: g => g.note('camera-first', 'The camera holds photos from yesterday. This one of my room is stamped <b>6 Nov, 10.30 pm</b>: I took it myself, late at night. I can compare it with how things are now.'),
       hotspots: roomHotspots,
     },
 

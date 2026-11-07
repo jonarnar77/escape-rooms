@@ -202,7 +202,7 @@ function ballroomArt(g, past) {
   ${COLS.map((c, i) => { const [x, y] = floorPt((i + 0.5) / 5, 1); return `<text x="${x}" y="${y + 24}" font-size="22" text-anchor="middle" ${serif} font-weight="bold" fill="#f0d890" opacity=".9">${c}</text>`; }).join('')}
   ${[1, 2, 3, 4, 5].map(r => { const b = 5 - r; const [x, y] = floorPt(0, (DEPTH[b] + DEPTH[b + 1]) / 2); return `<text x="${x + 6 + b * 3}" y="${y + 6}" font-size="${11 + (b + 1) * 2}" text-anchor="middle" ${serif} font-weight="bold" fill="#f0d890" opacity=".85">${r}</text>`; }).join('')}
   ${past ? `<text x="772" y="584" font-size="22" text-anchor="end" font-family="Courier New, monospace" font-weight="bold"
-    fill="#ff9a3a" opacity=".85" filter="url(#hGlow)">'6 11</text>` : ''}
+    fill="#ff9a3a" opacity=".85" filter="url(#hGlow)">6 NOV  8.00 PM</text>` : ''}
   ` + finish();
 }
 
@@ -353,7 +353,7 @@ export default {
         g.set('r4Seen');
         g.say('The ballroom. Chandeliers, an empty dance floor, and a waltz with nobody playing it: the same eight bars, over and over.', 6000);
       },
-      onPast: g => g.note('r4-photo', `Yesterday's photo of the ballroom stage: curtain <b>${NAMES[YESTERDAY.curtain]}</b>, backdrop <b>${NAMES[YESTERDAY.backdrop]}</b>, lights <b>${NAMES[YESTERDAY.lights]}</b>.`),
+      onPast: g => g.note('r4-photo', `Yesterday's photo of the ballroom stage, at <b>8.00 pm</b> as the waltz began: curtain <b>${NAMES[YESTERDAY.curtain]}</b>, backdrop <b>${NAMES[YESTERDAY.backdrop]}</b>, lights <b>${NAMES[YESTERDAY.lights]}</b>.`),
       hotspots: [
         // big things first; the tiles and stage parts sit on top
         { id: 'orchestrion', label: g => g.flag('musicDone') ? 'Orchestrion' : 'Orchestrion (the music loops)', rect: [16, 160, 148, 192],

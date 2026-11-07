@@ -42,7 +42,7 @@ const MOMENTS = [
   { id: 'sign', caption: 'Signing the agreement', time: [8, 15], day: true },
   { id: 'breakfast', caption: 'Breakfast, table 3', time: [9, 0], day: true },
   { id: 'waltz', caption: 'The waltz', time: [8, 0], day: false },
-  { id: 'photos', caption: 'Photos in room 204', time: [10, 30], day: false },
+  { id: 'photos', caption: 'Photographing room 204', time: [10, 30], day: false },
   { id: 'six', caption: 'Taking the 6', time: [11, 40], day: false },
 ];
 const MEMORIES = [

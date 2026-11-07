@@ -168,7 +168,7 @@ function breakfastArt(g, past) {
 
   ${TABLES.map(t => table(t, g, past)).join('')}
   ${past ? `<text x="772" y="584" font-size="22" text-anchor="end" font-family="Courier New, monospace" font-weight="bold"
-    fill="#ff9a3a" opacity=".85" filter="url(#hGlow)">'6 11</text>` : ''}
+    fill="#ff9a3a" opacity=".85" filter="url(#hGlow)">6 NOV  9.00 AM</text>` : ''}
   ` + finish();
 }
 
@@ -418,7 +418,7 @@ export default {
         g.set('r3Seen');
         g.say('The breakfast room. Four tables laid for guests who never came down. Somewhere beyond the far doors, a waltz.', 6000);
       },
-      onPast: g => g.note('r3-photo', "Yesterday's breakfast, photographed. Every seat still has its plate."),
+      onPast: g => g.note('r3-photo', "Yesterday's breakfast, photographed at <b>9.00 am</b>. Every seat still has its plate."),
       hotspots: [...presentHotspots, ...pastHotspots],
     },
 
