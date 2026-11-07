@@ -16,6 +16,7 @@ import sequence from './puzzles/sequence.js';
 import assemble from './puzzles/assemble.js';
 import select from './puzzles/select.js';
 import order from './puzzles/order.js';
+import assign from './puzzles/assign.js';
 
 export const W = 800;      // logical stage width  (all art + hotspot coords use this space)
 export const H = 600;      // logical stage height
@@ -23,7 +24,7 @@ export const INV_H = 100;  // inventory bar height
 const SLOTS = 8;
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-const puzzleTypes = { keypad, dials, password, mixer, 'rotate-grid': rotateGrid, sliders, clock, sequence, assemble, select, order };
+const puzzleTypes = { keypad, dials, password, mixer, 'rotate-grid': rotateGrid, sliders, clock, sequence, assemble, select, order, assign };
 
 const DIFFICULTIES = {
   easy: 'Hints available and important objects sparkle.',

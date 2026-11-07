@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Automated playthrough of what is built so far (Room 1: Reception, Room 2: Room 204).
+  Automated playthrough of what is built so far (rooms 1-3).
     http://localhost:8000/games/hotel-lost-day/test.html?d=medium   (easy | medium | hard)
   It plays through the real hotspots, checks each one is clickable at that moment,
   and actually operates the puzzle widgets (drawer lock, torn receipt).
@@ -104,6 +104,36 @@ try {
   click('r2-room', 'chair');                    expect(A.flag('chairMoved'), 'armchair moved back');
   click('r2-room', 'service');                  expect(g.state.scene === 'r3-breakfast', 'down the service stairs');
   log.push('room 204 ✓  (notebook entries: ' + g.state.notes.length + ')');
+
+  // ROOM 3
+  g.go('r3-breakfast'); g.render();
+  if (!g.state.pastView) g.togglePast();
+  for (const seat of ['t1l', 't1r', 't2l', 't2r', 't3l', 't3r', 't4l']) click('r3-breakfast', 'past-' + seat);
+  expect(A.hasNote('seat-t3r') && A.hasNote('seat-t2l'), 'photo plates noted');
+  g.togglePast();
+  click('r3-breakfast', 'spike');               expect(A.hasNote('orders'), 'order slips read');
+  click('r3-breakfast', 'lostbox');             expect(!A.flag('seatingDone') && g.modal.hidden, 'lost property empty before seating');
+  click('r3-breakfast', 'lectern');             click('r3-lectern', 'plan'); expect(!g.modal.hidden, 'seating plan opens');
+  const token = id => q(`.asg-token[data-token="${id}"]`);
+  const seat = id => q(`.asg-slot[data-slot="${id}"]`);
+  const put = (t, s) => { token(t).click(); seat(s).dispatchEvent(new MouseEvent('click')); };
+  // everything placed, but the two at table 2 swapped: must not solve
+  put('fern0', 't1l'); put('fern1', 't1r'); put('anchor2', 't2r'); put('bell5', 't2l');
+  put('swallow4', 't3l'); put('moon3', 't3r'); put('fox6', 't4l');
+  await wait(200);                              expect(!A.flag('seatingDone'), 'swapped seats rejected');
+  seat('t2l').dispatchEvent(new MouseEvent('click')); seat('t2r').dispatchEvent(new MouseEvent('click'));   // take both back
+  put('anchor2', 't2l'); put('bell5', 't2r');
+  await wait(1300);                             expect(A.flag('seatingDone') && A.hasNote('companion'), 'seating restored, companion found');
+  click('r3-breakfast', 'lostbox');             expect(!g.modal.hidden, 'lost property puzzle opens');
+  for (const [item, guest] of [['knitting', 'vale'], ['pipe', 'orme'], ['brooch', 'ito'], ['pen', 'brandt'], ['cane', 'okonkwo']]) put(item, guest);
+  await wait(1300);                             expect(A.flag('itemsDone') && g.state.scene === 'r3-accounts', 'items returned, notes read');
+  click('r3-breakfast', 'lift');
+  click('r3-lift', 'call201');                  expect(!g.visible(hs('r3-lift', 'envelope')), 'wrong room: no envelope');
+  click('r3-lift', 'call203');                  click('r3-lift', 'envelope');
+  expect(A.has('dancecard') && g.state.scene === 'r3-letter', 'letter read, dance card in hand');
+  click('r3-breakfast', 'ballroom', 'dancecard');   expect(A.flag('ballroomOpen'), 'ballroom unlocked');
+  click('r3-breakfast', 'ballroom-open');       expect(g.state.scene === 'r4-ballroom', 'into the ballroom');
+  log.push('breakfast room ✓  (notebook entries: ' + g.state.notes.length + ')');
 } catch (e) { fail.push('ERROR ' + e.message); }
 g.clearSave();
 document.getElementById('out').textContent =

@@ -60,4 +60,15 @@ export default {
       </g>
       <rect x="66" y="70" width="26" height="18" fill="#f4efe2" transform="rotate(14 79 79)"/>`,
   },
+
+  dancecard: {
+    name: 'dance card',
+    description: 'Miss Ito\'s dance card, on a silk cord. Every dance is filled in with the same name: hers. On the back, a tiny moon.',
+    icon: `
+      <g transform="rotate(-10 50 50)">
+        <rect x="24" y="14" width="52" height="72" rx="3" fill="#f4e8f0" stroke="#8a6a7a" stroke-width="2"/>
+        <path d="M32 30 h36 M32 40 h36 M32 50 h36 M32 60 h36 M32 70 h24" stroke="#b8a0b0" stroke-width="2"/>
+        <path d="M50 14 q-10 -10 -20 -4" stroke="#c9a33b" stroke-width="2" fill="none"/>
+      </g>`,
+  },
 };

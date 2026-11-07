@@ -35,6 +35,7 @@ The hotel lets guests surrender a day they wish to forget. Yesterday you discove
 
 - **Seeds planted for later:** the receipt says "Breakfast for two, table 3" (the breakfast room meeting) and "Consent: see original agreement" (the manager's office). Your booking card says you **arrived 6 November**, which contradicts the 30-year register (the room 5 reveal). The clock sits at two minutes to eleven and the minute hand never moves.
 - Each room's three puzzles use different interaction types where possible: matching, ordering, reconstruction, and so on.
+- Miss Ito's first name is **Aiko**. She wears a moon brooch and hums a waltz behind her door; she helped you, and is trapped herself.
 
 ## Rooms
 
@@ -56,9 +57,12 @@ Hard mode: randomised departure times (including afternoon ones) and clasp shape
 3. **Your torn message.** Fragments end mid-sentence, so each piece leads into the next (5 fragments on easy, 6 on medium, 8 on hard): *"If you're reading this, it worked. The hotel took the day, but not me. Don't believe the register. The way out is behind the mirror. Lift the sheet and press the swallow."*
 - **The mirror**, uncovered, shows the room **but not you**. Pressing the brass swallow on its frame releases a hidden service door in the wallpaper, but it jams against the armchair. Dragging the chair back to where it stood yesterday is the first taste of "restoring the past", and the service stairs lead down to the breakfast room.
 
-### 3. Breakfast Room
+### 3. Breakfast Room ✅ built
 *Purpose:* reconstruct a meeting you have forgotten. *Fact:* other guests are trapped too, and one helped you.
-Restore the seating from reservations and meal orders; match guests to the items they left behind; use their accounts to identify who passed you a message, and recover it from a dumbwaiter.
+You arrive down the service stairs. Four tables are laid for guests who never came down; a waltz plays behind the ballroom doors.
+1. **Seating plan** (assign widget). The **reservation book** on the lectern gives tables (table 3: "room 204, for two", second name not given). The **kitchen order slips** on the spike give each room's order. **Yesterday's photo** shows what was eaten at each seat (click the plates to note them). Place the seven emblem cards on the plan: Vales (porridge ×2) at table 1; Orme (kippers) left and Brandt (black coffee) right at table 2; **you (boiled egg) and Miss Ito (tea with lemon)** at table 3; Okonkwo (full breakfast) at table 4. Restoring the seating **brings part of yesterday back**: the empty lost-property box fills.
+2. **Lost property** (assign widget). Match five items to their owners: knitting with a fern-pattern scarf (Vales), a pipe with an anchor (Orme; pipe smoke behind 202 in the corridor), a moon brooch (Ito), a pen with a bell clip (Brandt; a pen scratching behind 205), a fox-head cane (Okonkwo). Each holds a note its owner wrote, because they're losing days too. Orme saw Ito send an envelope **up** in the service lift; Brandt says it has one button per room; Okonkwo says she pressed her **own room's** button.
+3. **The service lift.** Call it from **203** to get Miss Ito's letter: *"The days aren't destroyed. They keep them, somewhere below the ballroom. The music opens the way. I've left you my dance card."* Wrong rooms send down small sad things. The **dance card** opens the ballroom doors.
 
 ### 4. Ballroom
 *Purpose:* learn how the hotel removes a day. *Fact:* the hotel stores surrendered days rather than destroying them.

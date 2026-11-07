@@ -2,10 +2,11 @@
 import items from './items.js';
 import room1 from './rooms/room1.js';
 import room2 from './rooms/room2.js';
+import room3 from './rooms/room3.js';
 import placeholders from './rooms/placeholders.js';
 
 // Each room module exports { id, name, hints, setup?, scenes, puzzles }.
-const rooms = [room1, room2];
+const rooms = [room1, room2, room3];
 
 export default {
   id: 'hotel-lost-day',          // also the save-game key: keep it unique per game
@@ -27,7 +28,7 @@ export default {
 
   rooms: {
     ...Object.fromEntries(rooms.map(r => [r.id, { name: r.name, hints: r.hints }])),
-    r3: { name: 'Breakfast Room' },
+    r4: { name: 'Ballroom' },
   },
   items,
   scenes: Object.assign({}, ...[...rooms, placeholders].map(r => r.scenes)),

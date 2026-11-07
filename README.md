@@ -32,7 +32,8 @@ engine/                 reusable engine, shared by every game (knows nothing abo
   engine.css
   puzzles/              puzzle widgets: keypad, dials, password, mixer, rotate-grid,
                         sliders, clock, sequence, assemble (torn documents),
-                        select (choose a set), order (arrange fragments)
+                        select (choose a set), order (arrange fragments),
+                        assign (place tokens on spots)
 games/helix-sublevel-5/
   index.html            the game's own page (a direct, shareable link)
   game.js               game definition (title, rooms, start scene, items, puzzles)
