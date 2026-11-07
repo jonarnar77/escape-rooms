@@ -6,7 +6,10 @@
 //   width, height,                       // board size in its own coordinates
 //   art,                                 // SVG markup for the board background
 //   slots: [{ id, x, y, r? }],           // clickable spots (circles)
-//   tokens: [{ id, type, label, mark }], // label: tray button content; mark: SVG drawn on the board, centred at 0,0
+//   tokens: [{ id, type, label, mark, name?, desc? }],
+//                                        // label: tray button content; mark: SVG drawn on the board, centred at 0,0;
+//                                        // name: caption under the token; desc: shown when it's selected
+//   tokenSize?: 58,
 //   solution: { slotId: type },          // tokens of the same type are interchangeable
 //   doneText?, boardWidth?: 460
 // }
@@ -21,12 +24,16 @@ export default function assign(root, cfg, ctx) {
       <svg class="asg-board" viewBox="0 0 ${cfg.width} ${cfg.height}" style="width:${cfg.boardWidth ?? 460}px"></svg>
       <div class="asg-side">
         <div class="asg-tray"></div>
+        <div class="asg-desc"></div>
         <div class="asg-count"></div>
       </div>
     </div>`;
   const board = root.querySelector('.asg-board');
   const trayEl = root.querySelector('.asg-tray');
   const count = root.querySelector('.asg-count');
+  const desc = root.querySelector('.asg-desc');
+  const size = cfg.tokenSize ?? 58;
+  if (cfg.tokens.some(t => t.name)) root.querySelector('.asg-side').style.width = `${Math.max(200, size * 2 + 24)}px`;
   const wrap = root.querySelector('.asg');
 
   function draw() {
@@ -42,12 +49,16 @@ export default function assign(root, cfg, ctx) {
     trayEl.innerHTML = '';
     tray.forEach(id => {
       const b = document.createElement('button');
-      b.className = `asg-token ${selected === id ? 'sel' : ''}`;
+      const t = byId[id];
+      b.className = `asg-token ${selected === id ? 'sel' : ''} ${t.name ? 'named' : ''}`;
       b.dataset.token = id;
-      b.innerHTML = byId[id].label;
+      b.style.width = `${size}px`;
+      b.innerHTML = `<span class="asg-pic" style="height:${size - 12}px">${t.label}</span>${t.name ? `<span class="asg-name">${t.name}</span>` : ''}`;
+      if (t.desc) b.title = t.desc;
       b.addEventListener('click', () => { if (!done) { selected = selected === id ? null : id; draw(); } });
       trayEl.append(b);
     });
+    desc.textContent = selected && byId[selected].desc ? byId[selected].desc : '';
     const n = Object.values(placed).filter(Boolean).length;
     count.textContent = done ? (cfg.doneText ?? '') : `${n} of ${cfg.slots.length} placed`;
   }

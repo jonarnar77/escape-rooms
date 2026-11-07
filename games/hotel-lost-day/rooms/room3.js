@@ -229,17 +229,29 @@ const orders = () => closeup('#2a1a10') + `
     }).join('')}
   ` + finish();
 
+// Lost-property items, drawn in a 60x60 box with their owner's emblem clearly on them.
+const em = (id, x, y, size, color) => `<g transform="translate(${x},${y}) scale(${size / 40})" style="color:${color}">${EMBLEMS[id]}</g>`;
 const ITEM_ICONS = {
-  knitting: `<path d="M6 30 q14 -10 28 0 v6 q-14 -8 -28 0 Z" fill="#6a8a4a"/><path d="M10 26 l20 -20 M14 28 l20 -20" stroke="#c9a33b" stroke-width="2"/>
-    <g transform="translate(14,26) scale(.3)" style="color:#2a4a2a">${EMBLEMS.fern}</g>`,
-  pipe: `<path d="M6 20 h18 q4 0 4 4 v8 q0 6 -6 6 h-2 q-6 0 -6 -6 v-6 h-8 Z" fill="#6a3a1a"/><path d="M6 20 l-2 2" stroke="#2a1a0a" stroke-width="3"/>
-    <g transform="translate(16,26) scale(.25)" style="color:#c9a33b">${EMBLEMS.anchor}</g>`,
-  brooch: `<circle cx="20" cy="20" r="14" fill="#c8c8d0" stroke="#8a8a98" stroke-width="2"/><g transform="translate(9,9) scale(.55)" style="color:#4a4a5a">${EMBLEMS.moon}</g>`,
-  pen: `<rect x="17" y="4" width="6" height="28" rx="2" fill="#1a1a2a"/><path d="M17 32 l3 6 l3 -6 Z" fill="#c9a33b"/>
-    <g transform="translate(22,6) scale(.28)" style="color:#c9a33b">${EMBLEMS.bell}</g>`,
-  cane: `<path d="M24 38 V12" stroke="#5a3a1a" stroke-width="4"/><g transform="translate(13,2) scale(.45)" style="color:#c9a33b">${EMBLEMS.fox}</g>`,
+  knitting: `<circle cx="18" cy="40" r="14" fill="#6a8a4a"/><path d="M6 36 q12 -6 24 0 M6 42 q12 -6 24 4 M10 30 q10 6 18 18" stroke="#4a6a2a" stroke-width="2" fill="none"/>
+    <path d="M26 56 L50 6 M32 58 L56 12" stroke="#c9a33b" stroke-width="3" stroke-linecap="round"/>
+    <rect x="30" y="28" width="28" height="28" rx="4" fill="#c8e0a8" stroke="#4a6a2a" stroke-width="2"/>${em('fern', 32, 30, 24, '#2a4a1a')}`,
+  pipe: `<path d="M3 20 h26 v7 h-26 Z" fill="#3a2010"/><path d="M26 14 h26 v22 q0 18 -13 18 q-13 0 -13 -18 Z" fill="#6a3a1a" stroke="#3a2010" stroke-width="2"/>
+    <ellipse cx="39" cy="14" rx="13" ry="4" fill="#2a1408"/><rect x="26" y="24" width="26" height="16" fill="#d8b860"/>${em('anchor', 31, 24, 16, '#3a2a10')}
+    <path d="M36 8 q-4 -5 1 -8 M44 8 q5 -5 0 -8" stroke="#b8b8c0" stroke-width="1.5" fill="none" opacity=".8"/>`,
+  brooch: `<circle cx="30" cy="30" r="25" fill="#d8d8e0" stroke="#8a8a98" stroke-width="3"/><circle cx="30" cy="30" r="20" fill="#eeeef4"/>${em('moon', 12, 12, 36, '#4a4a6a')}`,
+  pen: `<g transform="rotate(35 30 30)"><rect x="25" y="2" width="10" height="44" rx="3" fill="#1a1a2a"/><path d="M25 46 h10 l-5 12 Z" fill="#c9a33b"/>
+    <rect x="34" y="6" width="5" height="20" rx="2" fill="#c9a33b"/></g>${em('bell', 36, 2, 20, '#c9a33b')}
+    <circle cx="12" cy="50" r="5" fill="#1a1a3a" opacity=".7"/>`,
+  cane: `<path d="M33 58 V24" stroke="#5a3a1a" stroke-width="6" stroke-linecap="round"/><rect x="29" y="22" width="8" height="6" fill="#c9a33b"/>${em('fox', 12, 0, 36, '#c9a33b')}`,
 };
-const itemSvg = id => `<svg viewBox="0 0 40 40">${ITEM_ICONS[id]}</svg>`;
+const ITEM_INFO = {
+  knitting: ['Knitting', 'Knitting: a half-finished scarf, worked in a pattern of little ferns.'],
+  pipe: ['Pipe', 'Pipe: the brass band is engraved with a small anchor. It smells like the tobacco behind door 202.'],
+  brooch: ['Brooch', 'Brooch: a silver crescent moon.'],
+  pen: ['Fountain pen', 'Fountain pen: its clip is shaped like a little bell. You heard one scratching behind door 205.'],
+  cane: ['Walking cane', 'Walking cane: the handle is a carved fox head.'],
+};
+const itemSvg = id => `<svg viewBox="0 0 60 60">${ITEM_ICONS[id]}</svg>`;
 const ITEM_OWNERS = { knitting: 'vale', pipe: 'orme', brooch: 'ito', pen: 'brandt', cane: 'okonkwo' };
 
 function guestBoardArt() {
@@ -470,14 +482,18 @@ export default {
 
     'r3-items': {
       type: 'assign',
-      prompt: 'Things left at breakfast yesterday. Click an item, then the guest it belongs to.',
+      prompt: 'Things left at breakfast yesterday. Click an item to look at it, then click the guest it belongs to.',
       width: 460, height: 230,
       art: guestBoardArt(),
       slots: GUESTS.map((gst, i) => ({ id: gst.id, x: 46 + i * 92, y: 160, r: 26 })),
+      tokenSize: 84,
+      boardWidth: 430,
       tokens: Object.keys(ITEM_ICONS).map(id => ({
         id, type: ITEM_OWNERS[id],
         label: itemSvg(id),
-        mark: `<circle r="22" fill="#efe6cf"/><g transform="translate(-18,-18) scale(.9)">${ITEM_ICONS[id]}</g>`,
+        name: ITEM_INFO[id][0],
+        desc: ITEM_INFO[id][1],
+        mark: `<circle r="25" fill="#efe6cf"/><g transform="translate(-21,-21) scale(.7)">${ITEM_ICONS[id]}</g>`,
       })),
       solution: Object.fromEntries(GUESTS.map(gst => [gst.id, gst.id])),
       doneText: 'Each one returned.',
