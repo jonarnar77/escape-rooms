@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Automated playthrough of what is built so far (rooms 1-3).
+  Automated playthrough of what is built so far (rooms 1-4).
     http://localhost:8000/games/hotel-lost-day/test.html?d=medium   (easy | medium | hard)
   It plays through the real hotspots, checks each one is clickable at that moment,
   and actually operates the puzzle widgets (drawer lock, torn receipt).
@@ -137,6 +137,38 @@ try {
   click('r3-breakfast', 'ballroom');            expect(A.flag('ballroomOpen'), 'ballroom unlocked just by clicking, card in hand');
   click('r3-breakfast', 'ballroom-open');       expect(g.state.scene === 'r4-ballroom', 'into the ballroom');
   log.push('breakfast room ✓  (notebook entries: ' + g.state.notes.length + ')');
+
+  // ROOM 4
+  expect(A.has('dancecard'), 'dance card kept after opening the door');
+  g.examine('dancecard');                       expect(g.state.scene === 'r4-dancecard' && A.hasNote('dancecard'), 'dance card back read');
+  // shortcuts must not work: floor before the music, levers before the floor
+  click('r4-ballroom', 'tile-B2');              expect(!(A.get('tiles') ?? []).length, 'floor inert before the music');
+  click('r4-ballroom', 'controls');             click('r4-panel', 'lever-curtain');
+  expect(!A.get('stage'), 'levers locked before the floor');
+  click('r4-ballroom', 'orchestrion');          click('r4-orchestrion', 'roll'); expect(!g.modal.hidden, 'roll puzzle opens');
+  const piece = id => q(`.ord-pile .ord-frag[data-id="${id}"]`);
+  ['p0', 'p2', 'p1', 'p3', 'p4'].forEach(id => piece(id).click());
+  expect(q('.ord.err') && !A.flag('musicDone'), 'wrong roll order rejected');
+  ['p4', 'p3', 'p1', 'p2'].forEach(id => q(`.ord-line .ord-frag[data-id="${id}"]`).click());
+  ['p1', 'p2', 'p3', 'p4'].forEach(id => piece(id).click());
+  await wait(1300);                             expect(A.flag('musicDone') && g.state.scene === 'r4-ballroom', 'waltz plays to the end');
+  // floor: a wrong extra tile first, then the waltz
+  for (const t of ['B2', 'B3', 'B4', 'C1', 'C5', 'D1', 'A1']) click('r4-ballroom', 'tile-' + t);
+  expect(!A.flag('floorDone'), 'wrong tile set does not open');
+  click('r4-ballroom', 'tile-A1'); click('r4-ballroom', 'tile-D5');
+  expect(A.flag('floorDone'), 'waltz steps accepted');
+  // stage: cycle levers to yesterday (curtain open, sea, blue)
+  g.togglePast(); click('r4-ballroom', 'past-stage'); g.togglePast();
+  expect(A.hasNote('r4-photo-click'), "yesterday's stage noted");
+  click('r4-ballroom', 'controls');
+  click('r4-panel', 'lever-curtain'); click('r4-panel', 'lever-curtain');      // closed > half > open
+  click('r4-panel', 'lever-backdrop');                                         // garden > sea
+  expect(!A.flag('trapOpen'), 'not yet: lights still warm');
+  click('r4-panel', 'lever-lights');                                           // warm > blue
+  expect(A.flag('trapOpen'), 'stage matches yesterday: trap opens');
+  click('r4-ballroom', 'trap-open');            expect(g.state.scene === 'r4-archive' && A.hasNote('archive'), 'into the archive');
+  click('r4-archive', 'manager');               expect(g.state.scene === 'r5-office', "to the manager's office");
+  log.push('ballroom ✓  (notebook entries: ' + g.state.notes.length + ')');
 } catch (e) { fail.push('ERROR ' + e.message); }
 g.clearSave();
 document.getElementById('out').textContent =

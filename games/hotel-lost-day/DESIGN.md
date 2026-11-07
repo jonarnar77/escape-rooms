@@ -64,9 +64,13 @@ You arrive down the service stairs. Four tables are laid for guests who never ca
 2. **Lost property** (assign widget). Match five items to their owners: knitting with a fern-pattern scarf (Vales), a pipe with an anchor (Orme; pipe smoke behind 202 in the corridor), a moon brooch (Ito), a pen with a bell clip (Brandt; a pen scratching behind 205), a fox-head cane (Okonkwo). Each holds a note its owner wrote, because they're losing days too. Orme saw Ito send an envelope **up** in the service lift; Brandt says it has one button per room; Okonkwo says she pressed her **own room's** button.
 3. **The service lift.** Call it from **203** to get Miss Ito's letter: *"The days aren't destroyed. They keep them, somewhere below the ballroom. The music opens the way. I've left you my dance card."* Wrong rooms send down small sad things. The **dance card** opens the ballroom doors.
 
-### 4. Ballroom
+### 4. Ballroom ✅ built
 *Purpose:* learn how the hotel removes a day. *Fact:* the hotel stores surrendered days rather than destroying them.
-Reconstruct the order of an interrupted performance; reproduce a dance-floor pattern with clickable tiles; operate the stage apparatus to reveal a concealed memory archive.
+Chandeliers, an empty dance floor, and a waltz looping its first eight bars. The steps chain strictly: music, then floor, then stage.
+1. **The interrupted waltz.** The orchestrion's paper roll is cut into five pieces (order widget). A dotted melody line runs across the roll, so each piece's line ends where the next begins; the title piece ("Waltz No. 6") is first and "FINE" last. The hand-over heights were tuned to be clearly different. Restored, the waltz plays to the end for the first time and the dance floor clicks awake.
+2. **The dance floor** (inert until the music plays). 5×5 tiles drawn in perspective, letters A–E along the front edge and numbers 1–5 up the side; click tiles to step on them. Miss Ito's dance card (kept after opening the door; Examine shows both sides) lists her steps: *Waltz: B2 B3 B4 C1 C5 D1 D5* (a crescent moon), plus Foxtrot and Tango decoys. Exactly the waltz tiles unlock the stage controls.
+3. **The stage** (levers locked until the floor is solved). Levers for curtain (closed / half / open), backdrop (garden / sea / city / night) and lights (warm / blue+stars / red+stripes / off) change the stage live; the lights differ by pattern as well as colour, so the sepia photo stays readable. Match **yesterday's photo** (curtain open, sea in rain, blue starry lights) and the under-stage TRAP hatch opens.
+- **The archive:** shelves of glass jars, each with a glowing light and a date/room label. One reads **6 NOV · 204** and is sealed: "Release on the Manager's authority only." A door marked **MANAGER** leads on.
 
 ### 5. Manager's Office
 *Purpose:* discover the hotel's deception and your previous attempt. *Fact:* your thirty annual visits are fabricated; you arrived yesterday, and the hotel has been trying to convince you that you belong here.

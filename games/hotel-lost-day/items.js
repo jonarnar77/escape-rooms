@@ -63,7 +63,11 @@ export default {
 
   dancecard: {
     name: 'dance card',
-    description: 'Miss Ito\'s dance card, on a silk cord. Every dance is filled in with the same name: hers. On the back, a tiny moon.',
+    description: 'Miss Ito\'s dance card, on a silk cord. Every dance is filled in with the same name: hers. Something is written on the back.',
+    examine: g => {
+      if (!g.scene.endsWith('dancecard')) g.set('dancecardReturn', g.scene);
+      g.go('r4-dancecard');
+    },
     icon: `
       <g transform="rotate(-10 50 50)">
         <rect x="24" y="14" width="52" height="72" rx="3" fill="#f4e8f0" stroke="#8a6a7a" stroke-width="2"/>

@@ -344,9 +344,8 @@ const letter = () => deskTop() + `
 const seatRect = (t, side) => [side === 'l' ? t.x - 62 : t.x + 18, t.y - 22, 44, 30];
 
 function openBallroom(g) {
-  g.take('dancecard');
   g.set('ballroomOpen');
-  g.say('You slide Miss Ito\'s dance card into the brass slot. Somewhere a bolt draws back, and the waltz grows louder.');
+  g.say('You slide Miss Ito\'s dance card into the brass slot. Somewhere a bolt draws back, the slot hands the card back, and the waltz grows louder.');
 }
 
 const presentHotspots = [
