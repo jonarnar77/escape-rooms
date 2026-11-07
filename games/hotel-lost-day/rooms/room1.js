@@ -193,7 +193,7 @@ const reception = g => {
     ${symAt(EMBLEMS, gst.emblem, 282, 164 + i * 13, 10, '#2a3a5a')}
     <rect x="298" y="${167 + i * 13}" width="${gst.name ? 24 : 0}" height="2" fill="#8a7a5a"/>
     ${gst.name ? '' : `<circle cx="306" cy="${168 + i * 13}" r="5" fill="#1a1208" opacity=".8"/>`}`).join('')}
-  ${luggagePile()}
+  <g transform="translate(10,0)">${luggagePile()}</g>
 
   ${wallClock(375, 92, 24, 10, 58)}
   ${keyRack()}
@@ -446,7 +446,7 @@ export default {
             g.say('You push through the front doors into a quiet hotel corridor. A few steps on, you are back at reception. The rain has not changed its rhythm.', 6000);
           } },
         { id: 'chart', label: 'Room chart', rect: [246, 136, 92, 118], go: 'r1-chart', sparkle: g => !g.flag('knowsRoom') },
-        { id: 'luggage', label: 'Luggage', rect: [240, 330, 100, 142], go: 'r1-luggage', sparkle: g => g.flag('knowsRoom') && !g.flag('drawerOpen') },
+        { id: 'luggage', label: 'Luggage', rect: [252, 334, 96, 138], go: 'r1-luggage', sparkle: g => g.flag('knowsRoom') && !g.flag('drawerOpen') },
         { id: 'clock', label: 'Clock', circle: [375, 92, 30],
           say: 'Two minutes to eleven. Checkout is at eleven. The second hand moves; the minute hand never seems to.' },
         { id: 'rack', label: 'Key rack', rect: [416, 108, 152, 128],

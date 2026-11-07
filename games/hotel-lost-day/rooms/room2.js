@@ -180,7 +180,7 @@ function roomArt(g, past) {
   <!-- bedside table, lamp, telephone -->
   <rect x="534" y="362" width="62" height="100" fill="url(#woodG)" stroke="#1e120a" stroke-width="2"/>
   <rect x="528" y="356" width="74" height="8" fill="#6a4a2e"/>
-  ${lamp(552, 310, 0.55)}
+  ${lamp(552, 356 - 46 * 0.55, 0.55)}
   <path d="M570 352 q12 -8 24 0 l-2 4 h-20 Z" fill="#1a1a1a"/><rect x="572" y="342" width="20" height="6" rx="3" fill="#1a1a1a"/>
 
   <!-- armchair: by the window yesterday, against the wall today (in front of the service door) -->
@@ -204,42 +204,68 @@ function roomArt(g, past) {
   ` + finish();
 }
 
-// Corridor doors in perspective: odd rooms on the left wall, even on the right.
+// The corridor, drawn in true one-point perspective: every point is a 3D position
+// projected toward a single vanishing point, so doors shrink and space out correctly.
+// World units: corridor 2 wide (walls at X = ±1), floor Y = -0.75, ceiling Y = +0.75,
+// camera at z = 0 looking down the corridor; the far wall is at z = 6.
+const VP = { x: 400, y: 300 }, F = 400;
+const P = (X, Y, z) => [Math.round(VP.x + (F * X) / z), Math.round(VP.y - (F * Y) / z)];
+const FLOOR = -0.75, CEIL = 0.75, FAR = 6, DOOR_TOP = 0.38, DOOR_W = 0.55;
+
+// odd rooms on the left wall, even rooms on the right, staggered down the corridor
 const DOORS = [
-  { room: '201', side: 'L', i: 0 }, { room: '202', side: 'R', i: 0 },
-  { room: '203', side: 'L', i: 1 }, { room: '204', side: 'R', i: 1 },
-  { room: '205', side: 'L', i: 2 }, { room: '206', side: 'R', i: 2 },
+  { room: '201', side: 'L', z: 1.35 }, { room: '202', side: 'R', z: 1.95 },
+  { room: '203', side: 'L', z: 2.85 }, { room: '204', side: 'R', z: 3.45 },
+  { room: '205', side: 'L', z: 4.35 }, { room: '206', side: 'R', z: 4.95 },
 ];
 function doorGeom(d) {
-  const [x0, x1] = d.side === 'L' ? [[60, 170], [200, 260], [280, 316]][d.i] : [[740, 630], [600, 540], [520, 484]][d.i];
-  const dist = x => (d.side === 'L' ? x - 60 : 740 - x);
-  const top = x => Math.round(130 + dist(x) * 0.32), bot = x => Math.round(520 - dist(x) * 0.42);
-  return { x0, x1, top, bot, poly: [x0, top(x0), x1, top(x1), x1, bot(x1), x0, bot(x0)] };
+  const X = d.side === 'L' ? -1 : 1, z0 = d.z, z1 = d.z + DOOR_W;
+  const corners = [P(X, DOOR_TOP, z0), P(X, DOOR_TOP, z1), P(X, FLOOR, z1), P(X, FLOOR, z0)];
+  const frame = [P(X, DOOR_TOP + 0.05, z0 - 0.05), P(X, DOOR_TOP + 0.05, z1 + 0.05), P(X, FLOOR, z1 + 0.05), P(X, FLOOR, z0 - 0.05)];
+  return { X, z0, z1, corners, frame, poly: corners.flat() };
 }
 
 const corridor = g => {
   const emblem = { 201: 'fern', 202: 'anchor', 203: 'moon', 204: 'swallow', 205: 'bell', 206: 'fox' };
+  const poly = pts => pts.map(p => p.join(',')).join(' ');
   const door = d => {
-    const { x0, x1, top, bot, poly } = doorGeom(d);
-    const pts = poly.join(' ');
-    const cx = (x0 + x1) / 2, cy = (top(cx) + bot(cx)) / 2 - 40, s = Math.abs(x1 - x0) / 110;
-    return `<polygon points="${pts}" fill="#4a2e1a" stroke="#1e120a" stroke-width="3"/>
-      <rect x="${cx - 18 * s}" y="${cy - 14 * s}" width="${36 * s}" height="${28 * s}" fill="url(#brassG)"/>
-      ${symAt(EMBLEMS, emblem[d.room], cx - 10 * s, cy - 12 * s, 20 * s, '#2a1c10')}
-      <text x="${cx}" y="${cy + 30 * s}" font-size="${16 * s}" text-anchor="middle" ${serif} fill="#f0d890">${d.room}</text>`;
+    const { X, z0, z1, corners, frame } = doorGeom(d);
+    const zm = (z0 + z1) / 2;
+    const [px, py] = P(X, 0.12, zm);               // brass number plate, at eye level on the door
+    const s = 0.11 * F / zm;                       // plate size shrinks with distance
+    const [hx, hy] = P(X, -0.2, d.side === 'L' ? z1 - 0.07 : z0 + 0.07);
+    const panel = (y0, y1) => poly([P(X, y0, z0 + 0.08), P(X, y0, z1 - 0.08), P(X, y1, z1 - 0.08), P(X, y1, z0 + 0.08)]);
+    return `
+      <polygon points="${poly(frame)}" fill="#2e1c10"/>
+      <polygon points="${poly(corners)}" fill="#4a2e1a" stroke="#1e120a" stroke-width="1.5"/>
+      <polygon points="${panel(0.3, 0.02)}" fill="none" stroke="#2e1c10" stroke-width="${Math.max(1, s / 14)}"/>
+      <polygon points="${panel(-0.08, -0.66)}" fill="none" stroke="#2e1c10" stroke-width="${Math.max(1, s / 14)}"/>
+      <rect x="${px - s * 0.5}" y="${py - s * 0.45}" width="${s}" height="${s * 0.9}" rx="${s * 0.08}" fill="url(#brassG)"/>
+      ${symAt(EMBLEMS, emblem[d.room], px - s * 0.3, py - s * 0.4, s * 0.6, '#2a1c10')}
+      <text x="${px}" y="${py + s * 0.85}" font-size="${s * 0.42}" text-anchor="middle" ${serif} fill="#f0d890">${d.room}</text>
+      <circle cx="${hx}" cy="${hy}" r="${Math.max(1.5, s * 0.07)}" fill="url(#brassG)"/>`;
   };
+  // wall sconces between the doors, with their pools of light
+  const sconces = [2.4, 3.9, 5.4].flatMap(z => [-1, 1].map(X => {
+    const [x, y] = P(X, 0.5, z), r = 0.3 * F / z;
+    return `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#lampGlow)"/>
+      <rect x="${x - r * 0.12}" y="${y - r * 0.05}" width="${r * 0.24}" height="${r * 0.28}" fill="#f4dca0" opacity=".9"/>`;
+  })).join('');
+  const [nl, nt] = P(-1, CEIL, 1), [fl, ft] = P(-1, CEIL, FAR), [, fb] = P(-1, FLOOR, FAR), [nr] = P(1, CEIL, 1), [fr] = P(1, CEIL, FAR);
+  const runner = poly([P(-0.45, FLOOR, 1), P(0.45, FLOOR, 1), P(0.45, FLOOR, FAR), P(-0.45, FLOOR, FAR)]);
   return `${DEFS}${ROOM_DEFS}
   <rect width="800" height="600" fill="#1a100a"/>
-  <polygon points="0,0 800,0 520,230 280,230" fill="#2e1c10"/>
-  <polygon points="0,0 280,230 280,370 0,600" fill="url(#damask)"/>
-  <polygon points="800,0 520,230 520,370 800,600" fill="url(#damask)"/>
-  <polygon points="0,600 280,370 520,370 800,600" fill="url(#carpet)"/>
-  <polygon points="140,600 330,370 470,370 660,600" fill="#5a1a22"/>
-  <rect x="280" y="230" width="240" height="140" fill="#24160c"/>
-  <rect x="370" y="270" width="60" height="100" fill="#3a2414"/>
-  <circle cx="400" cy="250" r="40" fill="url(#lampGlow)"/>
+  <polygon points="${nl},${nt} ${nr},${nt} ${fr},${ft} ${fl},${ft}" fill="#2e1c10"/>
+  <polygon points="${nl},${nt} ${fl},${ft} ${fl},${fb} ${nl},600" fill="url(#damask)"/>
+  <polygon points="${nr},${nt} ${fr},${ft} ${fr},${fb} ${nr},600" fill="url(#damask)"/>
+  <polygon points="${nl},600 ${fl},${fb} ${fr},${fb} ${nr},600" fill="url(#carpet)"/>
+  <polygon points="${runner}" fill="#5a1a22"/>
+  ${[1.6, 2.6, 3.6, 4.6].map(z => { const [a, y] = P(-1, CEIL, z), [b] = P(1, CEIL, z); return `<line x1="${a}" y1="${y}" x2="${b}" y2="${y}" stroke="#1e120a" stroke-width="${8 / z}"/>`; }).join('')}
+  <rect x="${fl}" y="${ft}" width="${fr - fl}" height="${fb - ft}" fill="#24160c"/>
+  <rect x="${400 - 16}" y="${fb - 46}" width="32" height="46" fill="#3a2414"/>
+  <circle cx="400" cy="${ft + 22}" r="26" fill="url(#lampGlow)"/>
   ${DOORS.map(door).join('')}
-  ${[[30, 150], [770, 150], [230, 205], [570, 205]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="${x < 100 || x > 700 ? 60 : 30}" fill="url(#lampGlow)"/>`).join('')}
+  ${sconces}
   ` + finish();
 };
 
