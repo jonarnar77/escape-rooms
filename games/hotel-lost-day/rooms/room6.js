@@ -126,6 +126,11 @@ const MOMENT_ICONS = {
   key: `<circle cx="12" cy="20" r="7" fill="none" stroke="#2a1c10" stroke-width="3"/><path d="M19 20 h16 M30 20 v6 M34 20 v4" stroke="#2a1c10" stroke-width="3"/>`,
   bell: EMBLEMS.bell.replace(/currentColor/g, '#2a1c10'),
 };
+// captions under the machine's buttons: the moments match the photographs; key and bell are decoys
+const SEQ_NAMES = {
+  ...Object.fromEntries(MOMENTS.map(m => [m.id, m.caption])),
+  key: 'Collecting the room key', bell: 'Ringing for service',
+};
 const iconSvg = id => `<svg viewBox="0 0 40 40">${MOMENT_ICONS[id]}</svg>`;
 
 // ---------------------------------------------------------------- main scene
@@ -432,7 +437,7 @@ export default {
     'r6-reverse': {
       type: 'sequence',
       prompt: 'TO REVERSE A CHECKOUT: ENTER THE DAY BACKWARDS, LAST MOMENT FIRST.',
-      buttons: ['photos', 'key', 'arrive', 'six', 'breakfast', 'bell', 'sign', 'waltz'].map(id => ({ id, label: iconSvg(id), title: id })),
+      buttons: ['photos', 'key', 'arrive', 'six', 'breakfast', 'bell', 'sign', 'waltz'].map(id => ({ id, label: iconSvg(id), name: SEQ_NAMES[id] })),
       solution: [...MOMENTS].reverse().map(m => m.id),
       columns: 4,
       okText: 'REVERSING',

@@ -17,3 +17,4 @@ body { font-family: Georgia, "Times New Roman", serif; color: #efe6cf; }
 .panel { background: #24160c; border-color: #8a6a3a; }
 .puzzle-prompt { color: #d8c8a0; font-family: Georgia, serif; font-style: italic; }
 .seq-status { font-family: Georgia, serif; }
+.seq-slot { background: #efe6cf; border-color: #8a7a4a; }
