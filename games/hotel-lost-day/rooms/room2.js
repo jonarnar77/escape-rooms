@@ -359,7 +359,12 @@ const roomHotspots = [
     label: { painting: 'Painting', chair: 'Armchair', mirror: 'Mirror', flowers: 'Roses' }[id],
     rect: { painting: [322, 98, 156, 120], chair: [640, 340, 102, 132], mirror: [56, 108, 98, 214], flowers: [104, 270, 56, 56] }[id],
     sparkle: g => !seen(g, id),
-    click: g => { g.note(`diff-${id}`, DIFF_NOTES[id]); g.say(DIFF_NOTES[id].replace(/<\/?b>/g, '')); },
+    click: g => {
+      g.note(`diff-${id}`, DIFF_NOTES[id]);
+      if (id === 'mirror' && g.flag('messageDone') && !g.flag('sheetLifted'))
+        return g.say('In yesterday\'s photo the mirror is still uncovered. To lift the sheet, switch back to Today (top right).', 6000);
+      g.say(DIFF_NOTES[id].replace(/<\/?b>/g, ''));
+    },
   })),
   { id: 'past-room', era: 'past', label: 'Yesterday', rect: [250, 250, 300, 154],
     say: 'The same room, yesterday. The date stamp in the corner glows orange: 6 November.' },

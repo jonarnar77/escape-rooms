@@ -261,7 +261,8 @@ export class Game {
     this.hintBtn.hidden = this.api.difficulty !== 'easy';
 
     const room = this.data.rooms?.[scene.room];
-    this.hud.textContent = room ? room.name : '';
+    const pastCaption = (this.data.pastLabels?.caption) ?? "yesterday's photo";
+    this.hud.textContent = (room ? room.name : '') + (this.viewingPast ? ` · ${pastCaption}` : '');
     this.renderInventory();
     this.updateLabel();
   }
