@@ -2,10 +2,10 @@
 // Purpose: discover the hotel's deception and your previous attempt.
 // Fact: your thirty annual visits are fabricated; you arrived yesterday.
 //
-//   1. Balance the books: the ledger claims 36 surrendered days held for the guests in
-//      residence. Count the days actually billed on the six guest folios (your folio
-//      says FIRST STAY) and enter the verified total on the adding machine.
-//      -> "UNSUPPORTED: 29 days, ROOM 204"; the cash drawer opens: the filing key.
+//   1. Yesterday's photo of the office (stamped 11.35 pm, just before you revoked) shows the
+//      portrait swung open like a door, with the filing key on a hook behind it. Today the
+//      portrait is shut; once you've seen the photo, swing it aside and take the key.
+//      The ledger (30 days "annual, since 1995", "the guest must believe it") is story only.
 //   2. The filing system (needs the key): a card catalogue, rows by guest emblem,
 //      columns by month symbol (legend card). Swallow + November -> your original
 //      agreement, your own revocation from last night, and the brass "6" tile.
@@ -13,8 +13,7 @@
 //      set the wheels to yesterday (the newspaper says today is Friday 7 November):
 //      THU 6 NOV -> the wall behind the calendar opens onto the lost day.
 //
-// Difficulty: EASY folios state their totals; MEDIUM you count the lines;
-// HARD adds a voided line and an extra one, changing the total.
+// The photo also shows the calendar as it was: THU 6 NOV (a second route to step 3).
 
 import { DEFS, closeup, deskTop, finish, rainWindow, lamp, hand, serif } from '../art/common.js';
 import { EMBLEMS, symAt } from '../art/symbols.js';
@@ -30,8 +29,6 @@ const FOLIOS = [
   { room: '206', emblem: 'fox', name: 'Mr K. Okonkwo', lines: ['22 Aug 1999: a goodbye'], hardLines: ['5 Feb 2016: a name'] },
 ];
 const linesOf = (f, g) => g.difficulty === 'hard' ? [...f.lines, ...(f.hardLines ?? [])] : f.lines;
-const counted = (f, g) => linesOf(f, g).filter(l => !l.includes('VOID')).length;
-const verifiedTotal = g => FOLIOS.reduce((a, f) => a + counted(f, g), 0);
 // the ledger's claim: 30 for you ("annual since 1995"), and on hard it also counts the void line
 const claimedFor = (f, g) => f.room === '204' ? 30 : linesOf(f, g).length;
 const claimedTotal = g => FOLIOS.reduce((a, f) => a + claimedFor(f, g), 0);
@@ -62,8 +59,8 @@ const dayList = g => Array.from({ length: 31 }, (_, i) => String(i + 1)).filter(
 
 // ---------------------------------------------------------------- art
 
-function calendarBox(g, x, y, s = 1) {
-  const done = g.flag('calendarDone');
+function calendarBox(g, x, y, s = 1, past = false) {
+  const done = past || g.flag('calendarDone');
   const [wd, d, m] = done ? ['THU', '6', 'NOV'] : ['FRI', '7', 'NOV'];
   return `<g transform="translate(${x},${y}) scale(${s})">
     <rect width="150" height="170" rx="10" fill="url(#brassG)" stroke="#5a4214" stroke-width="3"/>
@@ -76,9 +73,10 @@ function calendarBox(g, x, y, s = 1) {
   </g>`;
 }
 
-function officeArt(g) {
-  const wallOpen = g.flag('calendarDone');
-  const drawerOpen = g.flag('booksDone');
+function officeArt(g, past = false) {
+  const wallOpen = !past && g.flag('calendarDone');
+  const portraitOpen = past || g.flag('portraitOpen');
+  const keyThere = past || (g.flag('portraitOpen') && !g.has('filekey') && !g.flag('filesUnlocked'));
   return `${DEFS}
   <rect width="800" height="600" fill="#000"/>
   <rect width="800" height="330" fill="url(#damask)"/>
@@ -95,13 +93,22 @@ function officeArt(g) {
     <polygon points="318,70 300,80 300,456 318,466" fill="url(#woodG)" stroke="#1e120a"/>
     <text x="400" y="110" font-size="13" text-anchor="middle" ${serif} letter-spacing="3" fill="#f0d890">6 NOVEMBER</text>
   ` : `<rect x="318" y="70" width="164" height="396" fill="none" stroke="#1e120a" stroke-width="1.5" opacity=".5"/>`}
-  ${wallOpen ? '' : calendarBox(g, 325, 84)}
+  ${wallOpen ? '' : calendarBox(g, 325, 84, 1, past)}
 
-  <!-- portrait with the face painted over -->
+  <!-- portrait with the face painted over; it swings open like a door -->
+  ${portraitOpen ? `
+    <rect x="204" y="84" width="88" height="116" fill="#1a100a" stroke="#0e0804" stroke-width="2"/>
+    <circle cx="248" cy="108" r="3" fill="url(#brassG)"/>
+    ${keyThere ? `<path d="M248 108 v10" stroke="#c9a33b" stroke-width="1.5"/><circle cx="248" cy="124" r="6" fill="none" stroke="url(#brassG)" stroke-width="3"/>
+      <path d="M248 130 v22 M248 144 h6 M248 150 h5" stroke="url(#brassG)" stroke-width="3"/>
+      <rect x="236" y="160" width="24" height="12" fill="#efe6cf"/><text x="248" y="169" font-size="7" text-anchor="middle" ${serif} fill="#2a1c10">FILES</text>` : ''}
+    <polygon points="200,80 158,94 158,212 200,204" fill="url(#brassG)"/>
+    <polygon points="196,88 164,99 164,204 196,198" fill="#3a2a1e"/>
+  ` : `
   <rect x="200" y="80" width="96" height="124" fill="url(#brassG)"/>
   <rect x="210" y="90" width="76" height="104" fill="#3a2a1e"/>
   <path d="M222 194 q26 -40 52 0 Z" fill="#1e1410"/><circle cx="248" cy="134" r="18" fill="#6a5040"/>
-  <path d="M228 120 q20 -10 40 4 q-6 20 -20 26 q-16 -6 -20 -30 Z" fill="#4a3a2e"/>
+  <path d="M228 120 q20 -10 40 4 q-6 20 -20 26 q-16 -6 -20 -30 Z" fill="#4a3a2e"/>`}
   <rect x="230" y="208" width="36" height="10" fill="#2a1c10"/>
 
   <!-- card catalogue (filing system) -->
@@ -120,9 +127,6 @@ function officeArt(g) {
   <rect x="232" y="342" width="366" height="124" fill="url(#woodG)" stroke="#1e120a" stroke-width="2"/>
   <rect x="380" y="352" width="70" height="20" fill="#2a1c10"/>
   <text x="415" y="366" font-size="8" text-anchor="middle" ${serif} letter-spacing="1" fill="#f0d890">THE MANAGER</text>
-  <!-- folio tray -->
-  <rect x="240" y="312" width="58" height="16" fill="#3a2414"/>
-  ${[0, 1, 2].map(i => `<rect x="${244 + i * 3}" y="${300 - i * 3}" width="44" height="14" fill="#f4efe2" stroke="#b8a888" transform="rotate(${i * 4 - 4} 266 306)"/>`).join('')}
   <!-- ledger -->
   <polygon points="306,326 356,320 358,308 310,312" fill="#efe6cf"/><polygon points="356,320 404,326 402,312 358,308" fill="#e6dcc0"/>
   <path d="M314 316 l36 -3 M314 320 l36 -3 M362 312 l34 3 M362 316 l34 3" stroke="#8a7a5a" stroke-width="1"/>
@@ -131,7 +135,6 @@ function officeArt(g) {
   ${Array.from({ length: 10 }, (_, i) => `<circle cx="${428 + (i % 5) * 9}" cy="${306 + Math.floor(i / 5) * 9}" r="3" fill="#d8d0c0"/>`).join('')}
   <rect x="476" y="302" width="12" height="20" rx="2" fill="#a8322a"/>
   <rect x="452" y="282" width="18" height="16" fill="#f4efe2"/>
-  ${drawerOpen ? `<rect x="416" y="328" width="82" height="14" fill="#1a1a1e"/><rect x="420" y="332" width="74" height="8" fill="#3a3a40"/>` : ''}
   <!-- newspaper -->
   <polygon points="512,326 590,322 586,302 508,306" fill="#e8e4d8" stroke="#a8a090"/>
   <path d="M516 310 h60 M516 315 h40" stroke="#5a5a5a" stroke-width="1.5"/>
@@ -141,35 +144,10 @@ function officeArt(g) {
   <rect x="690" y="400" width="40" height="66" fill="#3a3a3a"/>
   <path d="M700 400 l-6 -90 q20 -10 30 6 l-8 84" fill="#2a2a4a"/>
   <path d="M706 466 q4 8 10 0" stroke="#7a8aa0" stroke-width="2" fill="none"/>
+  ${past ? `<text x="772" y="584" font-size="22" text-anchor="end" font-family="Courier New, monospace" font-weight="bold"
+    fill="#ff9a3a" opacity=".85" filter="url(#hGlow)">6 NOV 11.35 PM</text>` : ''}
   ` + finish();
 }
-
-const folios = g => {
-  const easy = g.difficulty === 'easy';
-  return deskTop() + `
-  ${FOLIOS.map((f, i) => {
-    const x = 26 + (i % 3) * 256, y = 24 + Math.floor(i / 3) * 262, rot = [-2, 1.5, -1, 2, -1.5, 1][i];
-    const lines = linesOf(f, g);
-    return `<g transform="rotate(${rot} ${x + 120} ${y + 120})">
-      <rect x="${x + 5}" y="${y + 6}" width="240" height="236" fill="#000" opacity=".35"/>
-      <rect x="${x}" y="${y}" width="240" height="236" fill="#f4efe2" stroke="#b8a888"/>
-      <text x="${x + 14}" y="${y + 26}" font-size="11" font-family="Courier New, monospace" fill="#5a4a3a">FOLIO · ROOM ${f.room}</text>
-      ${symAt(EMBLEMS, f.emblem, x + 198, y + 8, 28, '#2a3a5a')}
-      ${f.name ? `<text x="${x + 14}" y="${y + 48}" font-size="14" ${serif} font-style="italic" fill="#2a1c10">${f.name}</text>`
-               : `<path d="M${x + 14} ${y + 44} q30 -10 60 0 t60 0" stroke="#1a1208" stroke-width="9" fill="none" opacity=".8"/>`}
-      <text x="${x + 14}" y="${y + 76}" font-size="10" font-family="Courier New, monospace" fill="#5a4a3a">DAYS SURRENDERED AT THE HALCYON</text>
-      ${lines.map((l, k) => {
-        const voided = l.includes('VOID');
-        return `<text x="${x + 18}" y="${y + 102 + k * 24}" font-size="12.5" ${serif} fill="#2a1c10" ${voided ? 'text-decoration="line-through" opacity=".6"' : ''}>${l.replace(' — VOID', '')}</text>
-          ${voided ? `<text x="${x + 206}" y="${y + 102 + k * 24}" font-size="11" font-family="Courier New, monospace" font-weight="bold" fill="#a3221c">VOID</text>` : ''}`;
-      }).join('')}
-      ${easy ? `<text x="${x + 14}" y="${y + 196}" font-size="13" font-family="Courier New, monospace" font-weight="bold" fill="#2a1c10">Total to date: ${counted(f, g)}</text>` : ''}
-      ${f.stamp ? `<g transform="rotate(-12 ${x + 150} ${y + 190})"><rect x="${x + 96}" y="${y + 172}" width="120" height="34" fill="none" stroke="#a3221c" stroke-width="3"/>
-        <text x="${x + 156}" y="${y + 196}" font-size="16" text-anchor="middle" font-family="Courier New, monospace" font-weight="bold" fill="#a3221c">${f.stamp}</text></g>` : ''}
-    </g>`;
-  }).join('')}
-  ` + finish();
-};
 
 const ledger = g => deskTop() + `
   <g transform="rotate(-1 400 300)">
@@ -189,11 +167,9 @@ const ledger = g => deskTop() + `
     <text x="370" y="446" font-size="22" text-anchor="end" font-family="Courier New, monospace" font-weight="bold" fill="#2a1c10">${claimedTotal(g)}</text>
     <g fill="#2a1c10" ${serif} font-size="15" font-style="italic">
       <text x="420" y="100">Manager's standing order:</text>
-      <text x="420" y="140">Before the ledger is filed,</text>
-      <text x="420" y="166">verify the total against the</text>
-      <text x="420" y="192">guests' folios, on the adding</text>
-      <text x="420" y="218">machine. Only billed days count.</text>
-      <text x="420" y="244">Void entries do not count.</text>
+      <text x="420" y="140">Every guest is a regular.</text>
+      <text x="420" y="166">Every guest has always</text>
+      <text x="420" y="192">been a regular.</text>
     </g>
     <text x="555" y="320" font-size="13" text-anchor="middle" ${hand} fill="#7a1e22">Room 204: renew annually.</text>
     <text x="555" y="344" font-size="13" text-anchor="middle" ${hand} fill="#7a1e22">The guest must believe it.</text>
@@ -246,7 +222,9 @@ const agreement = () => deskTop() + `
     <g ${serif} fill="#2a1c10" font-size="14">
       <text x="84" y="146">I, the undersigned, of room 204,</text>
       <text x="84" y="170">freely surrender one day:</text>
-      <rect x="84" y="186" width="330" height="30" fill="#1a1208" opacity=".85"/>
+      <text x="84" y="208" font-size="13.5" font-style="italic">the memory of 14 May 2019, Saltmere station</text>
+      <rect x="80" y="190" width="92" height="26" fill="#1a1208"/>
+      <rect x="292" y="188" width="128" height="28" fill="#1a1208"/>
       <text x="84" y="246">to be held by the hotel, and forgotten</text>
       <text x="84" y="270">by me, in exchange for one night's</text>
       <text x="84" y="294">peace.</text>
@@ -290,7 +268,7 @@ function openDrawer(g, e, m) {
     if (!g.flag('filesDone')) {
       g.set('filesDone');
       g.give('tile6');
-      g.note('agreement', 'My original agreement: signed <b>8.15 am, 6 November 2025</b>, <b>first visit</b>. What I surrendered is inked out.');
+      g.note('agreement', 'My original agreement: signed <b>8.15 am, 6 November 2025</b>, <b>first visit</b>. What I surrendered is mostly inked out: <i>"...14 May 2019, Salt..."</i>');
       g.note('revoked', 'In my own hand, 11.40 pm on 6 Nov: <i>"REVOKED. I want my day back. The calendar is how they turn the day. I took the 6. Put it back, set yesterday."</i>');
     }
     return g.go('r5-agreement');
@@ -318,9 +296,9 @@ export default {
   id: 'r5',
   name: "Manager's Office",
   hints: [
-    { when: g => !g.flag('booksDone'), text: g => g.difficulty === 'easy'
-      ? "The adding machine wants the verified total of surrendered days. Add up the totals on the six guest folios in the tray, not the ledger's claim."
-      : "The ledger's total needs checking against the guests' folios, on the adding machine." },
+    { when: g => !g.has('filekey') && !g.flag('filesUnlocked'), text: g => g.difficulty === 'easy'
+      ? "Press Yesterday (top right) and look at the portrait in the photo. Then go back to Today and do the same."
+      : "Your camera has a photo of this office from last night. What was different?" },
     { when: g => !g.flag('filesDone'), text: g => g.difficulty === 'easy'
       ? 'The filing key opens the card catalogue. Rows are guest emblems, columns are months (see the filing key card). Yours: the swallow row, the November column.'
       : 'Agreements are filed by guest and by month. Whose agreement, and when?' },
@@ -335,6 +313,8 @@ export default {
     'r5-office': {
       room: 'r5',
       art: officeArt,
+      past: g => officeArt(g, true),
+      onPast: g => g.note('office-past', "The camera has a photo of this office too, taken at <b>11.35 pm</b> last night."),
       nav: { back: 'r4-archive' },
       enter: g => {
         if (g.flag('r5Seen')) return;
@@ -344,31 +324,37 @@ export default {
       hotspots: [
         { id: 'catalogue', label: g => g.has('filekey') ? 'Card catalogue (you have its key)' : 'Card catalogue', rect: [20, 146, 168, 324],
           go: 'r5-files', sparkle: g => g.has('filekey') || (g.flag('filesUnlocked') && !g.flag('filesDone')) },
-        { id: 'portrait', label: 'Portrait', rect: [196, 76, 104, 146], say: 'THE MANAGER, says the little plate. The face has been painted over, carefully, more than once.' },
+        { id: 'portrait', label: g => g.flag('portraitOpen') ? 'Behind the portrait' : g.hasNote('office-photo') ? 'Portrait (it was open yesterday)' : 'Portrait',
+          rect: [156, 76, 144, 146], sparkle: g => g.hasNote('office-photo') && !g.has('filekey') && !g.flag('filesUnlocked'),
+          click: g => {
+            if (!g.hasNote('office-photo')) return g.say('THE MANAGER, says the little plate. The face has been painted over, carefully, more than once.');
+            if (!g.flag('portraitOpen')) { g.set('portraitOpen'); }
+            if (g.has('filekey') || g.flag('filesUnlocked')) return g.say('An empty hook behind the portrait.');
+            g.give('filekey');
+            g.say('In the photo it stood open like a door, so you pull at the frame. The portrait swings aside on a hinge, and behind it, on a hook, hangs a small key marked FILES.', 7000);
+          } },
         { id: 'calendar', label: g => g.has('tile6') ? 'Calendar (fit the missing 6)' : 'Calendar', rect: [322, 80, 156, 176],
           when: g => !g.flag('calendarDone'), sparkle: g => g.has('tile6') || (g.flag('tileIn') && !g.flag('calendarDone')),
           click: useCalendar, use: { tile6: useCalendar } },
         { id: 'wall-open', label: 'Through to 6 November', rect: [318, 70, 164, 396], when: g => g.flag('calendarDone'), sparkle: true, go: 'r6-lostday' },
         { id: 'window', label: 'Window', rect: [566, 86, 160, 200], say: 'The same rain. The same street lamp. The same minute, it feels like, over and over.' },
-        { id: 'tray', label: 'Guest folios', rect: [236, 286, 66, 44], go: 'r5-folios', sparkle: g => !g.flag('booksDone') },
-        { id: 'ledger', label: 'Ledger', rect: [304, 302, 104, 28], go: 'r5-ledger', sparkle: g => !g.flag('booksDone') && !g.hasNote('ledger') },
-        { id: 'adder', label: g => g.flag('booksDone') ? 'Adding machine' : 'Adding machine (verify the total)', rect: [414, 278, 86, 52],
-          sparkle: g => !g.flag('booksDone') && g.hasNote('ledger'),
-          click: g => g.flag('booksDone') ? g.say('The tape still curls out: UNSUPPORTED 29 DAYS: ROOM 204.') : g.puzzle('r5-adder') },
+        { id: 'ledger', label: 'Ledger', rect: [304, 302, 104, 28], go: 'r5-ledger' },
+        { id: 'adder', label: 'Adding machine', rect: [414, 278, 86, 52], say: 'An adding machine. Its last tape reads 30, 30, 30, 30...' },
+        // --- yesterday (the photo, 11.35 pm: you were here, minutes before you revoked)
+        { id: 'past-portrait', era: 'past', label: 'Portrait', rect: [156, 76, 144, 146], sparkle: g => !g.hasNote('office-photo'),
+          click: g => { g.note('office-photo', "Yesterday's photo of the office, <b>11.35 pm</b>: the portrait stood <b>open like a door</b>, with a small key marked FILES on a hook behind it."); g.say('In the photo, the portrait stands open like a door. Behind it, on a hook: a small key marked FILES.', 6000); } },
+        { id: 'past-calendar', era: 'past', label: 'Calendar', rect: [322, 80, 156, 176],
+          click: g => { g.note('office-calendar', "In yesterday's photo the brass calendar read <b>THU 6 NOV</b>."); g.say('In the photo, the calendar still has its 6: THU · 6 · NOV.'); } },
+        { id: 'past-room', era: 'past', label: 'Yesterday', rect: [520, 330, 160, 120], say: 'The office, last night at 11.35 pm. Five minutes before you wrote REVOKED.' },
         { id: 'newspaper', label: 'Newspaper', rect: [506, 298, 88, 32], go: 'r5-newspaper' },
         { id: 'desk', label: 'Desk', rect: [232, 342, 366, 124], say: 'A broad desk with a brass plate: THE MANAGER. No name. The chair is still warm.' },
         { id: 'umbrella', label: 'Umbrella stand', rect: [686, 306, 50, 160], say: 'A black umbrella, still dripping. Someone came in from the rain, though nobody ever comes in.' },
       ],
     },
 
-    'r5-folios': {
-      room: 'r5', art: folios, nav: { back: 'r5-office' },
-      enter: g => g.note('folios', `Guest folios: days actually billed. Mine (204) says <b>FIRST STAY</b>: just 6 Nov 2025.`),
-      hotspots: [],
-    },
     'r5-ledger': {
       room: 'r5', art: ledger, nav: { back: 'r5-office' },
-      enter: g => g.note('ledger', `The manager's ledger claims <b>${claimedTotal(g)}</b> days held, including 30 for room 204, "annual, since 1995". Standing order: verify against the folios on the adding machine. Scribbled: <i>"Room 204: renew annually. The guest must believe it."</i>`),
+      enter: g => g.note('ledger', `The manager's ledger claims 30 days held for room 204, "annual, since 1995". Scribbled: <i>"Room 204: renew annually. The guest must believe it."</i>`),
       hotspots: [],
     },
     'r5-newspaper': {
@@ -393,22 +379,6 @@ export default {
   },
 
   puzzles: {
-    'r5-adder': {
-      type: 'keypad',
-      prompt: "ADDING MACHINE · enter the verified total of days surrendered, from the guests' folios",
-      solution: verifiedTotal,
-      length: 2,
-      numeric: true,
-      okText: 'BALANCED',
-      errText: 'NO BALANCE',
-      solve: g => {
-        g.set('booksDone');
-        g.give('filekey');
-        const v = verifiedTotal(g), c = claimedTotal(g);
-        g.note('books', `The books: verified <b>${v}</b> days, claimed ${c}. The adding machine printed: <b>UNSUPPORTED: ${30 - 1} DAYS, ROOM 204.</b> I never came here before yesterday. The thirty years are invented.`);
-        g.say(`The machine chatters and prints: VERIFIED ${v} · CLAIMED ${c} · UNSUPPORTED 29: ROOM 204. You have never been here before. The cash drawer springs open: a small key marked FILES.`, 9000);
-      },
-    },
     'r5-calendar': {
       type: 'dials',
       prompt: 'The brass calendar. Turn the wheels.',

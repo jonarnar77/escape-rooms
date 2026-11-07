@@ -2,7 +2,7 @@
 // Purpose: reconstruct a meeting you have forgotten.
 // Fact: other guests are trapped too, and one of them helped you.
 //
-//   1. Seating plan: reservation book (tables) + kitchen order slips (who ate what)
+//   1. Seating plan: reservation book (tables, and what each guest ordered)
 //      + yesterday's photo (what was eaten at each seat) -> place every guest's card.
 //      Table 3, "breakfast for two": you and Miss Ito (203).
 //      Restoring the seating brings part of yesterday back: the lost-property box fills.
@@ -183,11 +183,13 @@ const lectern = g => deskTop() + `
     <text x="233" y="112" font-size="20" text-anchor="middle" ${serif} letter-spacing="2" fill="#2a1c10">RESERVATIONS</text>
     <text x="233" y="134" font-size="13" text-anchor="middle" ${serif} font-style="italic" fill="#5a4a3a">Breakfast, 6 November</text>
     <g ${serif} fill="#2a1c10" font-size="16">
-      ${[['Table 1', 'Mr & Mrs Vale (201)'], ['Table 2', 'Capt. Orme (202)'], ['', 'Dr Brandt (205)'], ['Table 3', 'Room 204, for two'], ['Table 4', 'Mr Okonkwo (206)']]
-        .map(([tbl, who], i) => `<text x="96" y="${182 + i * 44}" font-weight="bold">${tbl}</text><text x="176" y="${182 + i * 44}" font-style="italic">${who}</text>`).join('')}
+      ${[['Table 1', 'Mr & Mrs Vale (201)', 'porridge, twice'], ['Table 2', 'Capt. Orme (202)', 'kippers'], ['', 'Dr Brandt (205)', 'black coffee, nothing else'],
+         ['Table 3', 'Room 204, for two', 'boiled egg · tea with lemon'], ['Table 4', 'Mr Okonkwo (206)', 'the full breakfast']]
+        .map(([tbl, who, dish], i) => `<text x="96" y="${176 + i * 46}" font-weight="bold">${tbl}</text><text x="176" y="${176 + i * 46}" font-style="italic">${who}</text>
+          <text x="186" y="${194 + i * 46}" font-size="13" fill="#5a4a3a">${dish}</text>`).join('')}
     </g>
-    <text x="96" y="420" font-size="13" ${hand} fill="#7a1e22">Table 3: the guest asked for a quiet</text>
-    <text x="96" y="442" font-size="13" ${hand} fill="#7a1e22">corner. Second name not given.</text>
+    <text x="96" y="430" font-size="13" ${hand} fill="#7a1e22">Table 3: room 204 has the egg. Their</text>
+    <text x="96" y="452" font-size="13" ${hand} fill="#7a1e22">guest's name was not given.</text>
     <text x="555" y="112" font-size="20" text-anchor="middle" ${serif} letter-spacing="2" fill="#2a1c10">SEATING PLAN</text>
     <text x="555" y="134" font-size="12" text-anchor="middle" ${serif} font-style="italic" fill="#5a4a3a">the room as you see it</text>
     ${seatingPlanArt(416, 160, 0.6)}
@@ -212,22 +214,6 @@ const PLAN_SLOTS = [
   { id: 't3l', x: 274, y: 245 }, { id: 't3r', x: 406, y: 245 },
   { id: 't4l', x: 54, y: 245 },
 ];
-
-const orders = () => closeup('#2a1a10') + `
-  <rect x="380" y="60" width="8" height="420" fill="#999"/><rect x="340" y="470" width="88" height="22" rx="4" fill="#2a2a2a"/>
-  ${[['201', 'Porridge x 2', 'cream, no sugar'], ['202', 'Kippers', 'well done'], ['203', 'Tea with lemon', 'toast, no butter'],
-     ['204', 'Boiled egg', 'four minutes'], ['205', 'Black coffee', 'nothing to eat'], ['206', 'The full breakfast', 'extra beans']]
-    .map(([room, dish, extra], i) => {
-      const x = i % 2 ? 420 : 110, y = 90 + Math.floor(i / 2) * 130, rot = [-4, 3, 2, -3, -2, 4][i];
-      return `<g transform="rotate(${rot} ${x + 130} ${y + 50})">
-        <rect x="${x + 4}" y="${y + 5}" width="260" height="104" fill="#000" opacity=".3"/>
-        <rect x="${x}" y="${y}" width="260" height="104" fill="#f4efe2" stroke="#b8a888"/>
-        <text x="${x + 16}" y="${y + 28}" font-size="13" font-family="Courier New, monospace" fill="#5a4a3a">KITCHEN · 6 NOV</text>
-        <text x="${x + 16}" y="${y + 56}" font-size="20" ${hand} fill="#1f2a5a">Room ${room}</text>
-        <text x="${x + 120}" y="${y + 56}" font-size="17" ${hand} fill="#1f2a5a">${dish}</text>
-        <text x="${x + 120}" y="${y + 82}" font-size="13" ${hand} fill="#5a6a8a">${extra}</text></g>`;
-    }).join('')}
-  ` + finish();
 
 // Lost-property items, drawn in a 60x60 box with their owner's emblem clearly on them.
 const em = (id, x, y, size, color) => `<g transform="translate(${x},${y}) scale(${size / 40})" style="color:${color}">${EMBLEMS[id]}</g>`;
@@ -361,7 +347,7 @@ const presentHotspots = [
   { id: 'ballroom-open', label: 'Into the ballroom', rect: [378, 96, 124, 240], when: g => g.flag('ballroomOpen'), sparkle: true, go: 'r4-ballroom' },
   { id: 'lift', label: g => g.flag('itemsDone') && !g.flag('letterRead') ? 'Service lift (call it down)' : 'Service lift',
     rect: [550, 146, 144, 148], go: 'r3-lift', sparkle: g => g.flag('itemsDone') && !g.flag('letterRead') },
-  { id: 'spike', label: 'Order slips', rect: [708, 256, 42, 52], go: 'r3-orders', sparkle: g => !g.hasNote('orders') },
+  { id: 'spike', label: 'Order slips', rect: [708, 256, 42, 52], say: 'Kitchen order slips. Someone has copied every order into the reservation book on the lectern.' },
   { id: 'lostbox', label: g => g.flag('seatingDone') && !g.flag('itemsDone') ? 'Lost property (not empty now)' : 'Lost-property box',
     rect: [748, 270, 50, 40], sparkle: g => g.flag('seatingDone') && !g.flag('itemsDone'),
     click: g => {
@@ -396,8 +382,8 @@ export default {
   name: 'Breakfast Room',
   hints: [
     { when: g => !g.flag('seatingDone'), text: g => g.difficulty === 'easy'
-      ? 'Press Yesterday and click each plate to see what was eaten at each seat. The order slips on the sideboard say who ordered what. Then set the place cards on the plan at the lectern.'
-      : 'Yesterday\'s photo, the kitchen orders and the reservations together tell you who sat where.' },
+      ? 'The reservation book (at the lectern) says who sat at each table and what they ordered. Press Yesterday and click the plates to see which seat had which dish. The one guest nobody named goes with you at table 3.'
+      : 'The reservations and yesterday\'s photo together tell you who sat where.' },
     { when: g => !g.flag('itemsDone'), text: g => g.difficulty === 'easy'
       ? 'The lost-property box is full now. Each item carries its owner\'s emblem, and the corridor upstairs had clues too (pipe smoke behind 202, a pen scratching behind 205).'
       : 'Things have reappeared in the lost-property box. Whose is whose?' },
@@ -424,7 +410,7 @@ export default {
 
     'r3-lectern': {
       room: 'r3', art: lectern, nav: { back: 'r3-breakfast' },
-      enter: g => g.note('reservations', 'Reservations, 6 Nov: table 1 the Vales (201); table 2 Capt. Orme (202) and Dr Brandt (205); table 3 <b>room 204, for two</b>, second name not given; table 4 Mr Okonkwo (206).'),
+      enter: g => g.note('reservations', 'Reservations, 6 Nov: table 1 the Vales (porridge ×2); table 2 Capt. Orme (kippers) and Dr Brandt (black coffee); table 3 <b>room 204 (boiled egg), for two</b>, the guest (tea with lemon) not named; table 4 Mr Okonkwo (full breakfast).'),
       hotspots: [
         { id: 'plan', label: g => g.flag('seatingDone') ? 'Seating plan' : 'Set out the place cards', rect: [410, 150, 290, 220],
           sparkle: g => !g.flag('seatingDone'),
@@ -432,11 +418,6 @@ export default {
       ],
     },
 
-    'r3-orders': {
-      room: 'r3', art: orders, nav: { back: 'r3-breakfast' },
-      enter: g => g.note('orders', 'Kitchen orders: 201 porridge ×2 · 202 kippers · 203 tea with lemon, toast · 204 boiled egg · 205 black coffee only · 206 the full breakfast.'),
-      hotspots: [],
-    },
 
     'r3-accounts': { room: 'r3', art: accounts, nav: { back: 'r3-breakfast' }, hotspots: [] },
 

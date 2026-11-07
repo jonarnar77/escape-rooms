@@ -77,18 +77,16 @@ try {
   expect(g.pastBtn.hidden, 'no Yesterday button before the camera');
   click('r2-room', 'camera');                   expect(A.has('camera'), 'camera taken');
   g.render();                                   expect(!g.pastBtn.hidden, 'Yesterday button appears');
+  click('r2-room', 'suitcase');                 click('r2-suitcase', 'lock'); expect(!A.flag('lockOpen'), 'suitcase stays locked before seeing yesterday');
+  g.go('r2-room'); g.render();
   g.togglePast();                               expect(A.past, 'viewing yesterday');
   for (const id of ['painting', 'chair', 'mirror', 'flowers']) { g.state.selected = null; g.clickHotspot(hs('r2-room', 'past-' + id)); }
   expect(['painting', 'chair', 'mirror', 'flowers'].every(id => A.hasNote('diff-' + id)), 'all four differences noted');
   expect(!g.visible(hs('r2-room', 'camera')) && g.visible(hs('r2-room', 'past-painting')), 'past-only hotspots while in the photo');
   g.togglePast();                               expect(!A.past, 'back to today');
-  // suitcase lock: a wrong set first, then exactly what changed
-  click('r2-room', 'suitcase');                 click('r2-suitcase', 'lock'); expect(!g.modal.hidden, 'lock opens');
-  const opt = id => q(`.sel-opt[data-id="${id}"]`);
-  ['painting', 'mirror', 'lamp'].forEach(id => opt(id).click()); q('.sel-go').click(); await wait(200);
-  expect(!A.flag('lockOpen'), 'wrong pictures keep it locked');
-  opt('lamp').click(); ['flowers', 'chair'].forEach(id => opt(id).click()); q('.sel-go').click(); await wait(1100);
-  expect(A.flag('lockOpen'), 'suitcase opens');
+  // suitcase lock: opens once all four changes have been seen
+  click('r2-room', 'suitcase');                 click('r2-suitcase', 'lock'); expect(A.flag('lockOpen'), 'suitcase opens');
+  click('r2-suitcase', 'ticket');               expect(A.hasNote('ticket'), 'platform ticket noted');
   // message: wrong order first, then right
   click('r2-suitcase', 'envelope');             expect(!g.modal.hidden, 'message puzzle opens');
   const n = data.puzzles['r2-message'].config(A).items.length;
@@ -111,7 +109,6 @@ try {
   for (const seat of ['t1l', 't1r', 't2l', 't2r', 't3l', 't3r', 't4l']) click('r3-breakfast', 'past-' + seat);
   expect(A.hasNote('seat-t3r') && A.hasNote('seat-t2l'), 'photo plates noted');
   g.togglePast();
-  click('r3-breakfast', 'spike');               expect(A.hasNote('orders'), 'order slips read');
   click('r3-breakfast', 'lostbox');             expect(!A.flag('seatingDone') && g.modal.hidden, 'lost property empty before seating');
   click('r3-breakfast', 'lift');                click('r3-lift', 'call203');
   expect(!g.get?.('liftAt') && !A.get('liftAt') && !g.visible(hs('r3-lift', 'envelope')), 'lift dead before the key: no shortcut to the envelope');
@@ -175,16 +172,13 @@ try {
   click('r5-office', 'catalogue');              click('r5-files', 'drawer-swallow-NOV');
   expect(!A.flag('filesUnlocked') && g.state.scene === 'r5-files', 'catalogue locked without the key');
   click('r5-office', 'calendar');               expect(g.modal.hidden && !A.flag('tileIn'), 'calendar refuses without the 6');
-  click('r5-office', 'tray');                   click('r5-office', 'ledger');   click('r5-office', 'newspaper');
-  expect(A.hasNote('folios') && A.hasNote('ledger') && A.hasNote('newspaper'), 'folios, ledger and newspaper read');
-  // adding machine: the ledger's claim is wrong, the verified total is right
-  click('r5-office', 'adder');                  expect(!g.modal.hidden, 'adding machine opens');
-  const key = k => q(`.kp-keys button[data-k="${k}"]`);
-  const enter = n => { String(n).split('').forEach(d => key(d).click()); key('OK').click(); };
-  enter(data.puzzles['r5-adder'].solution(A) + 29); await wait(1000);
-  expect(!A.flag('booksDone'), "the ledger's claimed total is rejected");
-  enter(data.puzzles['r5-adder'].solution(A)); await wait(900);
-  expect(A.flag('booksDone') && A.has('filekey'), 'books balanced, filing key found');
+  click('r5-office', 'ledger');                 click('r5-office', 'newspaper');
+  expect(A.hasNote('ledger') && A.hasNote('newspaper'), 'ledger and newspaper read');
+  // the portrait gives nothing until yesterday's photo shows it open
+  click('r5-office', 'portrait');               expect(!A.has('filekey'), 'portrait shut before the photo');
+  g.togglePast(); click('r5-office', 'past-portrait'); g.togglePast();
+  expect(A.hasNote('office-photo'), "yesterday's office photo noted");
+  click('r5-office', 'portrait');               expect(A.has('filekey'), 'filing key behind the portrait');
   // filing: a wrong drawer, then swallow / November
   click('r5-office', 'catalogue');              click('r5-files', 'drawer-moon-NOV');
   expect(A.flag('filesUnlocked') && !A.flag('filesDone'), 'key used; wrong drawer is not yours');

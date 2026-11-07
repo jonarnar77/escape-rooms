@@ -6,8 +6,9 @@
 //      -> unlocks the Yesterday view (engine: scene.past + hotspot.era)
 //   1. Compare yesterday's photo with the room: four things changed
 //      (painting gone, armchair moved, mirror covered, roses wilted)
-//   2. The suitcase's picture lock: press exactly the things that changed
-//      -> your own torn message
+//   2. The suitcase's picture lock opens for someone who has seen all four changes
+//      (no repeat puzzle: once all four are noted, clicking the lock presses them)
+//      -> your own torn message, and a platform ticket (the memory, planted early)
 //   3. Put the message fragments in order (each ends mid-sentence)
 //      -> "behind the mirror... lift the sheet, press the swallow"
 //   mirror: it reflects the room, but not you. The swallow on the frame opens a
@@ -290,6 +291,11 @@ const suitcaseCloseup = g => {
     <path d="M120 420 q80 -20 160 6 t200 -10 t200 8" stroke="#5a6a80" stroke-width="3" fill="none"/>
     <polygon points="80,300 720,300 700,90 100,90" fill="#6a4a2e" stroke="#2e1c10" stroke-width="4"/>
     <polygon points="100,110 700,110 712,290 88,290" fill="#8a7050"/>
+    <g transform="rotate(6 615 474)">
+      <rect x="548" y="452" width="134" height="44" fill="#d8c8a0" stroke="#6a5a3a" stroke-width="1.5"/>
+      <text x="615" y="469" font-size="10" text-anchor="middle" font-family="Courier New, monospace" font-weight="bold" fill="#2a1c10">SALTMERE STATION</text>
+      <text x="615" y="485" font-size="9" text-anchor="middle" font-family="Courier New, monospace" fill="#2a1c10">PLATFORM · 14 MAY 2019</text>
+    </g>
     ${g.solved('r2-message') ? '' : `
       <g transform="rotate(-5 400 380)">
         <rect x="300" y="340" width="200" height="120" fill="#efe6cf" stroke="#8a7a5a" stroke-width="2"/>
@@ -417,7 +423,7 @@ export default {
     { when: g => !g.flag('r2Entered'), text: 'Your room is 204. Use your key on its door.' },
     { when: g => !g.flag('took:camera'), text: 'Something is waiting for you on the bed.' },
     { when: g => !g.flag('lockOpen'), text: g => g.difficulty === 'easy'
-      ? 'Press "Yesterday" to see the photo, and click what looks different. Four things changed. Press exactly those four on the suitcase lock.'
+      ? 'Press "Yesterday" to see the photo, and click what looks different. Four things changed. Once you have found all four, try the suitcase lock.'
       : 'Compare yesterday\'s photo with the room as it is now. Your suitcase only opens for someone who saw yesterday.' },
     { when: g => !g.flag('messageDone'), text: 'Your own note, torn to pieces. Each fragment ends mid-sentence, so look for how they join.' },
     { when: g => !g.flag('sheetLifted'), text: 'Your note told you exactly where to look.' },
@@ -473,12 +479,24 @@ export default {
       nav: { back: 'r2-room' },
       hotspots: [
         { id: 'lock', label: 'Picture lock', rect: [266, 232, 268, 148], when: g => !g.flag('lockOpen'),
-          sparkle: true, click: g => g.puzzle('r2-lock') },
+          sparkle: true, click: g => {
+            const found = CHANGED.filter(id => seen(g, id)).length;
+            if (found < CHANGED.length) return g.say(g.difficulty === 'hard'
+              ? 'Eight little pictures and a latch. "Only someone who saw yesterday can open this."'
+              : `Eight little pictures and a latch. "Only someone who saw yesterday can open this." You've spotted ${found} of the changes in yesterday's photo so far.`, 6000);
+            g.set('lockOpen'); g.set('solved:r2-lock');
+            g.say('You press the four pictures of what changed since yesterday: the painting, the mirror, the roses, the chair. The latch snaps open. Inside, among your folded clothes: an envelope, addressed in your hand.', 7000);
+          } },
         { id: 'tag', label: 'Tag', rect: [536, 150, 172, 132], when: g => !g.flag('lockOpen'),
           say: '"Only someone who saw yesterday can open this." Your handwriting again.' },
         // (hotspots listed later sit on top: the clothes must come before the envelope)
         { id: 'clothes', label: 'Clothes', rect: [96, 316, 608, 190], when: g => g.flag('lockOpen'),
           say: 'Your clothes, folded the way you always fold them. One shirt still smells of rain.' },
+        { id: 'ticket', label: 'Platform ticket', rect: [540, 446, 150, 56], when: g => g.flag('lockOpen'),
+          click: g => {
+            g.note('ticket', 'Folded among my clothes: a <b>platform ticket, Saltmere station, 14 May 2019</b>. A platform ticket is for seeing someone off. I can\'t remember who.');
+            g.say('A platform ticket: SALTMERE STATION, 14 MAY 2019. For seeing someone off. You can\'t remember who, and something in you flinches away from trying.', 7000);
+          } },
         { id: 'envelope', label: 'Open the envelope', rect: [296, 330, 210, 140], when: g => g.flag('lockOpen') && !g.flag('messageDone'),
           sparkle: true, click: g => g.puzzle('r2-message') },
       ],
@@ -488,20 +506,6 @@ export default {
   },
 
   puzzles: {
-    'r2-lock': {
-      type: 'select',
-      prompt: 'A picture lock. Press the right pictures, then the latch.',
-      options: LOCK_ORDER.map(id => ({ id, label: pic(id), title: id })),
-      solution: CHANGED,
-      columns: 4,
-      confirmText: 'Try the latch',
-      failText: 'The latch will not move.',
-      solve: g => {
-        g.set('lockOpen');
-        g.say('The latch snaps open. Inside, among your folded clothes: an envelope, addressed in your hand.');
-      },
-    },
-
     'r2-message': {
       type: 'order',
       prompt: 'Your own note, torn into pieces. Click them in reading order; click a piece in the note to take it back out.',
