@@ -71,4 +71,15 @@ export default {
         <path d="M50 14 q-10 -10 -20 -4" stroke="#c9a33b" stroke-width="2" fill="none"/>
       </g>`,
   },
+
+  liftkey: {
+    name: 'service lift key',
+    description: 'A small brass key on a tag: "SERVICE LIFT · STAFF ONLY". It was at the bottom of the lost-property box.',
+    icon: `
+      <g transform="rotate(-30 50 50)">
+        <circle cx="28" cy="50" r="12" fill="none" stroke="#c9a33b" stroke-width="6"/>
+        <rect x="38" y="46" width="40" height="7" fill="#c9a33b"/><path d="M64 53 v8 h5 v-8 M72 53 v11 h5 v-11" fill="#c9a33b"/>
+      </g>
+      <rect x="56" y="62" width="34" height="22" rx="3" fill="#efe6cf" stroke="#8a7a5a" transform="rotate(10 73 73)"/>`,
+  },
 };

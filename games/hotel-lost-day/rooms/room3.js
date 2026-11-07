@@ -308,6 +308,9 @@ const lift = g => {
   ` : `${Array.from({ length: 12 }, (_, i) => `<line x1="140" y1="${110 + i * 34}" x2="480" y2="${110 + i * 34}" stroke="#3a2a1a" stroke-width="4"/>`).join('')}`}
   <rect x="540" y="110" width="160" height="380" rx="8" fill="url(#brassG)" stroke="#5a4214" stroke-width="3"/>
   <text x="620" y="146" font-size="15" text-anchor="middle" ${serif} letter-spacing="2" fill="#2a1c10">CALL FROM</text>
+  <rect x="570" y="470" width="100" height="16" fill="#2a1c10"/>
+  <text x="620" y="482" font-size="9" text-anchor="middle" font-family="Courier New, monospace" fill="#f0d890">${g.flag('liftUnlocked') ? 'STAFF KEY · ON' : 'STAFF KEY REQUIRED'}</text>
+  <circle cx="680" cy="460" r="7" fill="#2a1c10"/><rect x="679" y="460" width="2" height="8" fill="#2a1c10"/>
   ${['201', '202', '203', '204', '205', '206'].map((room, i) => {
     const y = 172 + i * 50, gst = { 201: 'fern', 202: 'anchor', 203: 'moon', 204: 'swallow', 205: 'bell', 206: 'fox' }[room];
     return `<circle cx="580" cy="${y + 14}" r="18" fill="${at === room ? '#f0d890' : '#2a1c10'}" stroke="#5a4214" stroke-width="2"/>
@@ -400,7 +403,7 @@ export default {
       ? 'The lost-property box is full now. Each item carries its owner\'s emblem, and the corridor upstairs had clues too (pipe smoke behind 202, a pen scratching behind 205).'
       : 'Things have reappeared in the lost-property box. Whose is whose?' },
     { when: g => !g.flag('letterRead'), text: g => g.difficulty === 'easy'
-      ? 'Read what the guests wrote: Miss Ito sent the service lift up to her own room. Call it from 203.'
+      ? 'Read what the guests wrote: Miss Ito sent the service lift up to her own room. The key from the lost-property box works the lift; call it from 203.'
       : 'The guests\' notes say where the envelope went. The service lift has one button per room.' },
     { when: g => !g.flag('ballroomOpen'), text: 'The ballroom doors take dance cards.' },
     { text: 'The ballroom is open.' },
@@ -443,7 +446,13 @@ export default {
       hotspots: [
         ...['201', '202', '203', '204', '205', '206'].map((room, i) => ({
           id: `call${room}`, label: `Call from ${room}`, circle: [580, 186 + i * 50, 22],
+          use: { liftkey: g => { g.take('liftkey'); g.set('liftUnlocked'); g.say('The key turns in the little lock under the buttons. The panel hums. Now, which room?'); } },
           click: g => {
+            if (!g.flag('liftUnlocked')) {
+              if (!g.has('liftkey')) return g.say('The button clicks, but nothing moves. A brass plate beneath the buttons: STAFF KEY REQUIRED.');
+              g.take('liftkey');
+              g.set('liftUnlocked');
+            }
             g.set('liftAt', room);
             if (room === '203') return g.say(g.flag('letterRead')
               ? 'Down from 203: the empty car, smelling faintly of lemon.'
@@ -510,9 +519,11 @@ export default {
       wrongText: 'Not quite. Look at the emblems, and remember the corridor.',
       solve: g => {
         g.set('itemsDone');
+        g.give('liftkey');
         for (const a of ACCOUNTS) g.note(`account-${a.who}`, `${a.who} wrote: <i>"${a.text.join(' ')}"</i>`);
+        g.note('liftkey', 'At the bottom of the lost-property box: a <b>service lift key</b>.');
         g.go('r3-accounts');
-        g.say('Tucked inside each item is a folded note, in its owner\'s hand. They have been losing days too, and writing things down.', 7000);
+        g.say('Tucked inside each item is a folded note, in its owner\'s hand: they have been losing days too. And at the bottom of the box, a small brass key marked SERVICE LIFT.', 8000);
       },
     },
   },

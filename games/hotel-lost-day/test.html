@@ -113,6 +113,8 @@ try {
   g.togglePast();
   click('r3-breakfast', 'spike');               expect(A.hasNote('orders'), 'order slips read');
   click('r3-breakfast', 'lostbox');             expect(!A.flag('seatingDone') && g.modal.hidden, 'lost property empty before seating');
+  click('r3-breakfast', 'lift');                click('r3-lift', 'call203');
+  expect(!g.get?.('liftAt') && !A.get('liftAt') && !g.visible(hs('r3-lift', 'envelope')), 'lift dead before the key: no shortcut to the envelope');
   click('r3-breakfast', 'lectern');             click('r3-lectern', 'plan'); expect(!g.modal.hidden, 'seating plan opens');
   const token = id => q(`.asg-token[data-token="${id}"]`);
   const seat = id => q(`.asg-slot[data-slot="${id}"]`);
@@ -127,6 +129,7 @@ try {
   click('r3-breakfast', 'lostbox');             expect(!g.modal.hidden, 'lost property puzzle opens');
   for (const [item, guest] of [['knitting', 'vale'], ['pipe', 'orme'], ['brooch', 'ito'], ['pen', 'brandt'], ['cane', 'okonkwo']]) put(item, guest);
   await wait(1300);                             expect(A.flag('itemsDone') && g.state.scene === 'r3-accounts', 'items returned, notes read');
+  expect(A.has('liftkey'), 'lift key found at the bottom of the box');
   click('r3-breakfast', 'lift');
   click('r3-lift', 'call201');                  expect(!g.visible(hs('r3-lift', 'envelope')), 'wrong room: no envelope');
   click('r3-lift', 'call203');                  click('r3-lift', 'envelope');
