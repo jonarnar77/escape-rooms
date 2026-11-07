@@ -1,0 +1,80 @@
+<!doctype html>
+<!--
+  Automated full-game playthrough. Open in a browser (served):
+    http://localhost:8000/tests/playthrough.html            (medium)
+    http://localhost:8000/tests/playthrough.html?d=hard     (easy | medium | hard)
+  It plays every room through the real hotspots, checks each one is clickable at
+  that moment, applies each puzzle's solution, and reports PASS/FAIL.
+  Puzzle widgets themselves are not clicked here, only opened.
+-->
+<html><head><meta charset="utf-8"><title>Playthrough test</title><link rel="stylesheet" href="../engine/engine.css">
+<style>#out{position:fixed;top:8px;left:8px;z-index:99;background:#000c;color:#cfc;padding:10px;font:13px monospace;white-space:pre}</style></head>
+<body><div id="game"></div><pre id="out">running…</pre>
+<script type="module">
+import { Game } from '../engine/engine.js';
+import data from '../games/abandoned-lab/index.js';
+const diff = new URLSearchParams(location.search).get('d') || 'medium';
+data.id = 'playthrough-test';                 // don't touch the real save game
+history.replaceState(null, '', location.pathname);
+const g = new Game(document.getElementById('game'), data);
+g.newGame(diff);
+const A = g.api, log = [], fail = [];
+const hs = (scene, id) => data.scenes[scene].hotspots.find(h => h.id === id);
+function click(scene, id, item = null) {
+  g.go(scene); g.render();
+  const h = hs(scene, id);
+  if (!h) return fail.push(`missing hotspot ${scene}/${id}`);
+  if (!g.visible(h)) return fail.push(`not clickable now: ${scene}/${id}`);
+  if (item && !A.has(item)) return fail.push(`don't have ${item} for ${scene}/${id}`);
+  g.state.selected = item;
+  g.clickHotspot(h);
+}
+function solve(id) {
+  if (g.modal.hidden) fail.push(`puzzle ${id} did not open`);
+  g.closeModal();
+  A.set('solved:' + id); data.puzzles[id].solve?.(A); g.commit();
+}
+function combine(a, b) { g.state.selected = a; g.clickSlot(g.state.inventory.indexOf(b)); }
+const expect = (cond, msg) => { if (!cond) fail.push('expected: ' + msg); };
+try {
+  click('r1-east', 'pillow');                     expect(A.has('key'), 'key');
+  click('r1-west', 'drawer', 'key');              click('r1-west', 'flashlight');
+  click('r1-south', 'cabinet');                   solve('r1-cabinet');
+  click('r1-south', 'battery');                   combine('flashlight', 'battery'); expect(A.has('uvlight'), 'uv torch');
+  click('r1-north', 'poster');                    click('r1-poster', 'poster', 'uvlight'); expect(A.flag('posterRevealed'), 'poster revealed');
+  click('r1-poster', 'photo1');
+  click('r1-north', 'keypad');                    solve('r1-keypad');
+  click('r1-north', 'exit');                      expect(g.state.scene === 'r2-north', 'reached room 2');
+  log.push('room 1 ✓');
+  click('r2-east', 'terminal');                   solve('r2-terminal');
+  click('r2-south', 'flask');
+  click('r2-east', 'hood', 'flask');              solve('r2-mixer'); expect(A.has('solvent'), 'solvent');
+  click('r2-west', 'vent', 'solvent');            click('r2-west', 'keycard'); click('r2-west', 'photo2');
+  click('r2-north', 'reader', 'keycard');         click('r2-north', 'exit'); expect(g.state.scene === 'r3-north', 'reached room 3');
+  log.push('room 2 ✓');
+  click('r3-south', 'toolbox');                   click('r3-south', 'fuse');
+  click('r3-panel', 'fuse-racks', 'fuse');        click('r3-panel', 'matrix'); solve('r3-grid');
+  click('r3-east', 'terminal');                   solve('r3-terminal');
+  const d = A.get('r3Drawer') ?? { rack: 'B', n: 3 };
+  click('r3-north', `drawer-${d.rack}${d.n}`);    click('r3-north', 'fob'); click('r3-north', 'photo3');
+  click('r3-west', 'reader', 'fob');              click('r3-west', 'exit'); expect(g.state.scene === 'r4-north', 'reached room 4');
+  log.push('room 3 ✓');
+  click('r4-west', 'console');                    solve('r4-sliders');
+  click('r4-north', 'pod-B');                     click('r4-podB', 'ice'); click('r4-podB', 'photo4');
+  click('r3-north', 'drawer-A1', 'ice');          expect(A.has('dircard'), 'thawed keycard');
+  click('r4-east', 'reader', 'dircard');          click('r4-east', 'exit'); expect(g.state.scene === 'r5-north', 'reached room 5');
+  log.push('room 4 ✓  (photo pieces: ' + A.get('photoPieces') + '/4)');
+  click('r5-west', 'drawer');                     click('r5-west', 'tape');
+  combine('tape', 'photo');                       expect(A.flag('photoTaped'), 'photo taped');
+  g.examine('photo');                             expect(g.state.scene === 'photo-front', 'photo close-up');
+  click('photo-front', 'flip');                   expect(A.flag('photoSeenBack'), 'saw back of photo');
+  click('r5-east', 'painting');                   click('r5-east', 'safe'); solve('r5-safe');
+  click('r5-east', 'elevkey');                    click('r5-east', 'journal');
+  click('r5-north', 'panel', 'elevkey');          click('r5-north', 'panel'); solve('r5-elevator');
+  click('r5-north', 'enter');                     expect(!g.screen.hidden && g.screen.textContent.includes('HX-07'), 'ending shown');
+  log.push('room 5 ✓  ending reached');
+} catch (e) { fail.push('ERROR ' + e.message); }
+g.clearSave();
+document.getElementById('out').textContent =
+  `PLAYTHROUGH (${diff})\n` + log.join('\n') + '\n' + (fail.length ? 'FAIL\n' + fail.join('\n') : 'PASS');
+</script></body></html>

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Helix: Sublevel 5</title>
+  <link rel="stylesheet" href="engine/engine.css">
+</head>
+<body>
+  <div id="game"></div>
+  <script type="module">
+    import { Game } from './engine/engine.js';
+    import data from './games/abandoned-lab/index.js';
+    window.game = new Game(document.getElementById('game'), data);
+  </script>
+</body>
+</html>
