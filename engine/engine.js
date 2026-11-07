@@ -534,7 +534,14 @@ export class Game {
         ${this.homeButton()}
       </div>`, {
       new: () => this.chooseDifficulty(),
-      cont: () => { this.state = saved; this.hideScreen(); this.render(); },
+      cont: () => {
+        this.state = saved;
+        // `migrate(g)` lets a game repair saves made by an older version of itself
+        this.data.migrate?.(this.api);
+        this.save();
+        this.hideScreen();
+        this.render();
+      },
       home: () => this.goHome(),
     });
   }

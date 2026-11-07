@@ -27,6 +27,15 @@ export default {
 
   setup: g => rooms.forEach(r => r.setup?.(g)),
 
+  // Repairs saves from older versions of the game when the player presses Continue.
+  migrate: g => {
+    // early versions kept the dance card in the ballroom door; room 4 needs it
+    if (g.flag('ballroomOpen') && !g.has('dancecard')) {
+      g.give('dancecard');
+      g.say("You find Miss Ito's dance card in your pocket. The door's slot must have handed it back.", 6000);
+    }
+  },
+
   rooms: {
     ...Object.fromEntries(rooms.map(r => [r.id, { name: r.name, hints: r.hints }])),
     r5: { name: "Manager's Office" },
