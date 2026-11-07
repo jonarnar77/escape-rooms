@@ -340,15 +340,25 @@ const letter = () => deskTop() + `
 
 const seatRect = (t, side) => [side === 'l' ? t.x - 62 : t.x + 18, t.y - 22, 44, 30];
 
+function openBallroom(g) {
+  g.take('dancecard');
+  g.set('ballroomOpen');
+  g.say('You slide Miss Ito\'s dance card into the brass slot. Somewhere a bolt draws back, and the waltz grows louder.');
+}
+
 const presentHotspots = [
   { id: 'service', label: 'Service stairs', rect: [18, 146, 96, 190], go: 'r2-room' },
   { id: 'windows', label: 'Windows', rect: [122, 70, 222, 232], say: 'Rain, and beyond it a street that never quite comes into focus.' },
   { id: 'ballroom', label: 'Ballroom doors', rect: [378, 96, 124, 240], when: g => !g.flag('ballroomOpen'),
     sparkle: g => g.has('dancecard'),
-    say: 'Locked. Behind the doors a waltz plays, the same eight bars over and over. A brass slot reads: DANCE CARDS.',
-    use: { dancecard: g => { g.take('dancecard'); g.set('ballroomOpen'); g.say('The card slides into the slot. Somewhere a bolt draws back, and the waltz grows louder.'); } } },
+    click: g => g.has('dancecard') ? openBallroom(g)
+      : g.say(g.flag('itemsDone')
+        ? 'Locked. A brass slot reads: DANCE CARDS. The guests\' notes mentioned the service lift...'
+        : 'Locked. Behind the doors a waltz plays, the same eight bars over and over. A brass slot reads: DANCE CARDS.'),
+    use: { dancecard: g => openBallroom(g) } },
   { id: 'ballroom-open', label: 'Into the ballroom', rect: [378, 96, 124, 240], when: g => g.flag('ballroomOpen'), sparkle: true, go: 'r4-ballroom' },
-  { id: 'lift', label: 'Service lift', rect: [550, 146, 144, 148], go: 'r3-lift', sparkle: g => g.flag('itemsDone') && !g.flag('letterRead') },
+  { id: 'lift', label: g => g.flag('itemsDone') && !g.flag('letterRead') ? 'Service lift (call it down)' : 'Service lift',
+    rect: [550, 146, 144, 148], go: 'r3-lift', sparkle: g => g.flag('itemsDone') && !g.flag('letterRead') },
   { id: 'spike', label: 'Order slips', rect: [708, 256, 42, 52], go: 'r3-orders', sparkle: g => !g.hasNote('orders') },
   { id: 'lostbox', label: g => g.flag('seatingDone') && !g.flag('itemsDone') ? 'Lost property (not empty now)' : 'Lost-property box',
     rect: [748, 270, 50, 40], sparkle: g => g.flag('seatingDone') && !g.flag('itemsDone'),

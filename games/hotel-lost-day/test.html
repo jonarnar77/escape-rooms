@@ -131,7 +131,7 @@ try {
   click('r3-lift', 'call201');                  expect(!g.visible(hs('r3-lift', 'envelope')), 'wrong room: no envelope');
   click('r3-lift', 'call203');                  click('r3-lift', 'envelope');
   expect(A.has('dancecard') && g.state.scene === 'r3-letter', 'letter read, dance card in hand');
-  click('r3-breakfast', 'ballroom', 'dancecard');   expect(A.flag('ballroomOpen'), 'ballroom unlocked');
+  click('r3-breakfast', 'ballroom');            expect(A.flag('ballroomOpen'), 'ballroom unlocked just by clicking, card in hand');
   click('r3-breakfast', 'ballroom-open');       expect(g.state.scene === 'r4-ballroom', 'into the ballroom');
   log.push('breakfast room ✓  (notebook entries: ' + g.state.notes.length + ')');
 } catch (e) { fail.push('ERROR ' + e.message); }
