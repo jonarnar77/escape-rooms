@@ -482,7 +482,7 @@ export default {
 
     'r3-items': {
       type: 'assign',
-      prompt: 'Things left at breakfast yesterday. Click an item to look at it, then click the guest it belongs to.',
+      prompt: 'Things left at breakfast yesterday. Click an item to look at it, then the guest it belongs to. (Your notebook has what you heard in the corridor.)',
       width: 460, height: 230,
       art: guestBoardArt(),
       slots: GUESTS.map((gst, i) => ({ id: gst.id, x: 46 + i * 92, y: 160, r: 26 })),

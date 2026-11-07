@@ -204,6 +204,16 @@ function roomArt(g, past) {
   ` + finish();
 }
 
+// What you notice at each door in the corridor (also written in the notebook:
+// the breakfast room's lost property draws on these).
+const CORRIDOR_SOUNDS = {
+  201: { say: 'Two voices behind the door, murmuring the same sentence over and over.', note: 'two voices murmuring the same sentence, over and over.' },
+  202: { say: 'Silence, and a faint smell of pipe tobacco.', note: 'silence, and the smell of <b>pipe tobacco</b>.' },
+  203: { say: 'Someone is humming a waltz.', note: 'someone humming a <b>waltz</b>.' },
+  205: { say: 'The scratch of a pen on paper. It stops when you knock.', note: 'the scratch of a <b>pen</b> on paper. It stopped when I knocked.' },
+  206: { say: 'Nothing. A "Do Not Disturb" card, dated 6 November.', note: 'nothing; a "Do Not Disturb" card dated 6 November.' },
+};
+
 // The corridor, drawn in true one-point perspective: every point is a 3D position
 // projected toward a single vanishing point, so doors shrink and space out correctly.
 // World units: corridor 2 wide (walls at X = ±1), floor Y = -0.75, ceiling Y = +0.75,
@@ -429,8 +439,11 @@ export default {
         ...DOORS.filter(d => d.room !== '204').map(d => ({
           id: `door${d.room}`, label: `Room ${d.room}`, poly: doorGeom(d).poly,
           room: d.room,
-          say: { 201: 'Two voices behind the door, murmuring the same sentence over and over.', 202: 'Silence. A faint smell of pipe tobacco.',
-            203: 'Someone is humming a waltz.', 205: 'The scratch of a pen on paper. It stops when you knock.', 206: 'Nothing. A "Do Not Disturb" card, dated 6 November.' }[d.room],
+          click: g => {
+            const heard = CORRIDOR_SOUNDS[d.room];
+            g.note(`door-${d.room}`, `Door ${d.room}: ${heard.note}`);
+            g.say(heard.say);
+          },
           use: { key204: g => g.say("Your key doesn't fit. This isn't your room.") },
         })),
       ],
