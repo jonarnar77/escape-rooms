@@ -1,6 +1,6 @@
 import { SYMBOLS } from './symbols.js';
 
-// Shared SVG building blocks for the abandoned-lab look.
+// Shared SVG building blocks for Helix: Sublevel 5 (abandoned lab look).
 // All art is drawn in an 800x600 coordinate space.
 
 export const DEFS = `

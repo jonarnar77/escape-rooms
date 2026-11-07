@@ -1,6 +1,12 @@
-# Helix: Sublevel 5
+# Escape Rooms
 
-A Flash-style point-and-click escape room game. Plain HTML/CSS/JS with no build step, served straight from GitHub Pages.
+Old-school, Flash-style point-and-click escape rooms. Plain HTML/CSS/JS with no build step, served straight from GitHub Pages.
+
+**Play:** https://jonarnar77.github.io/escape-rooms/
+
+| Game | Folder |
+|---|---|
+| Helix: Sublevel 5 | [`games/helix-sublevel-5/`](games/helix-sublevel-5/) (design notes in its `DESIGN.md`) |
 
 ## Run locally
 
@@ -11,26 +17,35 @@ python3 -m http.server 8000
 # open http://localhost:8000
 ```
 
-## Deploy (GitHub Pages)
+## Deploy
 
-Push to GitHub, then go to **Settings → Pages → Deploy from a branch → `main` / root**. That's it. (`.nojekyll` is already included.)
+Every push to `main` goes live on GitHub Pages within a minute or two (`.nojekyll` is included).
 
 ## Layout
 
 ```
-engine/                 reusable engine: knows nothing about this game
-  engine.js             scenes, hotspots, inventory, saving, modals
+index.html              landing page: a card per game, with progress from this browser
+games.js                the list of games shown on the landing page
+engine/                 reusable engine, shared by every game (knows nothing about any one game)
+  engine.js             scenes, hotspots, inventory, saving, hints, difficulty, effects
   engine.css
-  puzzles/              reusable puzzle widgets (keypad, dials, password, mixer, rotate-grid, sliders, clock, sequence)
-games/abandoned-lab/    this game: pure data + SVG art
-  index.js              game definition (title, rooms, start scene)
+  puzzles/              puzzle widgets: keypad, dials, password, mixer, rotate-grid,
+                        sliders, clock, sequence
+games/helix-sublevel-5/
+  index.html            the game's own page (a direct, shareable link)
+  game.js               game definition (title, rooms, start scene, items, puzzles)
   items.js
-  art/common.js         shared drawing helpers (walls, floor, grime)
-  rooms/room1.js        one file per room: art, scenes, puzzles, hints
-  rooms/room2.js … room5.js
+  art/                  shared drawing helpers and area symbols
+  rooms/room1.js …      one file per room: art, scenes, puzzles, hints
+  test.html             automated full-game playthrough
+  DESIGN.md             puzzle design notes
 ```
 
-To make a new game, copy `games/abandoned-lab/` and point `index.html` at it.
+## Adding a new game
+
+1. Copy `games/helix-sublevel-5/` to `games/<new-game>/`. In its `game.js`, give it a new **`id`**, which is also its save-game key, so it must be unique. Then replace the rooms.
+2. Add an entry to `games.js` with the folder, title, tagline, tags and the scene to use as the card picture.
+3. Push. The landing page picks it up automatically, and its picture is drawn live from the game's own art.
 
 ## Authoring cheat-sheet
 
@@ -73,18 +88,16 @@ The player picks easy, medium or hard at "New game". In game data:
 
 ### Debug mode
 
-Open `http://localhost:8000/?debug` to use these authoring tools:
+Open a game with `?debug`, for example `http://localhost:8000/games/helix-sublevel-5/?debug`, to use these authoring tools:
 - Hotspot outlines and ids are shown. Press `h` to toggle them.
 - Live x/y coordinates are shown.
 - **Shift+drag** measures a rectangle and logs `rect: [x, y, w, h]` to the console. This is handy when tracing hotspots over reference images.
-- `?debug&scene=r1-pills` jumps straight to a scene. Add `&difficulty=hard` to test a mode.
+- `games/helix-sublevel-5/?debug&scene=r1-pills` jumps straight to a scene. Add `&difficulty=hard` to test a mode.
 
 ## Testing
 
-`tests/playthrough.html` plays the whole game automatically through the real hotspots, from waking up to the ending, and reports PASS or FAIL. Run it after changing rooms:
+Each game has a `test.html` that plays the whole game automatically through the real hotspots, from start to ending, and reports PASS or FAIL. It uses its own save slot.
 
 ```
-http://localhost:8000/tests/playthrough.html?d=easy     (or medium / hard)
+http://localhost:8000/games/helix-sublevel-5/test.html?d=easy     (or medium / hard)
 ```
-
-It uses its own save slot, so it won't touch your real saved game.

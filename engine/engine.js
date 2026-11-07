@@ -1,6 +1,9 @@
 // Point-and-click escape room engine (Flash-style).
 // Generic: knows nothing about any specific game. A game is a plain data object
-// (see games/abandoned-lab/index.js) with scenes, hotspots, items and puzzles.
+// (see games/helix-sublevel-5/game.js) with scenes, hotspots, items and puzzles.
+//
+// Usage: new Game(rootElement, gameData, { home: '../../' })
+//   home: optional link back to the landing page (adds "All games" to the menus).
 
 import keypad from './puzzles/keypad.js';
 import dials from './puzzles/dials.js';
@@ -46,9 +49,10 @@ function h(tag, attrs = {}, html) {
 const val = (x, g) => (typeof x === 'function' ? x(g) : x);
 
 export class Game {
-  constructor(root, data) {
+  constructor(root, data, options = {}) {
     this.root = root;
     this.data = data;
+    this.home = options.home;
     this.saveKey = `escape-save:${data.id}`;
     this.modalCleanup = [];
     this.hoverLabel = '';
@@ -459,9 +463,11 @@ export class Game {
       <div class="menu">
         <button class="btn big" data-a="new">New game</button>
         ${saved ? '<button class="btn big" data-a="cont">Continue</button>' : ''}
+        ${this.homeButton()}
       </div>`, {
       new: () => this.chooseDifficulty(),
       cont: () => { this.state = saved; this.hideScreen(); this.render(); },
+      home: () => this.goHome(),
     });
   }
 
@@ -489,11 +495,13 @@ export class Game {
       <div class="menu">
         <button class="btn big" data-a="resume">Resume</button>
         <button class="btn big" data-a="restart">Restart game</button>
+        ${this.homeButton()}
       </div>
       <p class="hint">Click objects to interact. Click an item to select it, then click something in the room to use it.
       Select one item and click another to combine. Double-click or "Examine" to inspect. Right-click / Esc deselects.</p>`, {
       resume: () => this.hideScreen(),
       restart: () => { if (confirm('Restart from the beginning? Progress will be lost.')) this.chooseDifficulty(); },
+      home: () => this.goHome(),
     });
   }
 
@@ -507,13 +515,22 @@ export class Game {
     if (this.data.intro) this.say(this.data.intro, 7000);
   }
 
+  homeButton() {
+    return this.home ? '<button class="btn" data-a="home">All games</button>' : '';
+  }
+  goHome() { location.href = this.home; }
+
   showWin(text) {
+    this.state.won = true;
     this.save();
+    // a separate record survives "Play again", so the landing page can keep showing "Escaped ✓"
+    try { localStorage.setItem(`escape-won:${this.data.id}`, JSON.stringify({ difficulty: this.api.difficulty, at: Date.now() })); } catch {}
     this.showScreen(`
       <h1>${this.data.winTitle ?? 'You escaped!'}</h1>
       <p class="sub">${text ?? ''}</p>
-      <div class="menu"><button class="btn big" data-a="again">Play again</button></div>`, {
+      <div class="menu"><button class="btn big" data-a="again">Play again</button>${this.homeButton()}</div>`, {
       again: () => this.chooseDifficulty(),
+      home: () => this.goHome(),
     });
   }
 

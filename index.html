@@ -3,15 +3,165 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Helix: Sublevel 5</title>
-  <link rel="stylesheet" href="engine/engine.css">
+  <title>Escape Rooms</title>
+  <meta name="description" content="Old-school point-and-click escape rooms you can play in your browser.">
+  <style>
+    :root {
+      --bg: #070a08;
+      --panel: #121814;
+      --panel-2: #18201b;
+      --line: #2c3a31;
+      --text: #d6dccf;
+      --muted: #8fa38a;
+      --accent: #b9d4a8;
+      --glow: rgba(140, 220, 120, .35);
+      --amber: #e6c84a;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 50% -10%, #17221b 0%, var(--bg) 60%) fixed, var(--bg);
+      color: var(--text);
+      font-family: "Courier New", Courier, monospace;
+    }
+    /* faint CRT scanlines */
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 10;
+      background: repeating-linear-gradient(to bottom, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+    }
+    main { max-width: 1040px; margin: 0 auto; padding: 56px 16px 40px; }
+
+    header { text-align: center; margin-bottom: 44px; }
+    h1 {
+      margin: 0; font-size: clamp(34px, 7vw, 60px); letter-spacing: .12em; color: var(--accent);
+      text-shadow: 0 0 22px var(--glow);
+    }
+    .blink { animation: blink 1.1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    header p { margin: 12px auto 0; max-width: 560px; color: var(--muted); line-height: 1.5; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 24px; }
+
+    .card {
+      display: flex; flex-direction: column; background: var(--panel); border: 2px solid var(--line);
+      color: inherit; text-decoration: none; transition: border-color .15s, box-shadow .15s, transform .15s;
+    }
+    a.card:hover, a.card:focus-visible {
+      border-color: #6b8a72; box-shadow: 0 0 0 1px #6b8a72, 0 10px 40px rgba(0,0,0,.6), 0 0 30px rgba(140,220,120,.12);
+      transform: translateY(-3px); outline: none;
+    }
+    .thumb { position: relative; aspect-ratio: 4 / 3; background: #000; overflow: hidden; border-bottom: 2px solid var(--line); }
+    .thumb img { width: 100%; height: 100%; display: block; object-fit: cover; }
+    .thumb .status {
+      position: absolute; left: 10px; top: 10px; padding: 4px 9px; font-size: 12px; letter-spacing: .06em;
+      background: rgba(5,10,8,.85); border: 1px solid var(--line); color: var(--muted); text-transform: uppercase;
+    }
+    .status.won { color: #8f8; border-color: #3a6a3a; }
+    .status.progress { color: var(--amber); border-color: #6a5a2a; }
+
+    .body { display: flex; flex-direction: column; gap: 12px; padding: 18px 18px 20px; flex: 1; }
+    .body h2 { margin: 0; font-size: 22px; color: var(--accent); letter-spacing: .04em; }
+    .body p { margin: 0; color: var(--text); line-height: 1.5; font-size: 14px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+    .tags li { font-size: 11px; padding: 3px 8px; border: 1px solid var(--line); color: var(--muted); background: var(--panel-2); }
+    .play {
+      margin-top: auto; align-self: flex-start; padding: 9px 22px; font: inherit; font-size: 15px; font-weight: bold;
+      color: #0c120e; background: var(--accent); border: none; letter-spacing: .08em;
+    }
+    a.card:hover .play { background: #d6f0c4; }
+
+    .card.soon { border-style: dashed; opacity: .7; }
+    .card.soon .thumb { display: grid; place-items: center; color: #3a4a3f; font-size: 64px; }
+    .card.soon .play { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+
+    footer { margin-top: 48px; text-align: center; color: #5f7059; font-size: 12px; line-height: 1.7; }
+    footer a { color: var(--muted); }
+    .error { color: #f88; }
+  </style>
 </head>
 <body>
-  <div id="game"></div>
+  <main>
+    <header>
+      <h1>ESCAPE ROOMS<span class="blink">_</span></h1>
+      <p>Old-school point-and-click escapes. No downloads, no sign-up: look around, pick things up, crack the codes, get out.</p>
+    </header>
+
+    <section class="grid" id="games" aria-label="Games"></section>
+
+    <footer>
+      Your progress is saved in this browser.<br>
+      <a href="https://github.com/jonarnar77/escape-rooms">Source on GitHub</a>
+    </footer>
+  </main>
+
   <script type="module">
-    import { Game } from './engine/engine.js';
-    import data from './games/abandoned-lab/index.js';
-    window.game = new Game(document.getElementById('game'), data);
+    import games from './games.js';
+
+    const grid = document.getElementById('games');
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const read = key => { try { return JSON.parse(localStorage.getItem(key)); } catch { return null; } };
+
+    // A stand-in for the engine's `g` API, so a scene's art can be drawn without running the game.
+    const stubApi = (flags = {}) => ({
+      flag: k => !!flags[k], get: k => flags[k], has: () => false, solved: () => false,
+      difficulty: 'medium', diff: m => m.medium, scene: '',
+    });
+
+    function thumbnail(data, spec) {
+      const scene = data.scenes[spec?.scene] ?? data.scenes[data.start];
+      const art = typeof scene.art === 'function' ? scene.art(stubApi(spec?.flags)) : scene.art ?? '';
+      // drawn into its own <img> so each game's SVG ids can't clash with another's
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">${art}</svg>`;
+      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    }
+
+    function progress(data) {
+      const won = read(`escape-won:${data.id}`);
+      const save = read(`escape-save:${data.id}`);
+      if (save && !save.won) {
+        const room = data.rooms?.[data.scenes[save.scene]?.room]?.name;
+        return { cls: 'progress', text: `In progress${room ? ' · ' + room.replace(/^Room \d+ · /, '') : ''}`, button: 'Continue' };
+      }
+      if (won) return { cls: 'won', text: `Escaped ✓ · ${won.difficulty}`, button: 'Play again' };
+      return { cls: '', text: 'Not started', button: 'Play' };
+    }
+
+    for (const game of games) {
+      const card = document.createElement('a');
+      card.className = 'card';
+      card.href = `games/${game.folder}/`;
+      grid.append(card);
+      try {
+        const { default: data } = await import(`./games/${game.folder}/game.js`);
+        const p = progress(data);
+        card.innerHTML = `
+          <div class="thumb">
+            <img src="${thumbnail(data, game.thumbnail)}" alt="">
+            <span class="status ${p.cls}">${esc(p.text)}</span>
+          </div>
+          <div class="body">
+            <h2>${esc(game.title)}</h2>
+            <p>${esc(game.tagline)}</p>
+            <ul class="tags">${(game.tags ?? []).map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+            <span class="play">${p.button} ▸</span>
+          </div>`;
+      } catch (e) {
+        console.error(e);
+        card.innerHTML = `<div class="body"><h2>${esc(game.title)}</h2><p class="error">Couldn't load this game.</p></div>`;
+      }
+    }
+
+    const soon = document.createElement('div');
+    soon.className = 'card soon';
+    soon.innerHTML = `
+      <div class="thumb" aria-hidden="true">?</div>
+      <div class="body">
+        <h2>Next escape</h2>
+        <p>Another room is being built. Check back soon.</p>
+        <span class="play">Coming soon</span>
+      </div>`;
+    grid.append(soon);
   </script>
 </body>
 </html>

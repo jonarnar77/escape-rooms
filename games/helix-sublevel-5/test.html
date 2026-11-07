@@ -1,18 +1,18 @@
 <!doctype html>
 <!--
   Automated full-game playthrough. Open in a browser (served):
-    http://localhost:8000/tests/playthrough.html            (medium)
-    http://localhost:8000/tests/playthrough.html?d=hard     (easy | medium | hard)
+    http://localhost:8000/games/helix-sublevel-5/test.html            (medium)
+    http://localhost:8000/games/helix-sublevel-5/test.html?d=hard     (easy | medium | hard)
   It plays every room through the real hotspots, checks each one is clickable at
   that moment, applies each puzzle's solution, and reports PASS/FAIL.
   Puzzle widgets themselves are not clicked here, only opened.
 -->
-<html><head><meta charset="utf-8"><title>Playthrough test</title><link rel="stylesheet" href="../engine/engine.css">
+<html><head><meta charset="utf-8"><title>Playthrough test</title><link rel="stylesheet" href="../../engine/engine.css">
 <style>#out{position:fixed;top:8px;left:8px;z-index:99;background:#000c;color:#cfc;padding:10px;font:13px monospace;white-space:pre}</style></head>
 <body><div id="game"></div><pre id="out">running…</pre>
 <script type="module">
-import { Game } from '../engine/engine.js';
-import data from '../games/abandoned-lab/index.js';
+import { Game } from '../../engine/engine.js';
+import data from './game.js';
 const diff = new URLSearchParams(location.search).get('d') || 'medium';
 data.id = 'playthrough-test';                 // don't touch the real save game
 history.replaceState(null, '', location.pathname);
