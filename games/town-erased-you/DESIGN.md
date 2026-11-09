@@ -54,9 +54,16 @@ green ink. Your childhood map (drawn with Wren) is in your bag. Only Station Roa
 - Inside: a map Wren drew the day before you left, *"So you don't forget the way home. W."*
   **Keepsake: Wren's drawing.** Press Street redraws.
 
-### 3. Newspaper office: *the front page* (sketch)
-Two prints of the same edition. The reprint removes your one front-page story; the column widths give it
-away. Typeset the headline back.
+### 3. The Wending Gazette: *the night you found Wren*
+- The framed front page for 18 August 2009 is a REPRINT: a filler headline about bins in the wrong typeface,
+  and a hole where the photograph was. Weather SUNNY 21°, advert Penhale's Bakery.
+- The docket on the spike, in green ink: *"Story withdrawn at the family's request. W. Ashby, Town Records."*
+  (The eraser shares your surname.) The typewriter holds an unfinished notice: *"Lost:"*.
+- The printing plates read backwards: take the compositor's mirror. Pick the plate that matches the reprint
+  except for the story; its date is scraped off. Easy: one scraped plate. Medium: two (weather differs).
+  Hard: three (weather and advert both needed).
+- The press: plate in the bed, ink on the disc, pull the lever. Out comes *FOUND AT DAWN*: Wren, 11, lost
+  in the storm, found by Robin, 14, at the old lighthouse. **Keepsake: the front page.** Market Street redraws.
 
 ### 4. Town hall: *the family register* (sketch)
 A register page was cut out and rewritten; a pencil rubbing of the page beneath brings back the original:

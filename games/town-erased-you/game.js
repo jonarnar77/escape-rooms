@@ -3,9 +3,10 @@ import items from './items.js';
 import town from './rooms/town.js';
 import room1 from './rooms/room1.js';
 import room2 from './rooms/room2.js';
+import room3 from './rooms/room3.js';
 
 // Each room module exports { id, name, hints, setup?, scenes, puzzles }.
-const rooms = [town, room1, room2];
+const rooms = [town, room1, room2, room3];
 const scenes = Object.assign({}, ...rooms.map(r => r.scenes));
 
 export default {

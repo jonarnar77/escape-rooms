@@ -60,6 +60,32 @@ export default {
       <path d="M22 72 Q36 58 50 62 Q66 66 70 50 Q56 40 44 36 Q60 24 78 26" stroke="${INK}" stroke-width="4" fill="none"/></g>`,
     examine: zoom('r2-drawing', 'drawingReturn'),
   },
+  mirror: {
+    name: 'compositor\'s mirror',
+    description: 'A small mirror in a wooden frame. Printers used it to read plates and type, which are made back to front.',
+    icon: `<g transform="rotate(-10 50 50)"><rect x="26" y="14" width="48" height="70" rx="5" fill="#8a6a44"/>
+      <rect x="32" y="20" width="36" height="58" rx="3" fill="#c8dce4"/><path d="M38 30 l14 -6 M38 44 l24 -10" stroke="#fff" stroke-width="3"/></g>`,
+  },
+  ink: {
+    name: 'tin of ink',
+    description: 'Printer\'s ink, thick and black.',
+    icon: `<rect x="24" y="34" width="52" height="44" rx="4" fill="#1a1a1e"/><rect x="20" y="26" width="60" height="12" rx="3" fill="#3a3a40"/>
+      <rect x="32" y="48" width="36" height="14" fill="#c9a33b"/>`,
+  },
+  plate: {
+    name: 'printing plate',
+    description: 'The front page plate for 18 August 2009, with its date scraped off. Back to front, of course.',
+    icon: `<g transform="rotate(-8 50 50)"><rect x="22" y="12" width="56" height="76" fill="#a8acae" stroke="#6a6e70" stroke-width="3"/>
+      <path d="M70 22 h-40 M70 30 h-30 M70 72 h-40 M70 78 h-40" stroke="#26282a" stroke-width="3"/><rect x="34" y="38" width="32" height="26" fill="#26282a" opacity=".4"/></g>`,
+  },
+  frontpage: {
+    name: 'front page (a keepsake)',
+    description: '"FOUND AT DAWN." The Wending Gazette, 18 August 2009, as it was first printed.',
+    icon: `<g transform="rotate(6 50 50)"><rect x="20" y="10" width="60" height="80" fill="#f2ecdc" stroke="#8a7a5a"/>
+      <rect x="26" y="16" width="48" height="6" fill="#1e1a16"/><rect x="26" y="28" width="36" height="5" fill="#1e1a16"/>
+      <rect x="26" y="38" width="30" height="24" fill="#1e1a16" opacity=".35"/><path d="M26 70 h48 M26 76 h48 M26 82 h40" stroke="#1e1a16" stroke-width="2"/></g>`,
+    examine: zoom('r3-story', 'storyReturn'),
+  },
   postcard: {
     name: 'postcard (a keepsake)',
     description: 'Your first postcard home. "Tell Wren I\'ll be home for the summer. Promise."',

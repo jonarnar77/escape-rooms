@@ -107,7 +107,32 @@ try {
   click('r2-mug', 'paper');                     expect(A.has('drawing') && A.flag('street2'), "Wren's drawing kept, Press Street back");
   click('r2-cafe', 'door');                     expect(g.state.scene === 'r0-map', 'back to the map');
   click('r0-map', 'map-hall');                  expect(g.state.scene === 'r0-map', 'town hall still faded');
+  click('r0-map', 'map-paper');                 expect(g.state.scene === 'r3-office', 'into the Gazette');
   log.push('café ✓  (notebook entries: ' + g.state.notes.length + ')');
+
+  // NEWSPAPER
+  click('r3-office', 'lever');                  expect(!A.flag('printed'), 'the press prints nothing without a plate');
+  click('r3-office', 'rack');                   expect(g.modal.hidden, 'plates need the mirror first');
+  click('r3-office', 'frame2');                 expect(A.flag('r3Reprint'), 'the reprint noticed');
+  click('r3-office', 'docket');                 expect(A.hasNote('r3-docket'), 'W. Ashby');
+  click('r3-office', 'mirror');                 expect(A.has('mirror'), 'mirror taken');
+  click('r3-office', 'rack');                   expect(!g.modal.hidden, 'plates open with the mirror');
+  expect(document.querySelectorAll('.sel-opt').length === { easy: 4, medium: 5, hard: 6 }[diff], 'plates on the rack: ' + document.querySelectorAll('.sel-opt').length);
+  choose(['p17']); await wait(900);             expect(!A.has('plate'), 'a dated plate is wrong');
+  if (diff !== 'easy') { choose(['fete']); await wait(900); expect(!A.has('plate'), 'the rainy scraped plate is wrong'); }
+  if (diff === 'hard') { choose(['harbour']); await wait(900); expect(!A.has('plate'), 'the Trewin scraped plate is wrong'); }
+  choose(['real']); await wait(900);            expect(A.has('plate'), 'the real plate');
+  click('r3-office', 'lever');                  expect(!A.flag('printed'), 'no print without a plate in the bed');
+  click('r3-office', 'inkdisc', 'plate');       expect(A.has('plate'), 'plate does not go on the ink disc');
+  click('r3-office', 'bed', 'plate');           expect(A.flag('plateIn'), 'plate in the bed');
+  click('r3-office', 'lever');                  expect(!A.flag('printed'), 'no print without ink');
+  click('r3-office', 'ink');                    expect(A.has('ink'), 'ink taken');
+  click('r3-office', 'inkdisc', 'ink');         expect(A.flag('inked'), 'press inked');
+  click('r3-office', 'lever');                  expect(A.flag('printed') && g.state.scene === 'r3-printed', 'printed');
+  click('r3-printed', 'page');                  expect(A.has('frontpage') && A.flag('street3'), 'front page kept, Market Street back');
+  click('r3-office', 'door');                   expect(g.state.scene === 'r0-map', 'back to the map');
+  click('r0-map', 'map-home');                  expect(g.state.scene === 'r0-map', 'Lantern Row still faded');
+  log.push('gazette ✓  (notebook entries: ' + g.state.notes.length + ')');
 } catch (e) { fail.push('ERROR ' + e.message); }
 g.clearSave();
 document.getElementById('out').textContent =
