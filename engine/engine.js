@@ -103,7 +103,11 @@ export class Game {
       set: (k, v = true) => { game.state.flags[k] = v; },
       unset: k => { delete game.state.flags[k]; },
       has: id => game.state.inventory.includes(id),
-      give: id => { if (!game.state.inventory.includes(id)) game.state.inventory.push(id); },
+      give: id => {
+        if (game.state.inventory.includes(id)) return;
+        game.state.inventory.push(id);
+        game.invPage = Math.floor((game.state.inventory.length - 1) / SLOTS);   // show the new item
+      },
       take: id => {
         game.state.inventory = game.state.inventory.filter(i => i !== id);
         if (game.state.selected === id) game.state.selected = null;
@@ -170,12 +174,23 @@ export class Game {
       const slot = h('div', { class: 'slot' });
       slot.addEventListener('click', () => this.clickSlot(i));
       slot.addEventListener('dblclick', () => {
-        const id = this.state.inventory[i];
+        const id = this.state.inventory[this.invPage * SLOTS + i];
         if (id) this.examine(id);
       });
       this.slots.push(slot);
       this.inv.append(slot);
     }
+    // more items than slots: page through them
+    this.invPage = 0;
+    this.pager = h('div', { class: 'inv-pager', hidden: '' });
+    this.pageBtns = [-1, 1].map(d => {
+      const b = h('button', { class: 'btn', title: d < 0 ? 'Previous items' : 'More items' }, d < 0 ? '◀' : '▶');
+      b.addEventListener('click', () => { this.invPage += d; this.renderInventory(); });
+      return b;
+    });
+    this.pageNum = h('span', { class: 'inv-pagenum' });
+    this.pager.append(this.pageBtns[0], this.pageNum, this.pageBtns[1]);
+    this.inv.append(this.pager);
     const side = h('div', { class: 'inv-side' });
     const exBtn = h('button', { class: 'btn' }, 'Examine');
     exBtn.addEventListener('click', () => {
@@ -315,8 +330,14 @@ export class Game {
 
   renderInventory() {
     const { inventory, selected } = this.state;
+    const pages = Math.max(1, Math.ceil(inventory.length / SLOTS));
+    this.invPage = Math.min(Math.max(this.invPage ?? 0, 0), pages - 1);
+    this.pager.hidden = pages < 2;
+    this.pageBtns[0].disabled = this.invPage === 0;
+    this.pageBtns[1].disabled = this.invPage === pages - 1;
+    this.pageNum.textContent = `${this.invPage + 1}/${pages}`;
     this.slots.forEach((slot, i) => {
-      const id = inventory[i];
+      const id = inventory[this.invPage * SLOTS + i];
       const item = id && this.data.items[id];
       slot.classList.toggle('selected', !!id && id === selected);
       slot.innerHTML = item ? `<svg viewBox="0 0 100 100">${val(item.icon, this.api) || ''}</svg>` : '';
@@ -359,7 +380,7 @@ export class Game {
   }
 
   clickSlot(i) {
-    const id = this.state.inventory[i];
+    const id = this.state.inventory[this.invPage * SLOTS + i];
     if (!id) return;
     const sel = this.state.selected;
     if (!sel || sel === id) {

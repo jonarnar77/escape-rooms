@@ -183,6 +183,12 @@ try {
   click('r5-tin', 'note');                      expect(A.has('goodbye') && A.flag('street5') && g.state.scene === 'r5-note', 'note kept, Tower Steps back');
   click('r5-front', 'gate');                    expect(g.state.scene === 'r0-map', 'back to the map');
   click('r0-map', 'map-tower');                 expect(g.state.scene === 'r0-map', 'tower reached but not built yet');
+  expect(!A.has('mirror'), 'mirror went back after the plates');
+  // inventory paging: a ninth item shows up on page 2
+  A.give('pencil'); A.give('ink'); g.render();
+  expect(!g.pager.hidden && g.invPage === 1 && g.slots[1].title === g.itemName('ink'), 'new item shown on page 2');
+  g.pageBtns[0].click();                        expect(g.invPage === 0 && g.slots[0].title === g.itemName('map'), 'back to page 1');
+  A.take('pencil'); A.take('ink'); g.render();  expect(g.pager.hidden && g.invPage === 0, 'pager hides again');
   log.push('lantern row ✓  (notebook entries: ' + g.state.notes.length + ')');
 } catch (e) { fail.push('ERROR ' + e.message); }
 g.clearSave();

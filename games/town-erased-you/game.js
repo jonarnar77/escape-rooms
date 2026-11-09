@@ -30,6 +30,12 @@ export default {
 
   setup: g => rooms.forEach(r => r.setup?.(g)),
 
+  // Repairs saves from older versions of the game when the player presses Continue.
+  migrate: g => {
+    // the compositor's mirror used to stay in the inventory after the plates
+    if (g.flag('took:plate') && g.has('mirror')) g.take('mirror');
+  },
+
   rooms: Object.fromEntries(rooms.map(r => [r.id, { name: r.name, hints: r.hints }])),
   items,
   scenes,

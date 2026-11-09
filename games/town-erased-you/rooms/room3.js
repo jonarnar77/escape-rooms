@@ -158,7 +158,7 @@ const office = g => `${DEFS}
   <path d="M278 304 h18 M278 310 h14" stroke="${INK}" stroke-width="1.5" transform="rotate(-6 288 307)"/>
 
   <!-- compositor's mirror and type cases -->
-  ${g.flag('took:mirror') ? `<path d="M424 118 v8" stroke="#5a5a60" stroke-width="2"/>`
+  ${g.has('mirror') ? `<path d="M424 118 v8" stroke="#5a5a60" stroke-width="2"/>`
     : `<path d="M424 118 l-14 14 M424 118 l14 14" stroke="#5a5a60" stroke-width="1.5"/>
        <rect x="402" y="130" width="44" height="58" rx="4" fill="#8a6a44"/><rect x="408" y="136" width="32" height="46" rx="2" fill="#c8dce4"/>
        <path d="M412 142 l10 -4 M412 152 l18 -8" stroke="#fff" stroke-width="2" opacity=".7"/>`}
@@ -295,8 +295,13 @@ export default {
             g.say('Paper still in the roller: "NOTICES. Lost:" And then nothing. Someone sat here and could not finish the line.', 6000);
           } },
         { id: 'docket', label: 'Docket on the spike', rect: [266, 284, 44, 52], go: 'r3-docket', sparkle: g => g.flag('r3Reprint') && !g.hasNote('r3-docket') },
-        { id: 'mirror', label: 'Small mirror', rect: [398, 116, 52, 76], take: 'mirror',
-          say: 'A compositor\'s mirror. Printers used it to read type and plates, which are made back to front.' },
+        { id: 'mirror', label: 'Small mirror', rect: [398, 116, 52, 76], when: g => !g.has('mirror'),
+          click: g => {
+            if (g.flag('took:plate')) return g.say('The compositor\'s mirror, back on its hook. You have the plate you needed.');
+            g.give('mirror');
+            g.set('took:mirror');
+            g.say('A compositor\'s mirror. Printers used it to read type and plates, which are made back to front.');
+          } },
         { id: 'cases', label: 'Type cases', rect: [380, 232, 90, 238], say: 'Drawers of lead letters, every one of them backwards.' },
         { id: 'ink', label: 'Tin of ink', rect: [494, 152, 40, 34], take: 'ink', say: 'Printer\'s ink, thick and black, still soft under the lid.' },
         { id: 'rack', label: g => g.has('mirror') && !g.flag('took:plate') ? 'Printing plates (use the mirror)' : 'Printing plates', rect: [484, 250, 86, 220],
@@ -388,7 +393,8 @@ export default {
       solve: g => {
         g.give('plate');
         g.set('took:plate');
-        g.say('Same weather, same advert, but a different story: FOUND AT DAWN, and a photograph. Someone scraped the date off this one.', 7000);
+        g.take('mirror');
+        g.say('Same weather, same advert, but a different story: FOUND AT DAWN, and a photograph. Someone scraped the date off this one. You hang the mirror back on its hook.', 8000);
       },
     },
   },
