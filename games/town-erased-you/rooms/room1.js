@@ -218,8 +218,8 @@ const stampArt = g => {
   <rect x="250" y="440" width="300" height="40" fill="#2a2a2a"/>
   <rect x="320" y="200" width="160" height="240" fill="#3a3a3a"/>
   <rect x="300" y="120" width="200" height="86" rx="34" fill="#7a4a2a"/>
-  <rect x="334" y="290" width="132" height="54" fill="#f4ecd8" stroke="#1a1a1a" stroke-width="4"/>
-  <text x="400" y="326" font-size="22" text-anchor="middle" ${mono} font-weight="bold" fill="#1a1a1a">${face}</text>
+  <rect x="326" y="290" width="148" height="54" fill="#f4ecd8" stroke="#1a1a1a" stroke-width="4"/>
+  <text x="400" y="324" font-size="19" text-anchor="middle" ${mono} font-weight="bold" fill="#1a1a1a">${face}</text>
   <text x="400" y="372" font-size="12" text-anchor="middle" ${serif} fill="#c8c0b0">LITTLE WENDING · P.O.</text>
   ${paper(560, 380, 180, 120, { tint: '#f4ecd8', rot: 6 })}
   <g transform="rotate(6 650 440)" opacity=".85">
