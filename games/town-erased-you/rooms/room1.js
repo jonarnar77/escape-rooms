@@ -242,9 +242,9 @@ const ENVELOPE_FRONT = (peeled) => `
     <text x="341" y="298" font-size="20" text-anchor="middle" ${hand} fill="${INK}" transform="rotate(-2 341 290)">NO SUCH PERSON</text>`}`;
 
 const envelopeArt = () => `${tableTop(6)}${ENVELOPE_FRONT(false)}
-  <g opacity=".35" stroke="#8a7a5a" stroke-width="3" fill="none">
-    <circle cx="500" cy="372" r="11"/><path d="M511 372 h46 M545 372 v9 M553 372 v12"/></g>
-  <text x="400" y="480" font-size="15" text-anchor="middle" ${serif} font-style="italic" fill="#f4ecd8">Your old address. Something small and hard is inside, the shape of a key.</text>
+  <ellipse cx="530" cy="378" rx="34" ry="12" fill="#000" opacity=".08" filter="url(#tSoft)"/>
+  <path d="M498 372 q32 -10 64 2" stroke="#fff" stroke-width="2" opacity=".25" fill="none"/>
+  <text x="400" y="480" font-size="15" text-anchor="middle" ${serif} font-style="italic" fill="#f4ecd8">Your old address. There is something small and hard inside.</text>
   <text x="400" y="504" font-size="15" text-anchor="middle" ${serif} font-style="italic" fill="#f4ecd8">It is sealed tight. Tearing it open could rip what is inside.</text>
   ${finish()}`;
 
@@ -430,7 +430,7 @@ export default {
             : g.puzzle('r1-sort') },
         { id: 'letter', label: 'A letter', rect: [186, 306, 104, 80], take: 'letter',
           when: g => g.flag('sorted'),
-          say: 'It fell from behind the rack. It is addressed to 3 Lantern Row: your old house. A green label covers the name: NO SUCH PERSON. Something small and hard is sealed inside. It feels like a key.' },
+          say: 'It fell from behind the rack. It is addressed to 3 Lantern Row: your old house. A green label covers the name: NO SUCH PERSON. There is something small and hard inside.' },
         { id: 'kettle', label: 'Kettle', rect: [470, 250, 100, 74], sparkle: g => g.has('letter'),
           click: g => g.say(g.has('letter')
             ? 'Still warm, steam curling from the spout. Enough to soften old glue.'

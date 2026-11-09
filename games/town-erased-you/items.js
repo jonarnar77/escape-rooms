@@ -23,7 +23,7 @@ export default {
   },
   letter: {
     name: 'sealed letter',
-    description: 'An old letter for 3 Lantern Row. A green label over the name says NO SUCH PERSON. Something like a key is sealed inside.',
+    description: 'An old letter for 3 Lantern Row. A green label over the name says NO SUCH PERSON. There is something small and hard inside.',
     icon: env(`<path d="M22 56 h36 M22 64 h28" stroke="#2a2440" stroke-width="3"/>
       <rect x="18" y="40" width="40" height="10" fill="#f4f8f0" stroke="${INK}" stroke-width="2"/>`),
     examine: zoom('r1-envelope', 'envReturn'),
