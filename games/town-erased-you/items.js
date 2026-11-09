@@ -1,5 +1,6 @@
 // Inventory items for The Town That Erased You. Icons are drawn in a 100x100 box.
 import { INK } from './art/common.js';
+import { openMap } from './rooms/town.js';
 
 const env = (inner = '', tint = '#efe4c8') => `
   <g transform="rotate(-8 50 50)">
@@ -18,7 +19,7 @@ export default {
       <path d="M36 16 V78 M62 24 V86" stroke="#c8b48a" stroke-width="2"/>
       <path d="M20 70 Q34 52 48 56 T76 40" stroke="#3a3450" stroke-width="4" fill="none"/>
       <circle cx="76" cy="40" r="5" fill="#d84a3a"/></g>`,
-    examine: g => g.go('r0-map'),
+    examine: openMap,
   },
   letter: {
     name: 'sealed letter',

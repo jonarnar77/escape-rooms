@@ -31,6 +31,12 @@ export const streetOpen = (g, i) => i === 0 || g.flag(`street${i}`);
 /** A place is reachable once the street leading to it is back. */
 export const reached = (g, i) => i <= 1 || streetOpen(g, i - 1);
 
+/** Open the map; its back arrow returns to the scene you opened it from. */
+export function openMap(g) {
+  if (g.scene !== 'r0-map') g.set('mapReturn', g.scene);
+  g.go('r0-map');
+}
+
 /** Called by each room when its keepsake is taken: street i comes back on the map. */
 export function restoreStreet(g, i) {
   g.set(`street${i}`);
@@ -228,13 +234,14 @@ export default {
         { id: 'tower', label: 'Clock tower', rect: [656, 120, 42, 120],
           say: 'The clock tower on the hill. Its hands stand still at twenty past four.' },
         { id: 'town', label: 'Into town', rect: [734, 250, 62, 128], sparkle: true,
-          click: g => g.go('r0-map') },
+          click: g => openMap(g) },
       ],
     },
 
     'r0-map': {
       room: 'r0',
       art: mapArt,
+      nav: { back: g => g.get('mapReturn') ?? 'r0-station' },
       enter: g => {
         if (g.flag('mapSeen')) return;
         g.set('mapSeen');

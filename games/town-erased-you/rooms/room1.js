@@ -11,7 +11,7 @@
 // Difficulty: EASY spells out the code format; MEDIUM/HARD abbreviate addresses; HARD randomises the date.
 
 import { DEFS, finish, paper, tableTop, wallClock, envelope, hand, serif, mono, INK, rng } from '../art/common.js';
-import { restoreStreet } from './town.js';
+import { restoreStreet, openMap } from './town.js';
 
 // ---------------------------------------------------------------- data
 
@@ -408,7 +408,7 @@ export default {
           click: g => g.flag('hatchOpen') ? g.go('r1-back') : g.puzzle('r1-hatch') },
         { id: 'door', label: 'Back to the map', rect: [712, 134, 84, 336],
           sparkle: g => g.flag('took:postcard'),
-          click: g => g.go('r0-map') },
+          click: g => openMap(g) },
       ],
     },
 

@@ -79,6 +79,8 @@ try {
   click('r1-post', 'boxes', 'key7');            expect(!A.flag('boxOpen'), 'the wall of boxes only nudges');
   click('r1-post', 'box7', 'key7');             expect(A.flag('boxOpen') && g.state.scene === 'r1-box', 'box 7 opens');
   click('r1-box', 'postcards');                 expect(A.has('postcard') && A.flag('street1'), 'postcard kept, Harbour Lane back');
+  g.go('r1-post'); g.examine('map');            expect(g.state.scene === 'r0-map', 'map opens from the bag');
+  g.navigate('back');                           expect(g.state.scene === 'r1-post', 'map closes back to where you were');
   click('r1-post', 'door');                     expect(g.state.scene === 'r0-map', 'back to the map');
   click('r0-map', 'map-paper');                 expect(g.state.scene === 'r0-map', 'newspaper still faded');
   click('r0-map', 'map-cafe');                  // reachable now (not built yet)
