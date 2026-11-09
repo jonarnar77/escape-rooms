@@ -93,6 +93,16 @@ green ink. Your childhood map (drawn with Wren) is in your bag. Only Station Roa
   me till then?* Under it, in green: *"I wound it every day. Then the summer ended, and I stopped it at
   twenty past four. W."* **Keepsake: your note.** Tower Steps redraws.
 
-### 6. Clock tower: *the goodbye* (sketch)
-Wren's room, full of green ink. The tower clock stopped the summer you didn't come. Use the six keepsakes
-to set it going again. Wren is there. An ending, not an escape.
+### 6. Clock tower: *the goodbye*
+- Ground floor: Wren's archive. Boxes labelled in green: ROBIN: POST, ROBIN: PHOTOGRAPHS... The
+  pendulum hangs still, the weights have run down. A desk with the green ink.
+- Clock room: the back of the great clock face, hands at 4.20. Wren on a crate by the window, with a
+  ledger: *THINGS TO FORGET*, six lines crossed out (our town, the promise, the way home, the night of
+  the storm, why Mum chose our names, twenty past four).
+- Give Wren the six keepsakes (the map and one from each place), any order. Each is a short scene, and
+  its line comes back. After the sixth, Wren hands you the winding crank: *"You asked me to wind it till
+  you came back. You're back. You do it."*
+- Wind the mechanism, then set the hands to the right time: the station clock, seen from the tower
+  window (easy reads it out; hard picks a random time). 4.20 is refused: *"Never that time again."*
+- The clock strikes; the town remembers. Ending: the two of you on Tower Steps. The welcome board's
+  green 2 is gone. *Birds always come home.*

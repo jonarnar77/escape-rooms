@@ -182,7 +182,7 @@ try {
   click('r5-tin', 'list');                      expect(A.hasNote('r5-list'), 'Wren\'s list');
   click('r5-tin', 'note');                      expect(A.has('goodbye') && A.flag('street5') && g.state.scene === 'r5-note', 'note kept, Tower Steps back');
   click('r5-front', 'gate');                    expect(g.state.scene === 'r0-map', 'back to the map');
-  click('r0-map', 'map-tower');                 expect(g.state.scene === 'r0-map', 'tower reached but not built yet');
+  click('r0-map', 'map-tower');                 expect(g.state.scene === 'r6-base', 'up Tower Steps to the clock tower');
   expect(!A.has('mirror'), 'mirror went back after the plates');
   // inventory paging: a ninth item shows up on page 2
   A.give('pencil'); A.give('ink'); g.render();
@@ -190,6 +190,35 @@ try {
   g.pageBtns[0].click();                        expect(g.invPage === 0 && g.slots[0].title === g.itemName('map'), 'back to page 1');
   A.take('pencil'); A.take('ink'); g.render();  expect(g.pager.hidden && g.invPage === 0, 'pager hides again');
   log.push('lantern row ✓  (notebook entries: ' + g.state.notes.length + ')');
+
+  // CLOCK TOWER
+  click('r6-base', 'boxes');                    expect(A.hasNote('r6-boxes'), 'archive boxes');
+  click('r6-base', 'stairs');                   expect(g.state.scene === 'r6-clock' && A.flag('r6Up'), 'up to the clock room');
+  click('r6-clock', 'face');                    expect(g.modal.hidden, 'clock face will not move before winding');
+  click('r6-clock', 'mechanism');               expect(!A.flag('wound'), 'no crank yet');
+  click('r6-clock', 'wren');                    expect(A.get('wrenTalk') === 1, 'Wren talks');
+  click('r6-clock', 'ledger');                  expect(g.state.scene === 'r6-ledger' && A.hasNote('r6-ledger'), 'the ledger');
+  click('r6-ledger', 'page', 'postcard');       expect(A.flag('gave:postcard') && !A.has('postcard'), 'postcard given via the ledger');
+  for (const it of ['map', 'drawing', 'frontpage', 'rubbing']) {
+    click('r6-clock', 'wren', it);              expect(A.flag('gave:' + it), 'gave Wren ' + it);
+  }
+  expect(!A.has('crank'), 'no crank until all six');
+  click('r6-clock', 'wren', 'goodbye');         expect(A.has('crank'), 'all six given: Wren hands over the crank');
+  click('r6-clock', 'mechanism', 'crank');      expect(A.flag('wound'), 'clock wound');
+  click('r6-clock', 'window');                  expect(g.state.scene === 'r6-window', 'out of the window');
+  click('r6-window', 'station');                expect(A.hasNote('r6-station'), 'station clock seen');
+  click('r6-clock', 'face');                    expect(!g.modal.hidden, 'clock puzzle opens');
+  clk('go');                                    expect(!A.flag('clockGoing'), '4.20 is refused');
+  const st = data.puzzles['r6-time'];
+  { // turn the hands from 4:20 to the station time
+    const t = A.get('r6Station') ?? (diff === 'hard' ? { h: 11, m: 50 } : { h: 10, m: 35 });
+    for (let i = 0; i < ((t.h - 4 + 12) % 12); i++) clk('h+');
+    for (let i = 0; i < ((t.m - 20 + 60) % 60) / 5; i++) clk('m+');
+    clk('go'); await wait(1100);
+  }
+  expect(A.flag('clockGoing') && g.state.scene === 'r6-end', 'clock going: the ending');
+  click('r6-end', 'home');                      expect(g.state.won, 'game won');
+  log.push('clock tower ✓  (notebook entries: ' + g.state.notes.length + ')');
 } catch (e) { fail.push('ERROR ' + e.message); }
 g.clearSave();
 document.getElementById('out').textContent =

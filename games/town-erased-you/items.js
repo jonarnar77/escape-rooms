@@ -119,6 +119,12 @@ export default {
       <path d="M26 30 h20 M26 42 h44 M26 52 h40 M26 62 h44" stroke="#2a3a7a" stroke-width="3"/><path d="M26 76 h40" stroke="${INK}" stroke-width="3"/></g>`,
     examine: zoom('r5-note', 'goodbyeReturn'),
   },
+  crank: {
+    name: 'winding crank',
+    description: 'A heavy iron crank for the tower clock. Wren gave it to you.',
+    icon: `<g transform="rotate(-20 50 50)"><path d="M24 70 V30 H70" stroke="#5a5a60" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <rect x="64" y="22" width="16" height="16" fill="#3a3a40"/><rect x="18" y="66" width="12" height="22" rx="4" fill="#7a4a2a"/></g>`,
+  },
   postcard: {
     name: 'postcard (a keepsake)',
     description: 'Your first postcard home. "Tell Wren I\'ll be home for the summer. Promise."',

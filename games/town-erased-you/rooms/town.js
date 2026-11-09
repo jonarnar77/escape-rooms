@@ -14,7 +14,7 @@ export const PLACES = [
   { id: 'paper', name: 'Newspaper', x: 630, y: 372, scene: 'r3-office' },
   { id: 'hall', name: 'Town hall', x: 420, y: 282, scene: 'r4-hall' },
   { id: 'home', name: 'Lantern Row', x: 214, y: 196, scene: 'r5-front' },
-  { id: 'tower', name: 'Clock tower', x: 610, y: 120 },
+  { id: 'tower', name: 'Clock tower', x: 610, y: 120, scene: 'r6-base' },
 ];
 
 // Street i joins PLACES[i] to PLACES[i + 1]. Street 0 is always there.
@@ -163,8 +163,8 @@ function stationArt(g) {
   <text x="486" y="146" font-size="13" text-anchor="middle" ${serif} fill="#2a2440">Little Wending</text>
   <text x="497" y="172" font-size="13" text-anchor="end" ${serif} fill="#2a2440">pop. 2,41</text>
   <text x="498" y="172" font-size="13" ${serif} fill="#2a2440">3</text>
-  <path d="M496 174 l10 -13" stroke="${INK}" stroke-width="1.6"/>
-  <text x="506" y="162" font-size="12" ${hand} fill="${INK}">2</text>
+  ${g.flag('clockGoing') ? '' : `<path d="M496 174 l10 -13" stroke="${INK}" stroke-width="1.6"/>
+  <text x="506" y="162" font-size="12" ${hand} fill="${INK}">2</text>`}
   <!-- bench -->
   <rect x="200" y="320" width="150" height="10" fill="#7a4a2a"/><rect x="200" y="300" width="150" height="10" fill="#7a4a2a"/>
   <rect x="206" y="330" width="8" height="46" fill="#2e4a3a"/><rect x="336" y="330" width="8" height="46" fill="#2e4a3a"/>
