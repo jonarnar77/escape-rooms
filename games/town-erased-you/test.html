@@ -157,6 +157,33 @@ try {
   click('r4-hall', 'door');                     expect(g.state.scene === 'r0-map', 'back to the map');
   click('r0-map', 'map-tower');                 expect(g.state.scene === 'r0-map', 'tower still faded');
   log.push('town hall ✓  (notebook entries: ' + g.state.notes.length + ')');
+
+  // LANTERN ROW
+  click('r0-map', 'map-home');                  expect(g.state.scene === 'r5-front', 'home to Lantern Row');
+  click('r5-front', 'door');                    expect(g.state.scene === 'r5-front' && !A.flag('doorOpen'), 'front door locked');
+  click('r5-front', 'note');                    expect(A.hasNote('r5-door'), 'door note read');
+  click('r5-front', 'orn-wren');                expect(!A.has('housekey'), 'nothing under the wren');
+  click('r5-front', 'orn-gull');                expect(!A.has('housekey'), 'nothing under the gull');
+  click('r5-front', 'orn-robin');               expect(A.has('housekey'), 'key under the robin');
+  click('r5-front', 'note', 'housekey');        expect(!A.flag('doorOpen'), 'key on the note only nudges');
+  click('r5-front', 'door', 'housekey');        expect(A.flag('doorOpen'), 'door unlocked');
+  click('r5-front', 'door');                    expect(g.state.scene === 'r5-hall', 'into the hall');
+  click('r5-hall', 'frame');                    expect(g.state.scene === 'r5-frame' && !A.flag('scraped'), 'frame: only ridges');
+  click('r5-hall', 'kit');                      expect(A.has('scraper'), 'scraper taken');
+  click('r5-frame', 'frame', 'scraper');        expect(A.flag('scraped') && A.hasNote('r5-marks'), 'height marks uncovered');
+  click('r5-hall', 'cupboard');                 expect(g.state.scene === 'r5-cupboard', 'under the stairs');
+  click('r5-cupboard', 'board');                expect(A.flag('boardUp'), 'board lifted');
+  click('r5-cupboard', 'board');                expect(!g.modal.hidden, 'tin lock opens');
+  const height = data.puzzles['r5-lock'].solution(A);
+  ['1', '1', '1'].forEach(key); key('OK'); await wait(1000);
+  expect(!A.flag('tinOpen'), 'wrong code keeps the tin shut');
+  [...height].forEach(key); key('OK'); await wait(1000);
+  expect(A.flag('tinOpen') && g.state.scene === 'r5-tin', 'tin opens with ' + height);
+  click('r5-tin', 'list');                      expect(A.hasNote('r5-list'), 'Wren\'s list');
+  click('r5-tin', 'note');                      expect(A.has('goodbye') && A.flag('street5') && g.state.scene === 'r5-note', 'note kept, Tower Steps back');
+  click('r5-front', 'gate');                    expect(g.state.scene === 'r0-map', 'back to the map');
+  click('r0-map', 'map-tower');                 expect(g.state.scene === 'r0-map', 'tower reached but not built yet');
+  log.push('lantern row ✓  (notebook entries: ' + g.state.notes.length + ')');
 } catch (e) { fail.push('ERROR ' + e.message); }
 g.clearSave();
 document.getElementById('out').textContent =

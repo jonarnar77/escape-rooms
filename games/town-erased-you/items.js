@@ -99,6 +99,26 @@ export default {
       <path d="M26 30 h40 M26 44 h48 M26 52 h30 M26 66 h44" stroke="#f4ecd4" stroke-width="3"/></g>`,
     examine: zoom('r4-rubbing', 'rubbingReturn'),
   },
+  housekey: {
+    name: 'front-door key',
+    description: 'The new owners\' key to 3 Lantern Row, from under the stone robin.',
+    icon: `<g transform="rotate(-30 50 50)">
+      <circle cx="30" cy="50" r="13" fill="none" stroke="#a8acb0" stroke-width="7"/>
+      <rect x="41" y="46" width="42" height="8" fill="#a8acb0"/><path d="M68 54 v9 h5 v-9 M76 54 v6 h5 v-6" fill="#a8acb0"/></g>`,
+  },
+  scraper: {
+    name: 'paint scraper',
+    description: 'A decorator\'s scraper with a red handle.',
+    icon: `<g transform="rotate(-30 50 50)"><path d="M14 40 h30 l6 10 l-6 10 h-30 Z" fill="#c4c8cc" stroke="#6a6e72" stroke-width="2"/>
+      <rect x="50" y="44" width="38" height="12" rx="5" fill="#c43a2a"/></g>`,
+  },
+  goodbye: {
+    name: 'your note (a keepsake)',
+    description: 'The note you left on Wren\'s pillow: "I\'ll be back for the summer. Promise. Wind the tower clock for me till then?"',
+    icon: `<g transform="rotate(-4 50 50)"><rect x="18" y="16" width="64" height="70" fill="#fbf8ee" stroke="#b8a888"/>
+      <path d="M26 30 h20 M26 42 h44 M26 52 h40 M26 62 h44" stroke="#2a3a7a" stroke-width="3"/><path d="M26 76 h40" stroke="${INK}" stroke-width="3"/></g>`,
+    examine: zoom('r5-note', 'goodbyeReturn'),
+  },
   postcard: {
     name: 'postcard (a keepsake)',
     description: 'Your first postcard home. "Tell Wren I\'ll be home for the summer. Promise."',

@@ -78,8 +78,20 @@ green ink. Your childhood map (drawn with Wren) is in your bag. Only Station Roa
   Memory: Mum named us for the robin and the wren at the kitchen window. *"Birds always come home."*
   Lantern Row redraws.
 
-### 5. Old home, Lantern Row: *the night you left* (sketch)
-Strangers live there. Height marks under the new paint on the door frame: two names, one stops at 19.
+### 5. Old home, Lantern Row: *the night you left*
+- Strangers live there now and are out. Their note on the navy door: the key is under the robin
+  (hard: "the usual bird, the one over the door": the robin in the stained-glass fanlight).
+  Four stone birds in the garden: wren, robin, gull, duck.
+- Inside, everything is freshly white. Ridges under the paint on the kitchen door frame: scrape them
+  with the decorators' scraper. Mum's height marks, R and W, every birthday. R stops at 19.
+  Above it, a dashed green line: *R 20?* Easy/medium write the heights; hard only has Mum's scale
+  (and a random height, a multiple of 5).
+- Cupboard under the stairs: the loose board, R and W's hiding place. The old biscuit tin, 3-digit lock,
+  green tape: *"How tall you were the night you went. W."*
+- Inside: R's mix tape for W, the robin badge, Wren's list (*"Things I couldn't throw away"*) and the note
+  you left on Wren's pillow: *the 4.20 train... I'll be back for the summer. Wind the tower clock for
+  me till then?* Under it, in green: *"I wound it every day. Then the summer ended, and I stopped it at
+  twenty past four. W."* **Keepsake: your note.** Tower Steps redraws.
 
 ### 6. Clock tower: *the goodbye* (sketch)
 Wren's room, full of green ink. The tower clock stopped the summer you didn't come. Use the six keepsakes
