@@ -22,7 +22,7 @@ export default [
     folder: 'town-erased-you',
     title: 'The Town That Erased You',
     tagline: 'You come home after twelve years. Nobody knows you, your name is gone from every record, and the map you drew as a child is fading.',
-    tags: ['Gentle mystery', 'Work in progress: 1 of 6 places', 'Easy · Medium · Hard'],
+    tags: ['Gentle mystery', 'Work in progress: 2 of 6 places', 'Easy · Medium · Hard'],
     thumbnail: { scene: 'r1-post', flags: {} },
   },
 ];

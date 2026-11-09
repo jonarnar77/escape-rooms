@@ -44,6 +44,22 @@ export default {
       <rect x="56" y="64" width="26" height="20" fill="#f4ecd8" stroke="#8a7a5a" transform="rotate(10 69 74)"/>
       <text x="69" y="80" font-size="13" text-anchor="middle" font-family="Georgia, serif" fill="#2a2440" transform="rotate(10 69 74)">7</text>`,
   },
+  print: {
+    name: 'photo print',
+    description: 'The Marigold\'s Saturday staff, 2013, from the guest book. You are in this one.',
+    icon: `<g transform="rotate(-6 50 50)"><rect x="10" y="22" width="80" height="58" fill="#f4ecd8"/>
+      <rect x="15" y="27" width="70" height="48" fill="#d8b878"/>
+      ${[26, 42, 58, 74].map((x, i) => `<circle cx="${x}" cy="44" r="6" fill="#e8c4a0"/><rect x="${x - 7}" y="51" width="14" height="20" rx="4" fill="${['#7a5a8a', '#3a6a5a', '#8a3a2a', '#2a4a6a'][i]}"/>`).join('')}
+      <rect x="15" y="66" width="70" height="9" fill="#7a5434"/></g>`,
+    examine: g => g.go('r2-photo'),
+  },
+  drawing: {
+    name: 'Wren\'s drawing (a keepsake)',
+    description: '"THE WAY HOME (for R). So you don\'t forget the way home. W." In green felt-tip.',
+    icon: `<g transform="rotate(5 50 50)"><rect x="14" y="16" width="72" height="68" fill="#f8f2e0" stroke="#b8a888"/>
+      <path d="M22 72 Q36 58 50 62 Q66 66 70 50 Q56 40 44 36 Q60 24 78 26" stroke="${INK}" stroke-width="4" fill="none"/></g>`,
+    examine: zoom('r2-drawing', 'drawingReturn'),
+  },
   postcard: {
     name: 'postcard (a keepsake)',
     description: 'Your first postcard home. "Tell Wren I\'ll be home for the summer. Promise."',

@@ -43,9 +43,16 @@ green ink. Your childhood map (drawn with Wren) is in your bag. Only Station Roa
 - Box 7 is the one painted over. Inside: every postcard you sent home. The first says *Tell Wren I'll be
   home for the summer. Promise.* **Keepsake: the postcard.** Harbour Lane redraws.
 
-### 2. Café: *Saturday mornings* (sketch)
-The staff photo on the wall has a gap where you stood. Spot the edits against the photo's own negative
-in the back room; your mug still hangs behind the counter with the name scraped off.
+### 2. The Marigold café: *Saturday mornings*
+- The staff photo over the counter (*Saturday staff, 2013*) has a neat, repainted gap.
+- The guest book on the window table holds the original print. Dot's caption, *"Robin's last Saturday!"*,
+  has *Robin's* scribbled out in green ink.
+- With the print, the photo close-up gets a **Then / Now** button (`canPast` on the scene). Three things are
+  missing from the wall copy: you (holding your mug: chipped rim, blue stripe), *ROBIN'S* flapjacks on the
+  chalkboard, and your name on the Saturday rota.
+- Three mugs on the rail have their names scraped off (four on hard). Pick yours.
+- Inside: a map Wren drew the day before you left, *"So you don't forget the way home. W."*
+  **Keepsake: Wren's drawing.** Press Street redraws.
 
 ### 3. Newspaper office: *the front page* (sketch)
 Two prints of the same edition. The reprint removes your one front-page story; the column widths give it

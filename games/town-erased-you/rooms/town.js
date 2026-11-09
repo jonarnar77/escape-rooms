@@ -10,7 +10,7 @@ import { DEFS, finish, hand, serif, INK, rng } from '../art/common.js';
 export const PLACES = [
   { id: 'station', name: 'Station', x: 110, y: 500, scene: 'r0-station' },
   { id: 'post', name: 'Post office', x: 270, y: 410, scene: 'r1-post' },
-  { id: 'cafe', name: 'Café', x: 470, y: 488 },
+  { id: 'cafe', name: 'Café', x: 470, y: 488, scene: 'r2-cafe' },
   { id: 'paper', name: 'Newspaper', x: 630, y: 372 },
   { id: 'hall', name: 'Town hall', x: 420, y: 282 },
   { id: 'home', name: 'Lantern Row', x: 214, y: 196 },

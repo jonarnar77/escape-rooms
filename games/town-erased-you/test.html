@@ -83,8 +83,29 @@ try {
   g.navigate('back');                           expect(g.state.scene === 'r1-post', 'map closes back to where you were');
   click('r1-post', 'door');                     expect(g.state.scene === 'r0-map', 'back to the map');
   click('r0-map', 'map-paper');                 expect(g.state.scene === 'r0-map', 'newspaper still faded');
-  click('r0-map', 'map-cafe');                  // reachable now (not built yet)
+  click('r0-map', 'map-cafe');                  expect(g.state.scene === 'r2-cafe', 'into the café');
   log.push('post office ✓  (notebook entries: ' + g.state.notes.length + ')');
+
+  // CAFÉ
+  click('r2-cafe', 'mugs');                     expect(g.modal.hidden, 'mug rail only describes before the photo is compared');
+  click('r2-cafe', 'photo');                    expect(g.pastBtn.hidden, 'no Then button without the print');
+  click('r2-cafe', 'book');                     click('r2-book', 'caption'); expect(A.hasNote('r2-green'), 'green ink in the guest book');
+  click('r2-book', 'print');                    expect(A.has('print'), 'print taken');
+  click('r2-cafe', 'photo');                    g.render(); expect(!g.pastBtn.hidden, 'Then button with the print');
+  g.togglePast();                               expect(A.past, 'looking at the original');
+  for (const id of ['you', 'board', 'rota']) click('r2-photo', 'then-' + id);
+  expect(A.flag('r2Diffs'), 'all three differences found');
+  g.navigate('back');                           expect(g.state.scene === 'r2-cafe' && !A.past, 'back in the café, now');
+  click('r2-cafe', 'mugs');                     expect(!g.modal.hidden, 'mug choice opens');
+  const opt = id => q(`.sel-opt[data-id="${id}"]`);
+  const choose = ids => { document.querySelectorAll('.sel-opt.on').forEach(b => b.click()); ids.forEach(id => opt(id).click()); q('.sel-go').click(); };
+  expect(document.querySelectorAll('.sel-opt').length === (diff === 'hard' ? 8 : 7), 'mugs on the rail');
+  choose(['a']); await wait(900);               expect(!A.flag('mugFound'), 'striped mug without a chip is not yours');
+  choose(['mine']); await wait(900);            expect(A.flag('mugFound') && g.state.scene === 'r2-mug', 'your mug');
+  click('r2-mug', 'paper');                     expect(A.has('drawing') && A.flag('street2'), "Wren's drawing kept, Press Street back");
+  click('r2-cafe', 'door');                     expect(g.state.scene === 'r0-map', 'back to the map');
+  click('r0-map', 'map-hall');                  expect(g.state.scene === 'r0-map', 'town hall still faded');
+  log.push('café ✓  (notebook entries: ' + g.state.notes.length + ')');
 } catch (e) { fail.push('ERROR ' + e.message); }
 g.clearSave();
 document.getElementById('out').textContent =
