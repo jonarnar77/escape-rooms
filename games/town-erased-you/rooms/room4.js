@@ -338,7 +338,11 @@ export default {
           const t = minutesOf(h, m);
           const ok = hoursOf(g).open.some(([a, b]) => t >= a && t < b);
           if (ok) g.set('r4Time', { h, m });
-          return ok || 'The clock ticks on. Behind the wall, nothing: the time lock still thinks it is closed.';
+          if (ok) return true;
+          const [[, lunch], [back]] = hoursOf(g).open;
+          const why = t >= lunch && t < back ? 'that is lunchtime, and the office is shut'
+            : 'that is outside office hours';
+          return `${h}:${String(m).padStart(2, '0')}. The clock ticks on, but behind the wall nothing moves: ${why}.`;
         },
       }),
       solve: g => {

@@ -14,7 +14,7 @@ Old-school, Flash-style point-and-click escape rooms. Plain HTML/CSS/JS with no 
 ES modules don't load from `file://`, so serve the folder:
 
 ```sh
-python3 -m http.server 8000
+python3 serve.py   # like http.server on :8000, but never cached
 # open http://localhost:8000
 ```
 
