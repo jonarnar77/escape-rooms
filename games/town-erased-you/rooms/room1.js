@@ -242,7 +242,10 @@ const ENVELOPE_FRONT = (peeled) => `
     <text x="341" y="298" font-size="20" text-anchor="middle" ${hand} fill="${INK}" transform="rotate(-2 341 290)">NO SUCH PERSON</text>`}`;
 
 const envelopeArt = () => `${tableTop(6)}${ENVELOPE_FRONT(false)}
-  <text x="400" y="480" font-size="15" text-anchor="middle" ${serif} font-style="italic" fill="#f4ecd8">Sealed tight, and the label is stuck down hard. Peeling it would tear the envelope.</text>
+  <g opacity=".35" stroke="#8a7a5a" stroke-width="3" fill="none">
+    <circle cx="500" cy="372" r="11"/><path d="M511 372 h46 M545 372 v9 M553 372 v12"/></g>
+  <text x="400" y="480" font-size="15" text-anchor="middle" ${serif} font-style="italic" fill="#f4ecd8">Your old address. Something small and hard is inside, the shape of a key.</text>
+  <text x="400" y="504" font-size="15" text-anchor="middle" ${serif} font-style="italic" fill="#f4ecd8">It is sealed tight. Tearing it open could rip what is inside.</text>
   ${finish()}`;
 
 const mumArt = () => `${tableTop(7)}
@@ -427,7 +430,7 @@ export default {
             : g.puzzle('r1-sort') },
         { id: 'letter', label: 'A letter', rect: [186, 306, 104, 80], take: 'letter',
           when: g => g.flag('sorted'),
-          say: 'It fell from behind the rack. Addressed to Lantern Row, with a green label stuck over the name: NO SUCH PERSON.' },
+          say: 'It fell from behind the rack. It is addressed to 3 Lantern Row: your old house. A green label covers the name: NO SUCH PERSON. Something small and hard is sealed inside. It feels like a key.' },
         { id: 'kettle', label: 'Kettle', rect: [470, 250, 100, 74], sparkle: g => g.has('letter'),
           click: g => g.say(g.has('letter')
             ? 'Still warm, steam curling from the spout. Enough to soften old glue.'
@@ -453,7 +456,13 @@ export default {
     },
     'r1-envelope': {
       room: 'r1', art: envelopeArt, nav: { back: g => g.get('envReturn') ?? 'r1-back' },
-      hotspots: [{ id: 'label', label: 'Green label', rect: [230, 262, 222, 56],
+      hotspots: [
+        { id: 'body', label: 'Open it', rect: [170, 150, 460, 280],
+          say: g => g.diff({
+            easy: 'You pick at the flap, but the old glue holds fast, and tearing it might rip what is inside. Steam would soften the glue: the kettle behind the counter is still warm.',
+            medium: 'You pick at the flap, but the old glue holds fast, and tearing it might rip what is inside. Old glue softens when it is warm and damp.',
+            hard: 'The old glue holds fast. Tearing it might rip what is inside.' }) },
+        { id: 'label', label: 'Green label', rect: [230, 262, 222, 56],
         say: 'NO SUCH PERSON, in green ink. Underneath, you can just make out the first letter of a name: R.' }],
     },
     'r1-mum': {
