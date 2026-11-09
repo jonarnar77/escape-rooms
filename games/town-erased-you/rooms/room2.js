@@ -258,9 +258,9 @@ const checkDiffs = g => {
   if (g.flag('r2Diffs') || diffsSeen(g) < DIFFS.length) return;
   g.set('r2Diffs');
   g.note('r2-mug', g.difficulty === 'easy'
-    ? 'In the original photo I am holding <b>my mug: chipped rim, blue stripe</b>. It might still be on the rail.'
-    : 'In the original photo I am holding my mug. It might still be on the rail.');
-  setTimeout(() => g.say('Everything that was you has been lifted out of the picture, carefully. But in the original you are holding your mug. It might still be on the rail.', 8000), 2200);
+    ? 'In the original photo I am holding <b>my mug: chipped rim, blue stripe</b>. It might still be on the mug rail behind the counter.'
+    : 'In the original photo I am holding my mug. It might still be on the mug rail behind the counter.');
+  setTimeout(() => g.say('Everything that was you has been lifted out of the picture, carefully. But in the original you are holding your mug. It might still be on the mug rail behind the counter.', 8000), 2200);
 };
 const diff = (id, rect, text, noteText) => ({
   id: 'then-' + id, era: 'past', label: 'In the original…', rect,
@@ -308,11 +308,11 @@ export default {
         { id: 'board', label: 'Chalkboard', rect: [546, 84, 104, 130],
           say: 'Flapjacks are 90p now. You used to make them on Saturdays, to Dot\'s recipe.' },
         { id: 'clock', label: 'Clock', circle: [720, 72, 26], say: 'Twenty past four. This clock has stopped too.' },
-        { id: 'mugs', label: 'Mug rail', rect: [344, 236, 296, 52],
+        { id: 'mugs', label: g => g.flag('r2Diffs') && !g.flag('mugFound') ? 'Mug rail: which one is yours?' : 'Mug rail', rect: [344, 236, 296, 52],
           sparkle: g => g.flag('r2Diffs') && !g.flag('mugFound'),
           click: g => {
             if (g.flag('mugFound')) return g.say('The regulars\' mugs. There is a gap on the rail where yours hung.');
-            if (!g.flag('r2Diffs')) return g.say('The regulars\' mugs, each with a name painted on. On some of them the name has been scraped off. Any of those could have been yours.');
+            if (!g.flag('r2Diffs')) return g.say('The regulars\' mugs, each with a name painted on. On some of them the name has been scraped off. Any of those could have been yours, if only you could remember what it looked like.');
             g.puzzle('r2-mugs');
           } },
         { id: 'cake', label: 'Cake dome', rect: [346, 290, 68, 46], say: 'Flapjacks. Dot never changed the recipe.' },
