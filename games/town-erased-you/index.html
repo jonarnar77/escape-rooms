@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Town That Erased You</title>
+  <meta name="description" content="You come home after twelve years. Nobody remembers you, and your name is gone from every record.">
+  <link rel="stylesheet" href="../../engine/engine.css">
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+  <div id="game"></div>
+  <script type="module">
+    import { Game } from '../../engine/engine.js';
+    import data from './game.js';
+    window.game = new Game(document.getElementById('game'), data, { home: '../../' });
+  </script>
+</body>
+</html>

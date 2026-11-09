@@ -1,0 +1,19 @@
+/* Little Wending: autumn daylight, paper and green paintwork, over the engine's default look. */
+body { font-family: Georgia, "Times New Roman", serif; color: #f4ecd8; }
+.frame { background: #1e1610; }
+.screen { background: radial-gradient(#4a3a28, #1a120a); }
+.screen-panel h1 { color: #f2dc98; font-family: Georgia, serif; font-size: 38px; letter-spacing: 3px;
+  text-shadow: 0 0 18px rgba(240, 210, 140, .3); }
+.screen-panel h2 { color: #f2dc98; font-family: Georgia, serif; }
+.screen-panel .sub, .screen-panel .hint, .diff-desc { color: #c8b890; font-style: italic; }
+.btn { font-family: Georgia, serif; background: #2e4a3a; color: #f4ecd8; border-color: #8aa47a; }
+.btn:hover { background: #3e5e4a; }
+.hud { color: #f2dc98; text-transform: none; letter-spacing: .5px; font-family: Georgia, serif; font-style: italic; }
+.label { color: #f8eccc; text-transform: none; font-family: Georgia, serif; }
+.msg { background: rgba(30, 24, 16, .92); border-color: #8aa47a; color: #f4ecd8; font-family: Georgia, serif; font-size: 17px; }
+.inventory { background: linear-gradient(#3e5a4a, #24382c); border-top-color: #8aa47a; }
+.slot { background: #1a2a20; border-color: #4a6a54; }
+.slot.selected { border-color: #f2dc98; }
+.panel { background: #2a2016; border-color: #8aa47a; }
+.puzzle-prompt { color: #e8dcc0; font-family: Georgia, serif; font-style: italic; }
+.seq-slot { background: #efe6cf; border-color: #8a7a4a; }

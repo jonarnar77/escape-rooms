@@ -1,0 +1,90 @@
+<!doctype html>
+<!--
+  Automated playthrough, as far as the game is built.
+    http://localhost:8000/games/town-erased-you/test.html?d=medium   (easy | medium | hard)
+  Clicks real hotspot positions and operates the real puzzle widgets.
+-->
+<html><head><meta charset="utf-8"><title>Playthrough test</title>
+<link rel="stylesheet" href="../../engine/engine.css"><link rel="stylesheet" href="theme.css">
+<style>#out{position:fixed;top:8px;left:8px;z-index:99;background:#000c;color:#cfc;padding:10px;font:13px monospace;white-space:pre}</style></head>
+<body><div id="game"></div><pre id="out">running…</pre>
+<script type="module">
+import { Game } from '../../engine/engine.js';
+import data from './game.js';
+const diff = new URLSearchParams(location.search).get('d') || 'medium';
+data.id = 'playthrough-test-town';
+history.replaceState(null, '', location.pathname);
+const g = new Game(document.getElementById('game'), data);
+g.newGame(diff);
+const A = g.api, log = [], fail = [];
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const hs = (scene, id) => data.scenes[scene].hotspots.find(h => h.id === id);
+function click(scene, id, item = null) {
+  g.go(scene); g.render();
+  const h = hs(scene, id);
+  if (!h) return bad(`missing hotspot ${scene}/${id}`);
+  if (!g.visible(h)) return bad(`not clickable now: ${scene}/${id}`);
+  if (item && !A.has(item)) return bad(`don't have ${item} for ${scene}/${id}`);
+  g.state.selected = item;
+  const el = g.hot.querySelector(`[data-id="${id}"]`);
+  const r = el.getBoundingClientRect();
+  const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+  if (top !== el) return bad(`${scene}/${id} is covered by "${top?.dataset?.id ?? top?.tagName}"`);
+  top.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+}
+const expect = (cond, msg) => { if (!cond) fail.push('expected: ' + msg); };
+function bad(msg) { fail.push(msg); }
+const q = s => document.querySelector(s);
+try {
+  // STATION AND MAP
+  expect(A.has('map'), 'start with the map');
+  click('r0-station', 'welcome');               expect(A.hasNote('pop'), 'green-ink population noted');
+  click('r0-station', 'town');                  expect(g.state.scene === 'r0-map' && A.hasNote('map'), 'onto the map');
+  click('r0-map', 'map-cafe');                  expect(g.state.scene === 'r0-map', 'the café has faded: cannot go yet');
+  click('r0-map', 'map-post');                  expect(g.state.scene === 'r1-post', 'into the post office');
+  log.push('station ✓');
+
+  // POST OFFICE
+  // shortcuts do nothing: box 7 without its key, staff door without the code
+  click('r1-post', 'box7');                     expect(!A.flag('boxOpen'), 'box 7 stays shut without a key');
+  click('r1-post', 'stamp');                    expect(g.state.scene === 'r1-stamp', 'date stamp close-up');
+  click('r1-post', 'note');                     expect(A.hasNote('w-note'), 'W. note noted');
+  click('r1-post', 'staff');                    expect(!g.modal.hidden, 'keypad opens');
+  const key = k => q(`.kp-keys button[data-k="${k}"]`).click();
+  const code = data.puzzles['r1-hatch'].solution(A);
+  ['9', '9', '9', '9'].forEach(key); key('OK'); await wait(1000);
+  expect(!A.flag('hatchOpen'), 'wrong code keeps the door shut');
+  [...code].forEach(key); key('OK'); await wait(1000);
+  expect(A.flag('hatchOpen'), 'staff door opens with ' + code);
+  click('r1-post', 'staff');                    expect(g.state.scene === 'r1-back', 'behind the counter');
+  click('r1-back', 'kettle');                   // nothing to steam yet
+  // sort: one wrong letter first, then everything right
+  click('r1-back', 'rack');                     expect(!g.modal.hidden, 'sorting opens');
+  const tok = id => q(`.asg-token[data-token="${id}"]`);
+  const slot = id => q(`.asg-slot[data-slot="${id}"]`);
+  const put = (t, s) => { tok(t).click(); slot(s).dispatchEvent(new MouseEvent('click')); };
+  expect(document.querySelectorAll('.asg-token').length === 6, 'six letters');
+  const LET = { l1: 'market', l2: 'church', l3: 'station', l4: 'mill', l5: 'harbour', l6: 'press' };
+  put('l1', 'church'); put('l2', 'market');
+  for (const t of ['l3', 'l4', 'l5', 'l6']) put(t, LET[t]);
+  await wait(1300);                             expect(!A.flag('sorted'), 'two swapped letters do not sort');
+  slot('church').dispatchEvent(new MouseEvent('click')); slot('market').dispatchEvent(new MouseEvent('click'));
+  put('l1', 'market'); put('l2', 'church');
+  await wait(1300);                             expect(A.flag('sorted'), 'post sorted');
+  click('r1-back', 'letter');                   expect(A.has('letter'), 'stuck letter taken');
+  g.examine('letter');                          expect(g.state.scene === 'r1-envelope', 'envelope close-up');
+  click('r1-back', 'cupboard', 'letter');       expect(A.has('letter'), 'cupboard only nudges');
+  click('r1-back', 'kettle', 'letter');         expect(A.has('key7') && A.has('mumLetter') && !A.has('letter'), 'letter steamed open');
+  expect(A.hasNote('name') && g.state.scene === 'r1-mum', "Mum's letter, name recovered");
+  click('r1-post', 'boxes', 'key7');            expect(!A.flag('boxOpen'), 'the wall of boxes only nudges');
+  click('r1-post', 'box7', 'key7');             expect(A.flag('boxOpen') && g.state.scene === 'r1-box', 'box 7 opens');
+  click('r1-box', 'postcards');                 expect(A.has('postcard') && A.flag('street1'), 'postcard kept, Harbour Lane back');
+  click('r1-post', 'door');                     expect(g.state.scene === 'r0-map', 'back to the map');
+  click('r0-map', 'map-paper');                 expect(g.state.scene === 'r0-map', 'newspaper still faded');
+  click('r0-map', 'map-cafe');                  // reachable now (not built yet)
+  log.push('post office ✓  (notebook entries: ' + g.state.notes.length + ')');
+} catch (e) { fail.push('ERROR ' + e.message); }
+g.clearSave();
+document.getElementById('out').textContent =
+  `PLAYTHROUGH (${diff})\n` + log.join('\n') + '\n' + (fail.length ? 'FAIL\n' + fail.join('\n') : 'PASS');
+</script></body></html>
