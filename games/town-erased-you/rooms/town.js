@@ -12,7 +12,7 @@ export const PLACES = [
   { id: 'post', name: 'Post office', x: 270, y: 410, scene: 'r1-post' },
   { id: 'cafe', name: 'Café', x: 470, y: 488, scene: 'r2-cafe' },
   { id: 'paper', name: 'Newspaper', x: 630, y: 372, scene: 'r3-office' },
-  { id: 'hall', name: 'Town hall', x: 420, y: 282 },
+  { id: 'hall', name: 'Town hall', x: 420, y: 282, scene: 'r4-hall' },
   { id: 'home', name: 'Lantern Row', x: 214, y: 196 },
   { id: 'tower', name: 'Clock tower', x: 610, y: 120 },
 ];

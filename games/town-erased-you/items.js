@@ -86,6 +86,19 @@ export default {
       <rect x="26" y="38" width="30" height="24" fill="#1e1a16" opacity=".35"/><path d="M26 70 h48 M26 76 h48 M26 82 h40" stroke="#1e1a16" stroke-width="2"/></g>`,
     examine: zoom('r3-story', 'storyReturn'),
   },
+  pencil: {
+    name: 'soft pencil',
+    description: 'A 6B pencil from the records counter. Soft and dark: for drawing, not writing.',
+    icon: `<g transform="rotate(-35 50 50)"><rect x="18" y="44" width="56" height="12" fill="#e8b83a" stroke="#8a6a1a"/>
+      <path d="M74 44 l14 6 l-14 6 Z" fill="#e8c8a0"/><path d="M84 48.5 l4 1.5 l-4 1.5 Z" fill="#2a2a2a"/><rect x="12" y="44" width="8" height="12" fill="#c94a6a"/></g>`,
+  },
+  rubbing: {
+    name: 'the rubbing (a keepsake)',
+    description: 'Page 24 of the 1995 register, rubbed with pencil: "ASHBY, Robin. Named for the robin at the window."',
+    icon: `<g transform="rotate(-5 50 50)"><rect x="18" y="12" width="64" height="76" fill="#5a5a5e"/>
+      <path d="M26 30 h40 M26 44 h48 M26 52 h30 M26 66 h44" stroke="#f4ecd4" stroke-width="3"/></g>`,
+    examine: zoom('r4-rubbing', 'rubbingReturn'),
+  },
   postcard: {
     name: 'postcard (a keepsake)',
     description: 'Your first postcard home. "Tell Wren I\'ll be home for the summer. Promise."',

@@ -1,6 +1,8 @@
 // Clock-face lock: set the hands, then try the handle.
 // Config: { solution: { h: 3, m: 15 }, start?: { h, m }, minuteStep?: 5,
 //           handleText?: 'Turn the handle', failText? }
+//   or, instead of solution: check: (h, m) => true | 'failure message'   (h is 1..12)
+//   for locks that accept a range of times.
 export default function clock(root, cfg, ctx) {
   const step = cfg.minuteStep ?? 5;
   let h = cfg.start?.h ?? 12, m = cfg.start?.m ?? 0;
@@ -48,12 +50,13 @@ export default function clock(root, cfg, ctx) {
     if (k === 'm-') m = (m - step + 60) % 60;
     draw();
     if (k !== 'go') return;
-    if (h % 12 === cfg.solution.h % 12 && m === cfg.solution.m) {
+    const verdict = cfg.check ? cfg.check(h, m) : (h % 12 === cfg.solution.h % 12 && m === cfg.solution.m);
+    if (verdict === true) {
       done = true;
       face.classList.add('ok');
       setTimeout(ctx.solve, 800);
     } else {
-      ctx.say(cfg.failText ?? "The handle won't budge.");
+      ctx.say(typeof verdict === 'string' ? verdict : cfg.failText ?? "The handle won't budge.");
       face.classList.remove('clk-shake'); void face.getBoundingClientRect(); face.classList.add('clk-shake');
     }
   }));

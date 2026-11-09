@@ -65,9 +65,18 @@ green ink. Your childhood map (drawn with Wren) is in your bag. Only Station Roa
 - The press: plate in the bed, ink on the disc, pull the lever. Out comes *FOUND AT DAWN*: Wren, 11, lost
   in the storm, found by Robin, 14, at the old lighthouse. **Keepsake: the front page.** Market Street redraws.
 
-### 4. Town hall: *the family register* (sketch)
-A register page was cut out and rewritten; a pencil rubbing of the page beneath brings back the original:
-two children, Robin and Wren.
+### 4. Town hall: *named for birds*
+- The strongroom has a time lock that follows the master clock, stopped at 4.20: after hours.
+  The records office sign gives the hours (9 till 4, closed 1 till 2; hard: 10 till 3.30, closed
+  12.30 till 1.30). Set the master clock to any time inside them (clock widget with `check`).
+- Notice board, in green ink: *"Records are moving to the clock tower archive. W. Ashby."* The official
+  town plan has Lantern Row painted out in green.
+- Strongroom: a reading slip, *"Withdrawn: Births 1995, p. 23. Replaced. W.A."* Page 23 is a neat
+  replacement in green ink, with a cut stub in the binding.
+- Rub the pencil from the counter over the blank page 24: the pressed-in original appears.
+  *ASHBY, Robin. Remarks: named for the robin at the window.* **Keepsake: the rubbing.**
+  Memory: Mum named us for the robin and the wren at the kitchen window. *"Birds always come home."*
+  Lantern Row redraws.
 
 ### 5. Old home, Lantern Row: *the night you left* (sketch)
 Strangers live there. Height marks under the new paint on the door frame: two names, one stops at 19.

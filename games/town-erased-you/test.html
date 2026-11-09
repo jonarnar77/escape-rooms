@@ -132,7 +132,31 @@ try {
   click('r3-printed', 'page');                  expect(A.has('frontpage') && A.flag('street3'), 'front page kept, Market Street back');
   click('r3-office', 'door');                   expect(g.state.scene === 'r0-map', 'back to the map');
   click('r0-map', 'map-home');                  expect(g.state.scene === 'r0-map', 'Lantern Row still faded');
+  click('r0-map', 'map-hall');                  expect(g.state.scene === 'r4-hall', 'into the town hall');
   log.push('gazette ✓  (notebook entries: ' + g.state.notes.length + ')');
+
+  // TOWN HALL
+  click('r4-hall', 'vault');                    expect(g.state.scene === 'r4-hall' && !A.flag('timeOk'), 'strongroom refuses after hours');
+  click('r4-hall', 'sign');                     expect(A.hasNote('r4-hours'), 'opening hours noted');
+  click('r4-hall', 'clock');                    expect(!g.modal.hidden, 'master clock opens');
+  const clk = k => q(`.clk [data-k="${k}"]`).click();
+  // starts at 4:20. One hour back is 3:20: open on easy/medium (9-4), open on hard too (till 3.30)
+  // but first try 1:20 (lunch on every difficulty): three hours back
+  clk('h-'); clk('h-'); clk('h-'); clk('go');  expect(!A.flag('timeOk'), '1.20 is lunchtime: still locked');
+  clk('h+'); clk('h+'); clk('go');              await wait(1100);
+  expect(A.flag('timeOk'), '3.20 opens the time lock');
+  click('r4-hall', 'vault');                    expect(g.state.scene === 'r4-strong', 'into the strongroom');
+  click('r4-strong', 'vol-1993');               expect(g.state.scene === 'r4-strong', 'other years: dust');
+  click('r4-strong', 'slip');                   expect(A.hasNote('r4-slip'), 'reading slip');
+  click('r4-strong', 'vol-1995');               expect(g.state.scene === 'r4-register', 'the 1995 register');
+  click('r4-register', 'p24');                  expect(!A.flag('rubbed') && !A.has('rubbing'), 'blank page only describes before the pencil');
+  click('r4-hall', 'pencil');                   expect(A.has('pencil'), 'pencil taken');
+  click('r4-register', 'p23', 'pencil');        expect(!A.flag('rubbed'), 'rubbing the new page does nothing');
+  click('r4-register', 'p24', 'pencil');        expect(A.flag('rubbed'), 'rubbing reveals the original');
+  click('r4-register', 'p24');                  expect(A.has('rubbing') && A.flag('street4'), 'rubbing kept, Lantern Row back');
+  click('r4-hall', 'door');                     expect(g.state.scene === 'r0-map', 'back to the map');
+  click('r0-map', 'map-tower');                 expect(g.state.scene === 'r0-map', 'tower still faded');
+  log.push('town hall ✓  (notebook entries: ' + g.state.notes.length + ')');
 } catch (e) { fail.push('ERROR ' + e.message); }
 g.clearSave();
 document.getElementById('out').textContent =
