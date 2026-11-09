@@ -51,7 +51,7 @@ export default {
       <rect x="15" y="27" width="70" height="48" fill="#d8b878"/>
       ${[26, 42, 58, 74].map((x, i) => `<circle cx="${x}" cy="44" r="6" fill="#e8c4a0"/><rect x="${x - 7}" y="51" width="14" height="20" rx="4" fill="${['#7a5a8a', '#3a6a5a', '#8a3a2a', '#2a4a6a'][i]}"/>`).join('')}
       <rect x="15" y="66" width="70" height="9" fill="#7a5434"/></g>`,
-    examine: g => g.go('r2-photo'),
+    examine: zoom('r2-print', 'printReturn'),
   },
   drawing: {
     name: 'Wren\'s drawing (a keepsake)',

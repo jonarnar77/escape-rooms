@@ -91,6 +91,8 @@ try {
   click('r2-cafe', 'photo');                    expect(g.pastBtn.hidden, 'no Then button without the print');
   click('r2-cafe', 'book');                     click('r2-book', 'caption'); expect(A.hasNote('r2-green'), 'green ink in the guest book');
   click('r2-book', 'print');                    expect(A.has('print'), 'print taken');
+  g.examine('print');                           expect(g.state.scene === 'r2-print', 'examining the print shows the original');
+  g.navigate('back');                           expect(g.state.scene === 'r2-book', 'and returns to the guest book');
   click('r2-cafe', 'photo');                    g.render(); expect(!g.pastBtn.hidden, 'Then button with the print');
   g.togglePast();                               expect(A.past, 'looking at the original');
   for (const id of ['you', 'board', 'rota']) click('r2-photo', 'then-' + id);

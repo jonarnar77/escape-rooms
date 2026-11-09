@@ -227,6 +227,13 @@ const mugCloseup = g => `${tableTop(13)}
   ${mug(250, 120, { stripe: true, chip: true, s: 8 })}
   ${finish()}`;
 
+const printArt = () => `${tableTop(12)}
+  <rect x="112" y="92" width="576" height="396" fill="#000" opacity=".25" transform="translate(6,8)"/>
+  <rect x="112" y="92" width="576" height="396" fill="#f4ecd8"/>
+  <g transform="translate(120,100)">${staffPhoto(true)}</g>
+  <text x="400" y="530" font-size="15" text-anchor="middle" ${serif} font-style="italic" fill="#f4ecd8">The print from the guest book. In this one, you are there.</text>
+  ${finish()}`;
+
 const drawingArt = () => `${tableTop(14)}
   ${paper(110, 50, 580, 470, { tint: '#f8f2e0' })}
   <path d="M110 285 H690 M400 50 V520" stroke="#d8ccb0" stroke-width="2"/>
@@ -369,6 +376,7 @@ export default {
           } },
       ],
     },
+    'r2-print': { room: 'r2', art: printArt, nav: { back: g => g.get('printReturn') ?? 'r2-cafe' }, hotspots: [] },
     'r2-drawing': { room: 'r2', art: drawingArt, nav: { back: g => g.get('drawingReturn') ?? 'r2-mug' }, hotspots: [] },
   },
 
